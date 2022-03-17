@@ -1,0 +1,52 @@
+body {
+
+	background: rgb(0, 0, 45);
+}
+
+.SearchBar {
+	background: rgb(100, 0, 150);
+	margin-left: auto;
+	margin-right: auto;
+	width: 150px;
+	
+	font-family: Veranda, sans-serif;
+	color: rgb(255, 255, 255);
+	
+	border: 3px solid rgb(50, 0, 100);
+	padding: 5px;
+}
+
+::placeholder {
+	color: rgb(255, 255, 255);
+	font-family: Veranda, sans-serif;
+	opacity: 1;
+	
+}
+
+.SearchBar:hover::placeholder, .SearchBar:focus::placeholder {
+	opacity: 0.5;
+	background: rgb(100, 0, 150);
+	color: rgb(255, 255, 255);
+	font-family: Veranda, sans-serif;
+}
+
+button {
+	background: rgb(100, 0, 150);
+	border: none;
+	
+	color: rgb(255, 255, 255);
+	font-family: Veranda, sans-serif;
+	
+}
+
+button:hover{
+	
+	background: rgb(125, 0, 175);
+	
+  cursor: pointer;
+}
+
+button:active{
+	
+	background: rgb(125, 0, 175);
+}
