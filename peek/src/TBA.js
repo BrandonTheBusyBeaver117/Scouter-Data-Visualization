@@ -3,7 +3,7 @@ import axios from "axios";
 
 let teamRankings = [];
 let responseSave;
-let holdTeams;
+let holdTeams = "";
 let newText;
 let idMaker;
 
@@ -13,7 +13,7 @@ export class TBA extends Component {
         super();
         this.state = {
             rawTeam: "N/A",
-            allTeamsString : "Click me"
+            allTeamsString : "Get Data"
         }
         this.getAllTeams = this.getAllTeams.bind(this);
   
