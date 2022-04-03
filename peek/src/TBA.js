@@ -20,7 +20,7 @@ export class TBA extends Component {
   
     }
 
-    componentDidMount = () => {  this.backgroundDataCollector()    }
+    componentDidMount = () => {this.backgroundDataCollector()}// there's something in tba api that already does this
 
     backgroundDataCollector (){
         setInterval(this.getData(), interval)
@@ -46,7 +46,7 @@ export class TBA extends Component {
                 teamRankings.push({
                     "teamNumber" : Team.team_key.replace("frc",""),//gets rid of the "frc" before the number
                     "ranking" : Team.rank});
-            }     
+            }//This is basically a for-each loop. It iterates through the entire response data array and saves the rankings     
 
             console.log(teamRankings)
             this.setState({rawTeam : teamRankings});
@@ -83,7 +83,7 @@ export class TBA extends Component {
         return (
         <div>
             <h1>These are the teams:</h1>
-            <button onClick={this.printAllTeams}>{this.state.allTeamsString}</button>
+            <button onClick={this.printAllTeams()}>{this.state.allTeamsString}</button>
         </div>
         )
      

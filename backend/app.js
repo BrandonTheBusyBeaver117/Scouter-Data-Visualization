@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 })
 
 app.get("/getData", (req, res) => {
-    axios.get("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/rankings", { params: headers })
+    axios.get("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/rankings", { headers })
         .then(response => {
             console.log(response.data)
             res.json(response.data)
