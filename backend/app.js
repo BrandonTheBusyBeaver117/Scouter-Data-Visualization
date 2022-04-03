@@ -12,30 +12,30 @@ const headers = {
 };
 
 const eventKey = "2022cave"
- 
+
 app.set("json spaces", 2) // indents JSON, makes it easier to read (not needed in the final app)
 
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+    res.send('Hello World!')
 })
 
 
 app.get("/getData", (req, res) => {
-    axios.get("https://www.thebluealliance.com/api/v3/event/"+ eventKey + "/rankings", {params: headers})
-      .then(function(response) {
-       //res.send(responseSave)//sends results?
+    axios.get("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/rankings", { headers })
+        .then(function (response) {
+        console.log(response)
+        res.json(response)
        
+        }).catch(function (error) {
+            res.json(error)
+        })
 
-      }).catch(function(error) {
-        res.json("Error occured!" + error)
-      })
-      
-  })
+})
 
-  // somehow save it all as an array and maybe map it later?
+// somehow save it all as an array and maybe map it later?
 
 
 app.listen(PORT, () => {
-  console.log(`Ranking collector listening on port ${PORT}`)
+    console.log(`Ranking collector listening on port ${PORT}`)
 })
