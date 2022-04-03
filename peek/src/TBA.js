@@ -35,6 +35,8 @@ export class TBA extends Component {
             Save a previous iteration of the json file, then constantly compare it to the current json file
             Only if you see a difference, then you iterate through the entire array
             then change the rest of the data on the site
+
+            This might only be useful for google sheets however
             */      
             responseSave = response.data;
             //res.json(response.data)
@@ -57,11 +59,12 @@ export class TBA extends Component {
                 })
 
     }
+
    printAllTeams() {
-       console.log("get")
+
         for (const Team of this.state.rawTeam){
             
-        holdTeams+="Team #" + Team.teamNumber + " is rank: " +Team.ranking + "\n";
+        holdTeams += "Team #" + Team.teamNumber + " is rank: " +Team.ranking + "\n";
 
     }
 
@@ -72,7 +75,7 @@ export class TBA extends Component {
 
        {this.state.people.map((person, index) => (
         <p>Hello, {person.name} from {person.country}!</p>
-    ))}
+    ))}//idk what this is lmao, maybe me testing something?
 
     }
 
