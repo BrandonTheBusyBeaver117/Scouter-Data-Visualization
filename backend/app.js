@@ -3,7 +3,7 @@ const express = require('express')
 const axios = require('axios')
 
 const app = express()
-const PORT = 5000 //Default is 3000, which is the same as react, so changed to 5000 so there's no conflict
+const PORT = process.env.PORT||5000 //Default is 3000, which is the same as react, so changed to 5000 so there's no conflict
 
 
 const headers = {
@@ -22,10 +22,10 @@ app.get('/', (req, res) => {
 
 
 app.get("/getData", (req, res) => {
-    axios.get("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/rankings", { headers })
+    axios.get("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/rankings", { params: headers })
         .then(function (response) {
-        console.log(response)
-        res.json(response)
+        console.log(response.data)
+        res.json(response.data)
        
         }).catch(function (error) {
             res.json(error)
