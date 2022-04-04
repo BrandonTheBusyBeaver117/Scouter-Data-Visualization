@@ -20,7 +20,10 @@ export class TBA extends Component {
   
     }
 
-    componentDidMount = () => {this.backgroundDataCollector()}// there's something in tba api that already does this
+    componentDidMount = () => {
+        //this.backgroundDataCollector()
+        this.getData(); 
+    }// there's something in tba api that already does this
 
     backgroundDataCollector (){
         setInterval(this.getData(), interval)
@@ -38,8 +41,8 @@ export class TBA extends Component {
 
             This might only be useful for google sheets however
             */      
-            responseSave = response.data;
-            //res.json(response.data)
+            responseSave = response.data; 
+
             console.log(responseSave.rankings)// printing out the json file
             
             for (const Team of responseSave.rankings){
@@ -83,7 +86,7 @@ export class TBA extends Component {
         return (
         <div>
             <h1>These are the teams:</h1>
-            <button onClick={this.printAllTeams()}>{this.state.allTeamsString}</button>
+            <button onClick={this.printAllTeams}>{this.state.allTeamsString}</button>
         </div>
         )
      
