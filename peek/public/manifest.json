@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Peek",
+  "name": "Peek",
+  "description": "Makes scouting data easy to view",
   "icons": [
     {
       "src": "favicon.ico",
