@@ -31,7 +31,6 @@ export class TBA extends Component {
 
     getData (){
         axios.get('/getData').then( response => {
-            console.log(response)
             
             /*
             Ideas to make this more efficient:
@@ -43,7 +42,7 @@ export class TBA extends Component {
             */      
             responseSave = response.data; 
 
-            console.log(responseSave.rankings)// printing out the json file
+            console.log(responseSave.rankings)// printing out the rankings part of the json file
             
             for (const Team of responseSave.rankings){
                 teamRankings.push({
@@ -70,12 +69,16 @@ export class TBA extends Component {
         for (const Team of this.state.rawTeam){
             
             holdTeams += "Team #" + Team.teamNumber + " is rank: " +Team.ranking + "\n";
-        }
+        }// Basically a giant string with all the teams  
 
-        console.log(holdTeams)// Basically a giant string with all the teams  
-        newText = holdTeams.split ('\n').map ((item, iterate) => <p key={iterate}>{item}</p>);
+        console.log(holdTeams)
 
-       this.setState({allTeamsString : newText});
+
+        //splits the string up by new line, then makes an array of paragraphs with those lines
+        //Maybeeeee, we could skip these steps, and just
+        newText = holdTeams.split ('\n').map ((item, iterate) => <p key={iterate}>{item}</p>); 
+
+       this.setState({allTeamsString : newText});//Sets the state of the 
 
         
 
