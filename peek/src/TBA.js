@@ -63,22 +63,21 @@ export class TBA extends Component {
 
     }
 
+
+
    printAllTeams() {
 
         for (const Team of this.state.rawTeam){
             
-        holdTeams += "Team #" + Team.teamNumber + " is rank: " +Team.ranking + "\n";
+            holdTeams += "Team #" + Team.teamNumber + " is rank: " +Team.ranking + "\n";
+        }
 
-    }
+        console.log(holdTeams)// Basically a giant string with all the teams  
+        newText = holdTeams.split ('\n').map ((item, iterate) => <p key={iterate}>{item}</p>);
 
-    console.log(holdTeams)  
-    newText = holdTeams.split ('\n').map ((item, iterate) => <p key={iterate}>{item}</p>);
-    console.log(newText[7])
        this.setState({allTeamsString : newText});
 
-       {this.state.people.map((person, index) => (
-        <p>Hello, {person.name} from {person.country}!</p>
-    ))}//idk what this is lmao, maybe me testing something?
+        
 
     }
 
