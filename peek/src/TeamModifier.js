@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Teams} from 'teams.'
 
 export class TeamModifier extends Component {
 

@@ -1,11 +1,14 @@
 import {TBA} from './TBA'
+   
+var qualities = [];
 
 export class Teams {
 
 
     constructor(googleSheetHeaders, rank) {
-         
-        //this.printAllTeams = this.printAllTeams.bind(this);
+          
+        this.qualities = 
+
         this.getData = this.getData.bind(this);
 
     }

@@ -3,7 +3,6 @@ import axios from "axios";
 
 let teamRankings = [];
 let responseSave;
-let holdTeams = "";
 let newText;
 const interval = 3 *1000;// 1000 represents milliseconds
 
@@ -64,25 +63,13 @@ export class TBA extends Component {
 
 
 
-   printAllTeams() {
+    printAllTeams() {
 
-        for (const Team of this.state.rawTeam){
-            
-            holdTeams += "Team #" + Team.teamNumber + " is rank: " +Team.ranking + "\n";
-        }// Basically a giant string with all the teams  
+        newText = this.state.rawTeam.map((item,iterate) => <p key={iterate}>Team {item.teamNumber} is currently rank: {item.ranking}</p>)
+    
+        this.setState({allTeamsString : newText});//Sets the state of the 
 
-        console.log(holdTeams)
-
-
-        //splits the string up by new line, then makes an array of paragraphs with those lines
-        //Maybeeeee, we could skip these steps, and just
-        newText = holdTeams.split ('\n').map ((item, iterate) => <p key={iterate}>{item}</p>); 
-
-       this.setState({allTeamsString : newText});//Sets the state of the 
-
-        
-
-    }
+    } // Basically creates a bunch of team paragraphs
 
     render() {
         return (
