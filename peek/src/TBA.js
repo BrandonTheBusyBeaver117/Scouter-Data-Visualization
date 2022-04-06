@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import axios from "axios";
+import axios from "axios"; 
 
 let teamRankings = [];
 let responseSave;
@@ -63,7 +63,7 @@ export class TBA extends Component {
 
 
 
-    printAllTeams() {
+    printAllTeams() { 
 
         newText = this.state.rawTeam.map((item,iterate) => <p key={iterate}>Team {item.teamNumber} is currently rank: {item.ranking}</p>)
     

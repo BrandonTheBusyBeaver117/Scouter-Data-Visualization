@@ -1,23 +1,27 @@
 import {TBA} from './TBA'
+import React from 'react'
    
-var qualities = [];
+var qualities;
 
 export class Teams {
 
 
     constructor(googleSheetHeaders, rank) {
           
-        this.qualities = 
 
-        this.getData = this.getData.bind(this);
+        const stringy = Object.assign(googleSheetHeaders, rank)
 
+        this.qualities = JSON.stringify(stringy)
+
+        //this.getData = this.getData.bind(this);
+
+    }
+
+    printQualities() {
+        console.log(this.qualities)
     }
  
 
-    //maybe look into how to dynamically change constructor
-    //or alternatively, somehow parse an object to be parameter for constructor
-    //actually that could work, cause google sheets should have all the possible qualities of a team that we're looking for
-    //well actually, it's missing a few
  
 
 }
