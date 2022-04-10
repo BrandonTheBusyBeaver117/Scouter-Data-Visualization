@@ -1,6 +1,6 @@
 
 # dependencies
-/node_modules
+node_modules/
 
-#credentials
+# credentials
 credentials.json
