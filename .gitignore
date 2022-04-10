@@ -3,4 +3,4 @@
 /node_modules
 
 #credentials
-.credentials.json
+credentials.json
