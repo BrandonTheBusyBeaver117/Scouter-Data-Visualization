@@ -3,5 +3,4 @@
 node_modules/
 
 # credentials
-credentials.json
 .env
