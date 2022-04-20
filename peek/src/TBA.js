@@ -55,7 +55,7 @@ export class TBA extends Component {
                 
             console.log(this.state)
 
-                }).catch(function(error) {
+                }).catch(error => {
                 console.log("Error occured!" + error)
                 })
 
