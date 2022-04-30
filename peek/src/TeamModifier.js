@@ -69,15 +69,27 @@ export class TeamModifier extends Component {
         //Checks if the headers are the same as before
         //Only if they're different do they change
         //Although, this may not be needed, or a better comparison might be needed
-            if(response.data[0] !== this.state.googleSheetHeaders){ 
 
-                console.log("headers are set")
-                this.setState({googleSheetHeaders : response.data[0]})
+        const responseHeaders = response.data[0];
 
+        if(responseHeaders.length !== this.state.googleSheetHeaders.length) {
+
+            this.setState({googleSheetHeaders : responseHeaders})
+            console.log("headers are set")
+
+        } else {
+
+            for(let i = 0; i < responseHeaders.length; i++) {
+                
+                if(responseHeaders[i] !== this.state.googleSheetHeaders[i]){
+                    this.setState({googleSheetHeaders : responseHeaders})
+                    console.log("headers are set")
+
+                }
+                
             }
-           
 
-
+        }
 
             matchData = response.data;  
 
@@ -113,11 +125,7 @@ export class TeamModifier extends Component {
                 console.log("uh oh, team: \"" + Match[this.state.teamColumn] + "\" does not exist")
             } // Checking if this match's team number was valid
             
-        }
-        
-        console.log(matchData)
-        console.log(this.state.teamData)
-
+        } 
     }
 
 
@@ -140,28 +148,18 @@ export class TeamModifier extends Component {
 
     async createTeams () {
 
-        console.log("waiting")
+        console.log("waiting...")
 
         await this.getData().then( () =>{
-        
-            for(const team of this.state.teamData){
-                console.log("Here's the data for each team:" + team)
 
-                console.log("MAKING TEAMS")        
-                
-                console.log("sheet header" + this.state.googleSheetHeaders)
+            console.log("MAKING TEAMS")   
+        
                 let teamArray= this.state.teamData.map((item,iterate) => <Team key = {iterate} 
                 googleSheetHeaders = {this.state.googleSheetHeaders}
-                teamData = {item}
-                />
-                )
-                
-                
-                /*<Team googleSheetHeaders = {this.state.googleSheetHeaders} 
-                    teamData = {item}/>) */
+                teamData = {item}/>)
 
+                
                 this.setState({teamHolder: teamArray})
-            }
 
         }).catch((error) =>{
             console.log(error)
