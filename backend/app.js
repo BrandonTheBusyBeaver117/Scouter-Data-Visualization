@@ -74,14 +74,14 @@ app.get("/getSpreadsheetData", async (req, res) => {
 
         const googleSheetsAPI = google.sheets({version:'v4', auth:client})
 
-        let data = await googleSheetsAPI.spreadsheets.values.get({
+        let sheets = await googleSheetsAPI.spreadsheets.values.get({
 
             spreadsheetId: "1CKLOwi0YJVL01nasfPA0QrBuVvlBR75ypgbgoyoGRgk",
             range: "'Raw Data'!A1:X450"
 
         })
 
-        return data.data.values;
+        return sheets.data.values;
     }
 
 

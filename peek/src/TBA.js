@@ -49,9 +49,9 @@ export class TBA extends Component {
                     "ranking" : Team.rank});
             }//This is basically a for-each loop. It iterates through the entire response data array and saves the rankings     
 
-            console.log(teamRankings)
+           
             this.setState({rawTeam : teamRankings});
-            console.log(this.state.rawTeam);
+          
                 
             console.log(this.state)
 

@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import {TBA} from "./TBA";
+import {TeamModifier} from "./TeamModifier"
+
 
 function App() {
 
@@ -11,6 +13,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+      <TeamModifier />
         <TBA />
       </header>
     </div>
