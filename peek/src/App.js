@@ -1,5 +1,5 @@
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 import {TBA} from "./TBA";
 import {TeamModifier} from "./TeamModifier"
 
