@@ -7,15 +7,20 @@ import {TeamModifier} from "./TeamModifier"
 function App() {
 
 
+/*
 
+      <header className="App-header">
+      
+      </header>
+*/
 
   
   return (
     <div className="App">
-      <header className="App-header">
+      <body>
       <TeamModifier />
         <TBA />
-      </header>
+      </body>
     </div>
   );
 }
