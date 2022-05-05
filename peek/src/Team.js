@@ -17,18 +17,24 @@ export class Team extends Component{
         }
 
     }
-    componentDidMount = () => {
+    componentDidMount () {
         this.formatter()
     }
 
+
+    handleContextMenu (e) {
+        e.preventDefault()
+        console.log(e)
+    }
 
     formatter () {
        
         //headers
         let headerHolder = []
-        
+
         for(let i = 2; i < this.props.googleSheetHeaders.length; i++){
-            headerHolder.push(<th>{this.props.googleSheetHeaders[i]}</th>)
+            headerHolder.push(<th key = {i} onContextMenu = {(e) => this.handleContextMenu(e)}>
+            {this.props.googleSheetHeaders[i]}</th>)
         }
 
         //let headerHolder = this.props.googleSheetHeaders.map((item,iterate) => <th key = {iterate}>{item}</th>)
