@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 
-let qualties;
-
 export class Team extends Component{
-
+//among us is sus 
     /*Basically this class should hold all the data
     Makes it searchable, call methods etc.
     Idk if we should update data in this class then pass
@@ -22,9 +20,10 @@ export class Team extends Component{
     }
 
 
-    handleContextMenu (e) {
-        e.preventDefault()
-        console.log(e)
+    handleContextMenu (event) {
+        event.preventDefault()
+        this.props.toggleMenu(true)
+        console.log(event)
     }
 
     formatter () {
@@ -33,13 +32,11 @@ export class Team extends Component{
         let headerHolder = []
 
         for(let i = 2; i < this.props.googleSheetHeaders.length; i++){
-            headerHolder.push(<th key = {i} onContextMenu = {(e) => this.handleContextMenu(e)}>
+            headerHolder.push(<th key = {i} onContextMenu = {(event) => this.handleContextMenu(event)}>
             {this.props.googleSheetHeaders[i]}</th>)
         }
 
-        //let headerHolder = this.props.googleSheetHeaders.map((item,iterate) => <th key = {iterate}>{item}</th>)
-
-        let googleSheetHeaders = <tr>{headerHolder}</tr> //won't let me use whitespace?
+        const googleSheetHeaders = <tr>{headerHolder}</tr> //won't let me use whitespace?
         
         
         

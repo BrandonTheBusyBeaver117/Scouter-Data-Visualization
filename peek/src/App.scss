@@ -5,14 +5,18 @@ table:hover {
 */
 
 table {
+$transition-Time: 0.25s;
 
+
+    td:hover {
+     
+        transition: $transition-Time linear;
+        background-color: red;
+    }
  th:hover {
-    background-color: red;
+     @extend td
  }
 
- td:hover {
-     background-color: red;
- }
 }
 
 .App {

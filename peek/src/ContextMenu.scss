@@ -1,0 +1,17 @@
+.menuHidden {
+    
+
+        display: none;
+}
+
+.menuActive {
+
+ 
+        position:absolute;
+        width: 200px;
+        display: block;
+        z-index: 300;
+  
+        color: black;
+        background-color: white;
+}

@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.scss';
 import {TBA} from "./TBA";
 import {TeamModifier} from "./TeamModifier"
+import {ContextMenu} from "./ContextMenu"
 
 
 function App() {
@@ -18,7 +19,8 @@ function App() {
   return (
     <div className="App">
       <body>
-      <TeamModifier />
+        <TeamModifier />
+        
         <TBA />
       </body>
     </div>

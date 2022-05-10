@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Team} from './Team'
+import { ContextMenu } from './ContextMenu';
 
 import axios from "axios";  
 
@@ -19,10 +20,13 @@ export class TeamModifier extends Component {
 
             //Individual year variables
 
-            teamColumn: 1 //Column (in array notation) where team number is defined, in case it (for whatever reason) changes year to yea
+            teamColumn: 1, //Column (in array notation) where team number is defined, in case it (for whatever reason) changes year to yea
 
+            // Context menu
+            toggleMenu: false
         }
 
+        this.toggleMenu = this.toggleMenu.bind(this)
     }
 
     componentDidMount = () => { 
@@ -31,6 +35,13 @@ export class TeamModifier extends Component {
 
     }
 
+
+
+    toggleMenu (toggle) {
+     
+        console.log(toggle)
+        this.setState({toggleMenu: toggle})
+    }
    
         
     
@@ -156,7 +167,9 @@ export class TeamModifier extends Component {
         
                 let teamArray= this.state.teamData.map((item,iterate) => <Team key = {iterate} 
                 googleSheetHeaders = {this.state.googleSheetHeaders}
-                teamData = {item}/>)
+                teamData = {item}
+                toggleMenu = {this.toggleMenu}
+                />)
 
                 
                 this.setState({teamHolder: teamArray})
@@ -172,6 +185,7 @@ export class TeamModifier extends Component {
     render() {
         return (
             <div>
+            <ContextMenu menuToggled = {this.state.toggleMenu}/>
         {this.state.teamHolder}
             </div>
         )
