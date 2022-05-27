@@ -1,6 +1,4 @@
 .menuHidden {
-    
-
         display: none;
 }
 
@@ -14,4 +12,20 @@
   
         color: black;
         background-color: white;
+
+
+        ul{
+            list-style-type: none;
+            padding: 0;
+            border: 1px solid #ddd;
+            li {
+                padding: 2px 2px;
+                border: 1px solid #ddd;
+            }
+            li:hover {
+                    
+            transition: 0.2s linear;
+            background-color: rgb(255, 115, 115);
+            }
+        }
 }

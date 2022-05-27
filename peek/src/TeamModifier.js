@@ -116,7 +116,7 @@ export class TeamModifier extends Component {
            let teamNumberFound = false;
             for(let i = 0; i < this.state.teamData.length; i++){//Iterates through all previous data
                 
-                if(Match[this.state.teamColumn] == (this.state.teamData[i])[0]){//Checks if the Team already exists
+                if(Match[this.state.teamColumn] === (this.state.teamData[i])[0]){//Checks if the Team already exists
                     
                     
                     let alteredTeamData = this.state.teamData
