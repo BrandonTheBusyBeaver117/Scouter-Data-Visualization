@@ -1,13 +1,28 @@
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 import {TBA} from "./TBA";
+import {TeamModifier} from "./TeamModifier"
+import {ContextMenu} from "./ContextMenu"
+
 
 function App() {
+
+
+/*
+
+      <header className="App-header">
+      
+      </header>
+*/
+
+  
   return (
     <div className="App">
-      <header className="App-header">
+      <body>
+        <TeamModifier />
+        
         <TBA />
-      </header>
+      </body>
     </div>
   );
 }
