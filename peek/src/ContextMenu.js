@@ -28,6 +28,8 @@ export class ContextMenu extends Component{
         console.log(this.state.toggleMenu ? 'menuActive' : 'menuHidden')
     }
 
+    
+
 
     render() {
         //this is where the team blocky thing should be rendered
@@ -36,8 +38,9 @@ export class ContextMenu extends Component{
         <div>
             <nav className = {this.state.toggleMenu ? "menuActive" : "menuHidden"}>
             <ul>
-                <li>Delete Column</li>
-                <li>Second value lol</li>
+                <li onClick = {this.props.deleteColumn}>Delete Column</li>
+                <li>Graph this point</li>
+                <li></li>
             </ul>
             </nav>            
 

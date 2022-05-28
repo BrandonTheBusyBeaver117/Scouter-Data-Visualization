@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
+import React, { useState } from "react";
 
 
-export class Searchbar extends Component {
+export default function Searchbar () {
 
-    filterThroughTeams (e) {
+    const filterThroughTeams = e => {
         const searchString = e.target.value;
         const filteredChars = aa;
-    }
+    };
 
 
     render() {
