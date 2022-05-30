@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Team} from './Team'
 import { ContextMenu } from './ContextMenu';
+import Searchbar from './Searchbar';
 
 import axios from "axios";  
 
@@ -185,6 +186,7 @@ export class TeamModifier extends Component {
     render() {
         return (
             <div>
+            <Searchbar teamData = {this.state.teamData}/>
             <ContextMenu menuToggled = {this.state.toggleMenu}/>
         {this.state.teamHolder}
             </div>
