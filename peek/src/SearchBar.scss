@@ -1,0 +1,33 @@
+
+$widthOfSearches: 20%;
+
+.results {
+    p{
+
+        display:block;
+        margin: auto;
+        width:$widthOfSearches;
+        background-color:white;
+        color:black;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ddd;
+    }
+    p:hover {
+        
+        transition: 0.2s linear;
+        background-color: rgb(0, 255, 115);
+    }
+}
+
+
+#SearchBar {
+    font-size: 20px;
+    width: $widthOfSearches;
+    height: 2.5em;
+    text-align: center;
+    color: black;
+        outline-color: rgb(0, 225, 255);
+
+    
+}

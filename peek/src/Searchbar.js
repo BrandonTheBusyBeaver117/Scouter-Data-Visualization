@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./SearchBar.scss"
 
 
 export default function Searchbar (props) {
@@ -13,7 +14,8 @@ export default function Searchbar (props) {
        totalTeamsComponent = props.teamData.map( (item, iterate) =>
 
         <p key ={iterate}>Team {item[0]} --- rank: {item[1]}</p> // I kinda want to format it so that name is on left, ranking on the far right
-        
+        //Also might make this my own component
+        //If not, I need to add class and its own scss file
         )
 
         for (const item of props.teamData) {
@@ -33,9 +35,9 @@ export default function Searchbar (props) {
 
     const handleChange = event => {
         //Works to filter through teams
-        const response = [...event.target.value]; 
+        const response = [...event.target.value]; //Splits the response into an array of characters
 
-        const teamSearchResults = []
+        const teamSearchResults = []// These are all the teams that the program has 
 
         if(response.length < 1) {
             setSearchableTeamResults([])
@@ -47,12 +49,15 @@ export default function Searchbar (props) {
             console.log("string: " + response + "length: " + response.length)
             for ( let teamIndex = 0; teamIndex < listOfTotalTeams.length; teamIndex++) {
 
-                const team = listOfTotalTeams[teamIndex];
+                const team = listOfTotalTeams[teamIndex];//Defining the team in this iteration
 
                 //Here's where sorting algorithms come into play
-                console.log (typeof team.teamNumber)
-                const arrayTeamNumber = [...team.teamNumber]
-                const comparableDigits = []
+               
+                const arrayTeamNumber = [...team.teamNumber] //Splits the team number into an array of characters
+
+                const comparableDigits = [] // These digits are 
+
+
                 for ( let i = 0; i < response.length; i++){
                     comparableDigits.push(arrayTeamNumber[i])                   
                 }
@@ -77,7 +82,7 @@ export default function Searchbar (props) {
 
                if(anyResultFound){
                 setSearchableTeamResults(teamSearchResults)
-                
+
                } else {
                    setSearchableTeamResults(["No teams found with that number"])
                }
@@ -104,9 +109,7 @@ onChange, run this function with the current input to sort through our teams, an
         return (
         <div>
             <input id="SearchBar" type="text" placeholder="Search Teams" onChange = {handleChange} />
-            <div>
-                {searchableTeamResults}
-            </div>
+            <div className="results">{searchableTeamResults}</div>
         </div>
         )
      
