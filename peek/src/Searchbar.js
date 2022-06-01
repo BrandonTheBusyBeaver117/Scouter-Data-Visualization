@@ -122,14 +122,14 @@ export default function Searchbar (props) {
 
                } else {
                    //If there's no result found, then the state will just be plain text that says the following message
-                   setSearchableTeamResults(["No teams found with that number"])
+                   setSearchableTeamResults(<p>No teams found with that number</p>)
                }
     
             }
 
         }else{
             //display warning that they need to have only numbers
-            setSearchableTeamResults(["Hey! No letters allowed!"])
+            setSearchableTeamResults(<p>Hey! No letters allowed!</p>)
         }
 
         console.log("response length" + response.length)
