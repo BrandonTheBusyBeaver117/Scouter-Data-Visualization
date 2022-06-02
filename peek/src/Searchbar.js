@@ -13,9 +13,10 @@ export default function Searchbar (props) {
     const makeSearchable = () => {
        totalTeamsComponent = props.teamData.map( (item, iterate) =>
 
-        <p key ={iterate}>Team {item[0]} --- rank: {item[1]}</p> // I kinda want to format it so that name is on left, ranking on the far right
+        <p key ={iterate} >Team {item[0]} --- rank: {item[1]}</p> // I kinda want to format it so that name is on left, ranking on the far right
         //Also might make this my own component
         //If not, I need to add class and its own scss file
+        //Might be where caching comes in?
         )
 
         for (const item of props.teamData) { // This goes through all the elements in the teamData array
@@ -145,9 +146,9 @@ onChange, run this function with the current input to sort through our teams, an
 */
 
         return (
-        <div>
+        <div className="results" >
             <input id="SearchBar" type="text" placeholder="Search Teams" onChange = {handleChange} />
-            <div className="results">{searchableTeamResults}</div>
+            <div >{searchableTeamResults}</div>
         </div>
         )
      

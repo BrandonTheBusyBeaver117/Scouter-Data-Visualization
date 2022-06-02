@@ -1,5 +1,5 @@
 
-$widthOfSearches: 20%;
+$widthOfSearches: 300px;
 $padding: 0.625em;
 
 //Basically trying to calculate how tall an individual result is
@@ -10,18 +10,21 @@ $incrementDistance: 2*$padding + 1.3em;
 //Basically, calculating how much space from each side the results needs to be
 //Sees how much available space there is for empty space on sides
 //Then divides by 2 to divide that space equally
-$alignment: (100%-$widthOfSearches)/2;
+$alignment: calc((100% - $widthOfSearches)/2);
+$heightOfSearchBox: 2.5em;
+
+$initialDistance: $heightOfSearchBox+$padding;
 
 .results {
-    
-
-    
-    position: relative;
-    
+    background-color: #282c34;//Found in index.css 
+                                //If background color ever changes in index, please change it here as well
+position: sticky;
+top:0px;
+    height: $heightOfSearchBox + 2em;
     p{    
     //font-size: 1em;
     position: absolute;
-
+        
        display:block;
         margin: 0;
         width:$widthOfSearches;
@@ -38,58 +41,81 @@ $alignment: (100%-$widthOfSearches)/2;
     }
 
     p:nth-child(1){
-        @extend p;
-        top: 0;
-        left: $alignment;
-        }
-
-    p:nth-child(2){
     @extend p;
-    top: $incrementDistance;
+    top: $initialDistance;
     left: $alignment;
     }
 
-    p:nth-child(3){
+    p:nth-child(2){
         @extend p;
-        top: 2*$incrementDistance;
+        top: $initialDistance + $incrementDistance;
         left: $alignment;
     }
+    p:nth-child(3){
+        @extend p;
+        top: $initialDistance + 2*$incrementDistance;
+        left: $alignment;
+    }
+
     p:nth-child(4){
         @extend p;
-        top: 3*$incrementDistance;
+        top: $initialDistance + 3*$incrementDistance;
         left: $alignment;
     }
 
     p:nth-child(5){
         @extend p;
-        top: 4*$incrementDistance;
+        top: $initialDistance + 4*$incrementDistance;
         left: $alignment;
     }
 
     p:nth-child(6){
         @extend p;
-        top: 5*$incrementDistance;
+        top: $initialDistance + 5*$incrementDistance;
         left: $alignment;
     }
-
     p:nth-child(7){
         @extend p;
-        top: 6*$incrementDistance;
+        top: $initialDistance + 6 * $incrementDistance;
         left: $alignment;
     }
 
+    p:nth-child(8){
+        @extend p;
+        top: $initialDistance + 7 * $incrementDistance;
+        left: $alignment;
+    }
 
+    p:nth-child(9){
+        @extend p;
+        top: $initialDistance + 8 * $incrementDistance;
+        left: $alignment;
+    }
 
-}
+    p:nth-child(10){
+        @extend p;
+        top: $initialDistance + 9 * $incrementDistance;
+        left: $alignment;
+    }
 
+    p:nth-child(11){
+        @extend p;
+        top: $initialDistance + 10 * $incrementDistance;
+        left: $alignment;
+    }
 
-#SearchBar {
-    font-size: 20px;
-    width: $widthOfSearches;
-    height: 2.5em;
-    text-align: center;
-    color: black;
-        outline-color: rgb(0, 225, 255);
-
+    #SearchBar {
+        font-size: 20px;
+        width: $widthOfSearches;
+        height: $heightOfSearchBox;
+        text-align: center;
+        color: black;
+            outline-color: rgb(0, 225, 255);
     
+        
+    }
+
+
 }
+
+
