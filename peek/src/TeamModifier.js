@@ -26,7 +26,8 @@ export class TeamModifier extends Component {
             // Context menu
             toggleMenu: false,
             xPositionOfContextMenu: 0,
-            yPositionOfContextMenu: 0 
+            yPositionOfContextMenu: 0,
+            clicked: false, 
         }
 
         this.toggleMenu = this.toggleMenu.bind(this)
@@ -40,13 +41,14 @@ export class TeamModifier extends Component {
 
 
 
-    toggleMenu (isToggled, mouseX, mouseY) {
+    toggleMenu (isToggled, mouseX, mouseY, isClicked) {
      
         console.log(isToggled + mouseX + mouseY)
         this.setState({
             toggleMenu: isToggled,
             xPositionOfContextMenu: mouseX,
-            yPositionOfContextMenu: mouseY 
+            yPositionOfContextMenu: mouseY, 
+            clicked: isClicked
         })
     }
    
@@ -193,7 +195,15 @@ export class TeamModifier extends Component {
         return (
             <div>
             <Searchbar teamData = {this.state.teamData}/>
-            <ContextMenu menuToggled = {this.state.toggleMenu} mouseX = {this.state.xPositionOfContextMenu} mouseY = {this.state.yPositionOfContextMenu}/>
+
+            <ContextMenu 
+                menuToggled = {this.state.toggleMenu} 
+                mouseX = {this.state.xPositionOfContextMenu} 
+                mouseY = {this.state.yPositionOfContextMenu}
+                clicked = {this.state.clicked}
+            />
+
+
         {this.state.teamHolder}
             </div>
         )

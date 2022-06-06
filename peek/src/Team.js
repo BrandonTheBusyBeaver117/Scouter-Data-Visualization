@@ -20,14 +20,21 @@ export class Team extends Component{
         this.formatter()
     }
 
+    handleClick = () => {
+        this.props.toggleMenu(false, 5026, 5026, true)
+
+       
+        
+    }
 
     handleContextMenu (event) {
         event.preventDefault()
-        this.props.toggleMenu(true, event.clientX, event.clientY)
+        this.props.toggleMenu(true, event.clientX, event.clientY, false)
         
         console.log(event.clientX, event.clientY)
         
     }
+
 
     formatter () {
        
@@ -35,7 +42,7 @@ export class Team extends Component{
         let headerHolder = []
 
         for(let i = 2; i < this.props.googleSheetHeaders.length; i++){
-            headerHolder.push(<th key = {i} onContextMenu = {(event) => this.handleContextMenu(event)}>
+            headerHolder.push(<th key = {i} onContextMenu = {(event) => this.handleContextMenu(event)} onClick={this.handleClick}>
             {this.props.googleSheetHeaders[i]}</th>)
         }
 

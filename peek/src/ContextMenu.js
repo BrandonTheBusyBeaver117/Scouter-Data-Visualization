@@ -13,6 +13,7 @@ export class ContextMenu extends Component{
             toggleMenu : false,
             xPosition: -9999,
             yPosition: -9999,
+            clicked: false,
         }
 
     }
@@ -24,11 +25,12 @@ export class ContextMenu extends Component{
     componentDidUpdate (prevProps) {
 
         if(this.props !== prevProps){
+
             this.setState({
                 toggleMenu : this.props.menuToggled,
                 xPosition : this.props.mouseX,
-                yPosition : this.props.mouseY
-            
+                yPosition : this.props.mouseY,
+                clicked : this.props.clicked,
             })
 
         }
