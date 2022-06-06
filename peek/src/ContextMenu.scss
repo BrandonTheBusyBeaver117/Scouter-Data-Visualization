@@ -1,14 +1,22 @@
 .menuHidden {
-        display: none;
+   
+   display:none;
+    position:absolute;
+    background: white;
 }
 
-.menuActive {
 
+$contextMenuWidth: 200px;
+
+
+
+.menuActive {
+    nav{
  
         position:absolute;
-        width: 200px;
+        width: $contextMenuWidth;
         display: block;
-        z-index: 300;
+        //z-index: 300;
   
         color: black;
         background-color: white;
@@ -28,4 +36,5 @@
             background-color: rgb(255, 115, 115);
             }
         }
+    }
 }

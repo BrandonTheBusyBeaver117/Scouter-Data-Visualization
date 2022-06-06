@@ -23,8 +23,10 @@ export class Team extends Component{
 
     handleContextMenu (event) {
         event.preventDefault()
-        this.props.toggleMenu(true)
-        console.log(event)
+        this.props.toggleMenu(true, event.clientX, event.clientY)
+        
+        console.log(event.clientX, event.clientY)
+        
     }
 
     formatter () {

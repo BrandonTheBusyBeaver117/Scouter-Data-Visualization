@@ -24,7 +24,9 @@ export class TeamModifier extends Component {
             teamColumn: 1, //Column (in array notation) where team number is defined, in case it (for whatever reason) changes year to yea
 
             // Context menu
-            toggleMenu: false
+            toggleMenu: false,
+            xPositionOfContextMenu: 0,
+            yPositionOfContextMenu: 0 
         }
 
         this.toggleMenu = this.toggleMenu.bind(this)
@@ -38,10 +40,14 @@ export class TeamModifier extends Component {
 
 
 
-    toggleMenu (toggle) {
+    toggleMenu (isToggled, mouseX, mouseY) {
      
-        console.log(toggle)
-        this.setState({toggleMenu: toggle})
+        console.log(isToggled + mouseX + mouseY)
+        this.setState({
+            toggleMenu: isToggled,
+            xPositionOfContextMenu: mouseX,
+            yPositionOfContextMenu: mouseY 
+        })
     }
    
         
@@ -187,7 +193,7 @@ export class TeamModifier extends Component {
         return (
             <div>
             <Searchbar teamData = {this.state.teamData}/>
-            <ContextMenu menuToggled = {this.state.toggleMenu}/>
+            <ContextMenu menuToggled = {this.state.toggleMenu} mouseX = {this.state.xPositionOfContextMenu} mouseY = {this.state.yPositionOfContextMenu}/>
         {this.state.teamHolder}
             </div>
         )
