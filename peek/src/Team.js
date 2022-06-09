@@ -46,7 +46,7 @@ export class Team extends Component{
             {this.props.googleSheetHeaders[i]}</th>)
         }
 
-        const googleSheetHeaders = <tr>{headerHolder}</tr> //won't let me use whitespace?
+        const googleSheetHeaders = <tr>{headerHolder}</tr>
         
         
         
@@ -60,32 +60,37 @@ export class Team extends Component{
 
         Every index afterwards contains an individual match that this team performed in
         prop.teamData[2 --> infinity]
-        This is why in the for loop down below, i starts off as 2, because the "individual match data" starts at index 2
+
+        This is why matchData down below is props.teamData slice starts off at 2, 
+        because the "individual match data" starts at index 2
         
         */
 
-        //individual match
-        let allMatchData = [];
-        console.log(this.props.teamData)
-        for(let i = 2; i < this.props.teamData.length; i++ ) {// 2 represents the index where the matches actually start
 
-            //Iterates through all the matches, for each iteration,  
+        /*  
+            allMatchData is going to do exactly what it sounds like
+            It'll hold all the matches' data as an array of "table row" elements
+            That way, we can use it later in the table
+        */
+        let allMatchData = []; // This could be refactored into another map statement, but I think that reduces readability
+        console.log(this.props.teamData);
+
+
+        const matchData = this.props.teamData.slice(2); // 2 represents the index where the matches actually start, ignoring team number and ranking
+
+        
+        //Iterates through all the matches 
+        for(const match of matchData) {
+
+            /*
+                2 represents the match data, skipping past version number (index 0) and team Num (index 1)
+                We basically cut off the first two indexes of the raw individual match
+                Then, we save the new data as a "table data" element in refinedMatchData
+            */
+
+            let refinedMatchData = match.slice(2).map((item) => <td>{item}</td>)
             
-            let refinedMatchData = []
-            
-            const rawIndividualMatch = this.props.teamData[i]
 
-            for(let t = 2; t < rawIndividualMatch.length; t++){
-                /*
-                    2 represents the match data, skipping past version number (index 0) and team Num (index 1)
-                    We basically cut off the first two indexes of the raw individual match
-                    Then, we save the new data in refinedMatchData
-                */
-
-                refinedMatchData.push(<td>{rawIndividualMatch[t]}</td>)
-
-            }
-            
             /*
                 Now, with the refined match data, we save that as a single row in allMatchData
                 In the end, allMatchData will have all the refined matches, each as a separate row
@@ -97,14 +102,10 @@ export class Team extends Component{
 
         //The final table to be rendered
         const saveTable = 
-        <table>
-            <thead>
-            {googleSheetHeaders}
-            </thead>
-            <tbody>
-            {allMatchData}
-            </tbody>
-        </table>
+            <table>
+                <thead>{googleSheetHeaders}</thead>
+                <tbody>{allMatchData}</tbody>
+            </table>
 
 
         this.setState({table: saveTable})// Sets state to the table
