@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Team} from './Team'
+import {Team} from './Team_Component/Team'
 import { ContextMenu } from './ContextMenu';
 import Searchbar from './Searchbar';
 
