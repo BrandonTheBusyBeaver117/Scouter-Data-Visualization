@@ -10,19 +10,29 @@ export class ContextMenu extends Component{
 
         
         this.state = {
-            toggleMenu : false
+            toggleMenu : false,
+            xPosition: -9999,
+            yPosition: -9999,
+            clicked: false,
         }
 
     }
     componentDidMount () {
         console.log("context menu loaded")
+        
     }
 
     componentDidUpdate (prevProps) {
 
-        if(this.props.menuToggled !== prevProps.menuToggled){
-            this.setState({toggleMenu : this.props.menuToggled})
-            
+        if(this.props !== prevProps){
+
+            this.setState({
+                toggleMenu : this.props.menuToggled,
+                xPosition : this.props.mouseX,
+                yPosition : this.props.mouseY,
+                clicked : this.props.clicked,
+            })
+
         }
         console.log("context menu after updation" + this.state.toggleMenu)
         console.log(this.state.toggleMenu ? 'menuActive' : 'menuHidden')
@@ -35,13 +45,14 @@ export class ContextMenu extends Component{
         //this is where the team blocky thing should be rendered
        
         return(
-        <div>
-            <nav className = {this.state.toggleMenu ? "menuActive" : "menuHidden"}>
-            <ul>
-                <li onClick = {this.props.deleteColumn}>Delete Column</li>
-                <li>Graph this point</li>
-                <li></li>
-            </ul>
+            
+        <div className = {this.state.toggleMenu ? "menuActive" : "menuHidden"}>
+            <nav style={{ top: this.state.yPosition, left: this.state.xPosition }}>
+                <ul>
+                    <li onClick = {this.props.deleteColumn}>Delete Column</li>
+                    <li>Graph this point</li>
+                    <li></li>
+                </ul>
             </nav>            
 
         </div>

@@ -1,0 +1,45 @@
+.teamComponent {
+    width: 400px;
+    height: 350px;
+    margin: 25px 100px;     
+    
+    background-color: white;
+
+    overflow:auto;
+
+    display: inline-block;
+
+    color:black;
+
+    h1{
+        text-decoration: underline;
+        //background-color: purple;
+        margin: auto auto 0px;
+    }
+
+    h2{
+        margin:0px auto 5px;
+        //background-color: aquamarine;
+    }
+
+    table{
+        margin: 5px;
+         width: 100%;
+         
+         border-collapse: collapse;
+         border: 1px solid;
+         th{
+          
+            border-collapse: collapse;
+            border: 1px solid;
+          }
+          td{
+              @extend th
+          }
+
+           tr{
+            @extend th
+           }
+    }
+
+}
