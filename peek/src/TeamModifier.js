@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Team} from './Team_Component/Team'
 import { ContextMenu } from './ContextMenu';
+import "./TeamModifier.scss"
 import Searchbar from './Searchbar';
 
 import axios from "axios";  
@@ -203,8 +204,8 @@ export class TeamModifier extends Component {
                 clicked = {this.state.clicked}
             />
 
-
-        {this.state.teamHolder}
+            <div id = "Teams">{this.state.teamHolder}</div>
+        
             </div>
         )
 
