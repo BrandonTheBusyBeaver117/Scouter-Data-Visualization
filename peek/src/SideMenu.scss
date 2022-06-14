@@ -1,0 +1,23 @@
+
+#SideMenu {
+
+    width: calc(200px + 100px);
+    height: 100%;
+    background-color: white;
+    position: fixed;
+    top: 0px;
+
+
+    button {
+        background-color: aqua;
+        border-radius: 16px;
+        margin: 5px 2px;
+        padding: 10px 0px;
+        width: 50%;
+
+    }
+
+    h2{
+        color: black;
+    }
+}

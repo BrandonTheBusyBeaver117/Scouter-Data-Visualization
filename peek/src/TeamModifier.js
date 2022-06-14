@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import {Team} from './Team_Component/Team'
 import { ContextMenu } from './ContextMenu';
-import "./TeamModifier.scss"
 import Searchbar from './Searchbar';
+import SideMenu from "./SideMenu";
+import "./TeamModifier.scss";
+
 
 import axios from "axios";  
 
@@ -196,7 +198,7 @@ export class TeamModifier extends Component {
         return (
             <div>
             <Searchbar teamData = {this.state.teamData}/>
-
+            <SideMenu />
             <ContextMenu 
                 menuToggled = {this.state.toggleMenu} 
                 mouseX = {this.state.xPositionOfContextMenu} 
