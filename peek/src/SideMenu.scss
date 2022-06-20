@@ -1,7 +1,7 @@
 
 #SideMenu {
 
-    width: calc(200px + 100px);
+    width: 300px; // This directly corresponds to the "margin-left" property for the team div in TeamModifier.scss
     height: 100%;
     background-color: white;
     position: fixed;
