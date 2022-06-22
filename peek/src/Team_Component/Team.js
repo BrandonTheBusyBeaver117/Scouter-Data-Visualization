@@ -13,17 +13,20 @@ export class Team extends Component{
         super(props);
         
 
-        const initialMargin =  this.calculateMargin()
-          
         
         this.state = {
             table: [],
-            marginHorizontal: initialMargin,
+            marginHorizontal: "auto",
         }
 
     }
     componentDidMount () {
         this.formatter()
+
+        const initialMargin =  this.calculateMargin()
+
+        this.setState({marginHorizontal: initialMargin}) 
+        
         window.addEventListener("resize", this.handleResize)
     }
 
@@ -120,6 +123,8 @@ export class Team extends Component{
 
         this.setState({table: saveTable})// Sets state to the table
 
+        
+
     }
 
 
@@ -166,7 +171,7 @@ export class Team extends Component{
 
     handleResize =  () => {
         const calculatedMargin = this.calculateMargin()
-       
+       console.log("recalculated margin: " + calculatedMargin)
         this.setState({
             marginHorizontal: calculatedMargin
         })
