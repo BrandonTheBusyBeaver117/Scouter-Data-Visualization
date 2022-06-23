@@ -5,6 +5,7 @@ import "./SearchBar.scss"
 export default function Searchbar (props) {
 
     const[searchableTeamResults, setSearchableTeamResults] = useState([])
+    const[isActive, setActive] = useState(true)
 
     let totalTeamsComponent = [];
     let listOfTotalTeams = []
@@ -146,9 +147,9 @@ onChange, run this function with the current input to sort through our teams, an
 */
 
         return (
-        <div className="results" >
-            <input id="SearchBar" type="text" placeholder="Search Teams" onChange = {handleChange} />
-            <div >{searchableTeamResults}</div>
+        <div id = "Searchbar-Results" >
+            <input id="Searchbar" type="text" placeholder="Search Teams" onChange = {handleChange} />
+            <div id = "Results" className= {isActive ? "Results-Active" : "Results-Inactive"}>{searchableTeamResults}</div>
         </div>
         )
      
