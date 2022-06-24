@@ -24,101 +24,98 @@ $heightOfSearchBox: 50px;
 
 $initialDistance: $heightOfSearchBox + 2px; // 2px again because we want borders to overlap
 
-#Searchbar-Results {
+.results {
     background-color: #282c34;//Found in index.css 
                                 //If background color ever changes in index, please change it here as well
     position: sticky;
     top:0px;
-    .Results-Active{   
-        p{    
-        //height: 2.5em;
-        position: absolute;
-            font-size: 18px;
-        display:block;
-            margin: 0;
-            width:$widthOfSearches;
-            background-color:white;
-            color:black;
-            padding-top: $padding;
-            padding-bottom: $padding;
-            //padding: $padding;
-            border: 2px solid #ddd;
-            left:$alignment;
-            text-align: center;
-        }
-        p:hover {
-            
-            transition: 0.2s linear;
-            background-color: rgb(0, 255, 115);
-        }
-
-        p:nth-child(1){
-        @extend p;
-        top: $initialDistance;
+   
+    p{    
+    //height: 2.5em;
+    position: absolute;
+        font-size: 18px;
+       display:block;
+        margin: 0;
+        width:$widthOfSearches;
+        background-color:white;
+        color:black;
+        padding-top: $padding;
+        padding-bottom: $padding;
+        //padding: $padding;
+        border: 2px solid #ddd;
+        left:$alignment;
+        text-align: center;
+    }
+    p:hover {
         
-        }
-
-        p:nth-child(2){
-            @extend p;
-            top: $initialDistance + $incrementDistance;
-            
-        }
-        p:nth-child(3){
-            @extend p;
-            top: $initialDistance + 2*$incrementDistance;
-            
-        }
-
-        p:nth-child(4){
-            @extend p;
-            top: $initialDistance + 3*$incrementDistance;
-            
-        }
-
-        p:nth-child(5){
-            @extend p;
-            top: $initialDistance + 4*$incrementDistance;
-            
-        }
-
-        p:nth-child(6){
-            @extend p;
-            top: $initialDistance + 5*$incrementDistance;
-            
-        }
-        p:nth-child(7){
-            @extend p;
-            top: $initialDistance + 6 * $incrementDistance;
-            
-        }
-
-        p:nth-child(8){
-            @extend p;
-            top: $initialDistance + 7 * $incrementDistance;
-            
-        }
-
-        p:nth-child(9){
-            @extend p;
-            top: $initialDistance + 8 * $incrementDistance;
-            
-        }
-
-        p:nth-child(10){
-            @extend p;
-            top: $initialDistance + 9 * $incrementDistance;
-            
-        }
-
-        p:nth-child(11){
-            @extend p;
-            top: $initialDistance + 10 * $incrementDistance;
-            
-        }
+        transition: 0.2s linear;
+        background-color: rgb(0, 255, 115);
     }
-    .Results-Inactive {
-        display: hidden;
+
+    p:nth-child(1){
+    @extend p;
+    top: $initialDistance;
+    
     }
+
+    p:nth-child(2){
+        @extend p;
+        top: $initialDistance + $incrementDistance;
+        
+    }
+    p:nth-child(3){
+        @extend p;
+        top: $initialDistance + 2*$incrementDistance;
+        
+    }
+
+    p:nth-child(4){
+        @extend p;
+        top: $initialDistance + 3*$incrementDistance;
+        
+    }
+
+    p:nth-child(5){
+        @extend p;
+        top: $initialDistance + 4*$incrementDistance;
+        
+    }
+
+    p:nth-child(6){
+        @extend p;
+        top: $initialDistance + 5*$incrementDistance;
+        
+    }
+    p:nth-child(7){
+        @extend p;
+        top: $initialDistance + 6 * $incrementDistance;
+        
+    }
+
+    p:nth-child(8){
+        @extend p;
+        top: $initialDistance + 7 * $incrementDistance;
+        
+    }
+
+    p:nth-child(9){
+        @extend p;
+        top: $initialDistance + 8 * $incrementDistance;
+        
+    }
+
+    p:nth-child(10){
+        @extend p;
+        top: $initialDistance + 9 * $incrementDistance;
+        
+    }
+
+    p:nth-child(11){
+        @extend p;
+        top: $initialDistance + 10 * $incrementDistance;
+        
+    }
+
     #SearchBar {
         
         font-size: 25px;
