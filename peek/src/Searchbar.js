@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SearchBar.scss"
 
 
 export default function Searchbar (props) {
 
     const[searchableTeamResults, setSearchableTeamResults] = useState([])
+    const[chosenTeams, setChosenTeams] = useState([])
 
     let totalTeamsComponent = [];
     let listOfTotalTeams = []
 
-
+    useEffect = () => {
+        props.setChosenTeams(chosenTeams)
+    }
+    
     const makeSearchable = () => {
        totalTeamsComponent = props.teamData.map( (item, iterate) =>
-
-        <p key ={iterate} >Team {item[0]} --- rank: {item[1]}</p> // I kinda want to format it so that name is on left, ranking on the far right
+       
+        <p key ={iterate} onClick = {() =>  setChosenTeams([...chosenTeams], item[0])}>Team {item[0]} --- rank: {item[1]}</p> // I kinda want to format it so that name is on left, ranking on the far right
         //Also might make this my own component
         //If not, I need to add class and its own scss file
         //Might be where caching comes in?
@@ -145,11 +149,15 @@ onChange, run this function with the current input to sort through our teams, an
 
 */
 
+
+
+
         return (
-        <div className="results" >
-            <input id="SearchBar" type="text" placeholder="Search Teams" onChange = {handleChange} />
-            <div >{searchableTeamResults}</div>
-        </div>
+        
+            <div classname = "Searchbar">
+                <input type="text" placeholder="Search Teams" onChange = {handleChange} />
+                <div classname = "results">{searchableTeamResults}</div>
+            </div>
         )
      
 

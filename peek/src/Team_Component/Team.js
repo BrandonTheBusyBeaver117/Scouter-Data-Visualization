@@ -12,12 +12,12 @@ export class Team extends Component{
         
         super(props);
         
-
-        
         this.state = {
             table: [],
             marginHorizontal: "auto",
         }
+
+
 
     }
     componentDidMount () {

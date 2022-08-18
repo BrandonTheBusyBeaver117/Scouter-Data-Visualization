@@ -4,6 +4,7 @@ import "./SideMenu.scss"
 export default function SideMenu (props) {
 
     const[teamButtons, setTeamButtons] = useState([])
+    
 
 
 
@@ -12,6 +13,8 @@ export default function SideMenu (props) {
 
             <div id = "TeamButtons">
                 <h2>Teams Selected</h2>
+                <button>5026</button>
+                <h2>Sort By:</h2>
                 <button>5026</button>
             </div>
         </div>

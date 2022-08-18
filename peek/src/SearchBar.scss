@@ -23,13 +23,14 @@ $alignment: calc(((100% - $widthOfSearches)/2) - 2px ); // The 2px is taking int
 $heightOfSearchBox: 50px;
 
 $initialDistance: $heightOfSearchBox + 2px; // 2px again because we want borders to overlap
-
-.results {
+.SearchBar{
+input{
     background-color: #282c34;//Found in index.css 
                                 //If background color ever changes in index, please change it here as well
     position: sticky;
     top:0px;
-   
+}
+   .results{
     p{    
     //height: 2.5em;
     position: absolute;
@@ -127,6 +128,7 @@ $initialDistance: $heightOfSearchBox + 2px; // 2px again because we want borders
         padding: 0%;
         
     }
+}
 
 
 }
