@@ -214,41 +214,78 @@ export class TeamModifier extends Component {
             
             const newMapOfTeamElements = new Map()
             console.log(this.teamData)
-            for (const [index, team] of this.teamData) {
+            for (const [index, team] of this.teamData.entries()) {
+                console.log(team)
+                console.log(index)
                 newMapOfTeamElements.set(team[0], <Team key={index}
                     googleSheetHeaders={this.state.googleSheetHeaders}
                     teamData={team}
                     toggleMenu={this.toggleMenu}
                 />)
             }
-
-            this.setTeamHolder(teamArray)
+            console.log(newMapOfTeamElements)
+           
+ 
+            this.setMapOfTeamElements(newMapOfTeamElements)
 
             //Testing whether all teams will appear
             const testingAllTeams = true
             if (testingAllTeams){
-                
-                this.setState({chosenTeams: this.teamHolder})
+                this.setTeamHolder(teamArray)
+
+                const allTeamArray = []
+                console.log(this.mapOfTeamElements)
+                for (const key of this.mapOfTeamElements.keys()){
+                    allTeamArray.push(key)
+                }
+
+                console.log(allTeamArray)
+                //I need to somehow iterate through all the teams?
+                this.setChosenTeams(allTeamArray)
                 console.log(this.state.chosenTeams)
+
             } else {
                 //Have a way to have the user pick out teams from team holder
+                
             }
             //this.sortTeamsQualities(8)
-
+            
         }).catch((error) => {
             console.log(error)
         })
     }
 
     setMapOfTeamElements(newMap) {
-        this.mapOfTeamElements = new Map()
+        this.mapOfTeamElements = newMap
     }
 
     setChosenTeams(newTeamArray) {
-        this.setState({chosenTeams: newTeamArray.copy()})
+        console.log(newTeamArray)
+       const arrayOfTeamComponents = this.getTeamComponents(newTeamArray)
+        console.log(arrayOfTeamComponents)
+        this.setState({chosenTeams: arrayOfTeamComponents})
     }
 
-
+    /**
+     * Input an array of teams, runs through map, and returns array of team components
+     */
+    getTeamComponents(arrayOfTeams) {
+        const arrayOfTeamsComponents = []
+        for (const team of arrayOfTeams){
+            arrayOfTeamsComponents.push(this.mapOfTeamElements.get(team))
+            console.log(team)
+            console.log(this.mapOfTeamElements.get(team))
+        }
+        return arrayOfTeamsComponents
+    }
+    /**
+     * This is a map, where each key is a team number.
+     * Each element is another map, each one having a different quality of the team
+     * @returns {map} SortedTeamInformation
+     */
+    getSortedTeamInformation() {
+        return this.sortedTeamInformation
+    }
 
     createSortedTeamInformation() {
             
@@ -319,7 +356,7 @@ export class TeamModifier extends Component {
     /**
      * This is a map, where each key is a team number.
      * Each element is another map, each one having a different quality of the team
-     * @returns {map} SortedTeamInformation
+     * @returns {Map} SortedTeamInformation
      */
     getSortedTeamInformation() {
         return this.sortedTeamInformation
