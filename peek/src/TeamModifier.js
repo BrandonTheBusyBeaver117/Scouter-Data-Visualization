@@ -18,11 +18,19 @@ export class TeamModifier extends Component {
         this.teamHolder = []
         this.mapOfTeamElements = new Map()
         this.sortedTeamInformation =  new Map()
+        this.chosenTeamEnum = {
+                                isEmpty: "empty",
+                                isDefault: "default",
+                                isUserChosen: "user"
+                                }
 
         this.state = {
 
             googleSheetHeaders: "n/a",
             chosenTeams: [],
+            
+            chosenTeamState: this.chosenTeamEnum.isDefault,
+
 
             //Individual year variables
 
@@ -45,6 +53,10 @@ export class TeamModifier extends Component {
         this.createTeams()
 
     }
+    componentDidUpdate(__prevProps, prevState) {
+        //If prevState.something != this.state.something, then update
+        
+      }
 
 
 
@@ -195,6 +207,8 @@ export class TeamModifier extends Component {
     setTeamHolder (arrayOfTeams) {
         this.teamHolder = [...arrayOfTeams]
     }
+
+
     async createTeams() {
 
         console.log("waiting...")
@@ -228,9 +242,9 @@ export class TeamModifier extends Component {
  
             this.setMapOfTeamElements(newMapOfTeamElements)
 
-            //Testing whether all teams will appear
-            const testingAllTeams = true
-            if (testingAllTeams){
+
+            //Default behavior to just set all teams to be shown
+            this.setState({chosenTeamState: this.chosenTeamEnum.isDefault})
                 this.setTeamHolder(teamArray)
 
                 const allTeamArray = []
@@ -244,10 +258,7 @@ export class TeamModifier extends Component {
                 this.setChosenTeams(allTeamArray)
                 console.log(this.state.chosenTeams)
 
-            } else {
-                //Have a way to have the user pick out teams from team holder
-                
-            }
+            
             //this.sortTeamsQualities(8)
             
         }).catch((error) => {
@@ -262,8 +273,45 @@ export class TeamModifier extends Component {
     setChosenTeams(newTeamArray) {
         console.log(newTeamArray)
        const arrayOfTeamComponents = this.getTeamComponents(newTeamArray)
-        console.log(arrayOfTeamComponents)
-        this.setState({chosenTeams: arrayOfTeamComponents})
+       
+       if(this.state.chosenTeamState === this.chosenTeamEnum.isDefault || this.state.chosenTeamState == this.chosenTeamEnum.isEmpty) {
+            this.setState({chosenTeams: [...arrayOfTeamComponents], 
+                        chosenTeamState: this.chosenTeamEnum.isUserChosen})
+
+        } else if (this.state.chosenTeamState === this.chosenTeamEnum.isUserChosen) {
+          
+            this.setState({chosenTeams: [...arrayOfTeamComponents]})
+            console.log(arrayOfTeamComponents)
+            console.log(newTeamArray)
+        }
+        
+        
+        
+        console.log(this.state.chosenTeams)
+        
+    }
+
+    clearChosenTeams(chosenTeams = []) {
+        if(chosenTeams.length === 0){
+            this.setState({chosenTeams: [], 
+                            chosenTeamState: this.chosenTeamEnum.isEmpty})
+        } else{
+            const newMap = new Map(this.state.chosenTeams)
+            for (const team in chosenTeams){
+                if (this.state.chosenTeams.has(team)){
+                    
+                    console.log(newMap)
+                    newMap.delete(team)
+
+                    
+                } else{
+                    console.log(this.state.chosenTeams.has(team))
+                    console.log(team + " doesn't seem to exist")
+                }
+                
+            }
+            this.setState({chosenTeams: newMap})
+        }
     }
 
     /**
@@ -353,14 +401,7 @@ export class TeamModifier extends Component {
                 }
             //console.log(arrayOfMaps)
     }
-    /**
-     * This is a map, where each key is a team number.
-     * Each element is another map, each one having a different quality of the team
-     * @returns {Map} SortedTeamInformation
-     */
-    getSortedTeamInformation() {
-        return this.sortedTeamInformation
-    }
+
 
     sortTeamsQualities(quality){
         //Sorts by qualities
