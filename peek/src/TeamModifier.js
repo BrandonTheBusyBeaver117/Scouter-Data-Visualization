@@ -239,7 +239,7 @@ export class TeamModifier extends Component {
 
             //Default behavior to just set all teams to be shown
             this.setState({chosenTeamState: this.chosenTeamEnum.isDefault})
-                this.setTeamHolder(teamArray)
+                
 
                 const allTeamArray = []
                 console.log(this.mapOfTeamElements)
