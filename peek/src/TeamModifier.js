@@ -27,6 +27,7 @@ export class TeamModifier extends Component {
 
             googleSheetHeaders: "n/a",
             chosenTeams: [],
+            chosenTeamsStringKey: [],
             
             chosenTeamState: this.chosenTeamEnum.isDefault,
 
@@ -278,7 +279,7 @@ export class TeamModifier extends Component {
             console.log(newTeamArray)
         }
         
-        
+        this.setState({chosenTeamsStringKey: [newTeamArray]})
         
         console.log(this.state.chosenTeams)
         
@@ -337,7 +338,7 @@ export class TeamModifier extends Component {
             The team num and rank would have to be stored elsewhere
         */
         console.log(this.teamData)
-        
+
         const initialTeamMap = new Map()
         //Initalizing Map with the keys, but empty values to be filled in later
         for (const header of this.state.googleSheetHeaders){
@@ -401,7 +402,7 @@ export class TeamModifier extends Component {
         //So like...get the teams currently displayed, find their qualities, and sort them 
         // We need to pass in the teams and compare somehow...
         
-       
+       const arrayOfChosenTeams = this.state.chosenTeamsStringKey;
 
         
     }
