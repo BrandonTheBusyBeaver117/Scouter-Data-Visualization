@@ -15,7 +15,6 @@ export class TeamModifier extends Component {
         super();
         this.matchData = []
         this.teamData = []
-        this.teamHolder = []
         this.mapOfTeamElements = new Map()
         this.sortedTeamInformation =  new Map()
         this.chosenTeamEnum = {
@@ -203,12 +202,6 @@ export class TeamModifier extends Component {
     }
 
 
-    //This is an array that holds all the teams
-    setTeamHolder (arrayOfTeams) {
-        this.teamHolder = [...arrayOfTeams]
-    }
-
-
     async createTeams() {
 
         console.log("waiting...")
@@ -344,9 +337,7 @@ export class TeamModifier extends Component {
             The team num and rank would have to be stored elsewhere
         */
         console.log(this.teamData)
-        // A serious consideration is making teamholder a map...?
-        // That way, we can search...wait does that lead to any effencies?
-
+        
         const initialTeamMap = new Map()
         //Initalizing Map with the keys, but empty values to be filled in later
         for (const header of this.state.googleSheetHeaders){
@@ -410,14 +401,7 @@ export class TeamModifier extends Component {
         //So like...get the teams currently displayed, find their qualities, and sort them 
         // We need to pass in the teams and compare somehow...
         
-        const indexesOfTeams = []
-
-        //This only works if we make shallow copies of the teams
-        for (const teamComponent of this.state.chosenTeams){
-            indexesOfTeams.push(this.teamHolder.findIndex((teamHeld) => teamComponent === teamHeld))
-        }
-        console.log(indexesOfTeams)
-        console.log(this.teamData)
+       
 
         
     }
