@@ -467,8 +467,9 @@ export class TeamModifier extends Component {
             console.log(mapOfTeam)
             const arrayOfQuality = mapOfTeam.get(quality)
             
-            const average = (arrayOfQuality.reduce((previous, current) => previous + current)) / arrayOfQuality.length
+            const average = (arrayOfQuality.reduce((previous, current) => Number(previous) + Number(current))) / arrayOfQuality.length
             arrayOfTeamQualities.push([teamKey, average])
+            console.log([teamKey, average])
         }
 
         const sortedTeamQualities = this.mergeSortTeams(arrayOfTeamQualities).reverse()
