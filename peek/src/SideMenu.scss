@@ -1,0 +1,34 @@
+
+#SideMenu {
+
+    width: 300px; // This directly corresponds to the "margin-left" property for the team div in TeamModifier.scss
+    height: 100%;
+    background-color: white;
+    position: fixed;
+    top: 0px;
+
+
+
+    $transition-Time: 0.25s;
+    button {
+        background-color: rgb(150, 230, 255);
+        border-radius: 16px;
+        margin: 5px 2px;
+        padding: 10px 0px;
+        width: 50%;
+
+
+        transition: background-color $transition-Time linear;
+
+    }
+    button:hover {
+        transition: background-color $transition-Time linear;
+        background-color: rgb(75, 200, 255);
+        cursor: pointer;
+    }
+
+
+    h2{
+        color: black;
+    }
+}

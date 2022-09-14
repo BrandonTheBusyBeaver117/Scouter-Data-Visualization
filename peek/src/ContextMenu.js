@@ -34,8 +34,8 @@ export class ContextMenu extends Component{
             })
 
         }
-        console.log("context menu after updation" + this.state.toggleMenu)
-        console.log(this.state.toggleMenu ? 'menuActive' : 'menuHidden')
+        //console.log("context menu after updation" + this.state.toggleMenu)
+        //console.log(this.state.toggleMenu ? 'menuActive' : 'menuHidden')
     }
 
     

@@ -1,27 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SearchBar.scss"
 
 
 export default function Searchbar (props) {
 
-    const[searchableTeamResults, setSearchableTeamResults] = useState([])
+    const [searchableTeamResults, setSearchableTeamResults] = useState([]);
+    const [chosenTeams, setChosenTeamsArray ]= useState([]);
+    const [totalTeamsComponent, setTotalTeamComponents] = useState([]);
+    const [teamsForComparison, setTeamsForComparison] = useState([]);
 
-    let totalTeamsComponent = [];
-    let listOfTotalTeams = []
 
-
-    const makeSearchable = () => {
-       totalTeamsComponent = props.teamData.map( (item, iterate) =>
-
-        <p key ={iterate} >Team {item[0]} --- rank: {item[1]}</p> // I kinda want to format it so that name is on left, ranking on the far right
-        //Also might make this my own component
-        //If not, I need to add class and its own scss file
-        //Might be where caching comes in?
-        )
+    useEffect((prevProps, prevState) => {
+       
+        console.log("useEffect")
+        if(prevProps != props){
+        //Makes all the team components and stores them in an array
+        const allTeamComponents = []
+        for(const [iterate, item] of props.teamData.entries()){
+            allTeamComponents.push( <p key ={iterate} onClick = {() => setChosenTeamsArray(prevChosenTeams => [...prevChosenTeams, item[0]])}>Team {item[0]} --- rank: {item[1]}</p> // I kinda want to format it so that name is on left, ranking on the far right
+            //Also might make this my own component
+            //If not, I need to add class and its own scss file
+            //Might be where caching comes in?
+            )
+        }
+        setTotalTeamComponents(allTeamComponents)
 
         for (const item of props.teamData) { // This goes through all the elements in the teamData array
-
-            listOfTotalTeams.push({ //For each element, it pushes that a new team object to a list of all the teams
+            const newTeam = { 
+                //For each element, it pushes that a new team object to a list of all the teams
 
                 /*
                  Property 1 is the team's team number 
@@ -32,15 +38,30 @@ export default function Searchbar (props) {
 
                 teamRanking: item[1] // The rank of the team at competition
             
-            })
+            }
+            setTeamsForComparison(prevTeams => [...prevTeams, newTeam] )
+ 
         }
-
 
     }
 
-    makeSearchable() //idk if this is good practice, but there's no componentWillMount or constructor method
-                    //More research is needed for this...maybe make it state?
+    console.log(chosenTeams)
+    console.log("Testing update")
+    if (prevState?.chosenTeams != chosenTeams){
+        console.log("unequal")
+        props.setChosenTeams(chosenTeams)
+    }
+             
+       
 
+       
+
+        
+    
+    }, [props.teamData, chosenTeams])
+    
+
+   
 
 
     /*
@@ -72,9 +93,9 @@ export default function Searchbar (props) {
             /*
                 Goes through all the teams and compares it to Search Input
             */
-            for ( let teamIndex = 0; teamIndex < listOfTotalTeams.length; teamIndex++) {
+            for ( let teamIndex = 0; teamIndex < teamsForComparison.length; teamIndex++) {
 
-                const team = listOfTotalTeams[teamIndex];//Defining the team in this iteration
+                const team = teamsForComparison[teamIndex];//Defining the team in this iteration
 
                 const arrayTeamNumber = [...team.teamNumber] //Splits the team number into an array of characters
 
@@ -145,11 +166,15 @@ onChange, run this function with the current input to sort through our teams, an
 
 */
 
+
+
+
         return (
-        <div className="results" >
-            <input id="SearchBar" type="text" placeholder="Search Teams" onChange = {handleChange} />
-            <div >{searchableTeamResults}</div>
-        </div>
+        
+            <div className = "Searchbar">
+                <input id = "searchbar" type="text" placeholder="Search Teams" onChange = {handleChange} />
+                <div className = "results">{searchableTeamResults}</div>
+            </div>
         )
      
 
