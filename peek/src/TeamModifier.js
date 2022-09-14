@@ -46,6 +46,7 @@ export class TeamModifier extends Component {
         //Bindings
         this.toggleMenu = this.toggleMenu.bind(this)
         this.setChosenTeams = this.setChosenTeams.bind(this)
+        this.sortTeamsQualities = this.sortTeamsQualities.bind(this)
     }
 
     componentDidMount = () => {
@@ -279,9 +280,14 @@ export class TeamModifier extends Component {
             console.log(newTeamArray)
         }
         
-        this.setState({chosenTeamsStringKey: [newTeamArray]})
+        console.log(newTeamArray)
+        this.setState({chosenTeamsStringKey: [...newTeamArray]})
         
+        console.log(this.state.chosenTeamsStringKey)
+
+
         console.log(this.state.chosenTeams)
+
         
     }
 
@@ -395,14 +401,85 @@ export class TeamModifier extends Component {
     }
 
 
+    mergeSortStep(sortedTeamLeft, sortedTeamRight){
+
+        const sortedArray = []
+//
+        while ( sortedTeamLeft.length > 0 && sortedTeamRight.length > 0 ) {
+            
+            
+            const firstTeamRight = sortedTeamRight[0]
+            const firstTeamLeft = sortedTeamLeft[0]
+
+
+            const valueRightTeam = firstTeamRight[1]
+            const valueLeftTeam = firstTeamLeft[1]
+            if (valueLeftTeam > valueRightTeam) {
+                sortedArray.push(sortedTeamRight.shift())
+            } else {
+                sortedArray.push(sortedTeamLeft.shift())
+            }
+        }
+        
+
+        return [...sortedArray, ...sortedTeamLeft, ...sortedTeamRight]
+
+    }
+    
+    mergeSortTeams(arrayOfQualities) {
+
+        if(arrayOfQualities.length <= 1 ) {
+            return arrayOfQualities
+        }
+
+        const halfOfArray = Math.floor(arrayOfQualities.length / 2 )
+        
+        const leftHalfOfArray = arrayOfQualities.slice(0, halfOfArray)
+
+        const rightHalfOfArray = arrayOfQualities.slice(halfOfArray)
+
+       
+
+        return this.mergeSortStep(this.mergeSortTeams(leftHalfOfArray), this.mergeSortTeams(rightHalfOfArray))
+
+    }
+
+    /**
+     * 
+     * @param {String} quality 
+     */
+
     sortTeamsQualities(quality){
         //Sorts by qualities
 
         const allTeamData = this.getSortedTeamInformation()
+        console.log(allTeamData)
         //So like...get the teams currently displayed, find their qualities, and sort them 
         // We need to pass in the teams and compare somehow...
-        
+        console.log(quality)
        const arrayOfChosenTeams = this.state.chosenTeamsStringKey;
+
+       const arrayOfTeamQualities = []
+       for (const teamKey of arrayOfChosenTeams) {
+            console.log(teamKey)
+            
+            const mapOfTeam = allTeamData.get(Number(teamKey))
+            console.log(mapOfTeam)
+            const arrayOfQuality = mapOfTeam.get(quality)
+            
+            const average = (arrayOfQuality.reduce((previous, current) => previous + current)) / arrayOfQuality.length
+            arrayOfTeamQualities.push([teamKey, average])
+        }
+
+        const sortedTeamQualities = this.mergeSortTeams(arrayOfTeamQualities).reverse()
+        
+        const arrayOfSortedTeams = []
+
+        for (const team of sortedTeamQualities) {
+            arrayOfSortedTeams.push(team[0])
+        }
+        console.log(sortedTeamQualities)
+        this.setChosenTeams(arrayOfSortedTeams)
 
         
     }
@@ -414,7 +491,7 @@ export class TeamModifier extends Component {
         return (
             <div>
                 <Searchbar teamData={this.teamData} setChosenTeams = {this.setChosenTeams}/>
-                <SideMenu />
+                <SideMenu sortTeamsQualities = {this.sortTeamsQualities} />
                 <ContextMenu
                     menuToggled={this.state.toggleMenu}
                     mouseX={this.state.xPositionOfContextMenu}

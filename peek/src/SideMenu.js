@@ -15,7 +15,7 @@ export default function SideMenu (props) {
                 <h2>Teams Selected</h2>
                 <button>5026</button>
                 <h2>Sort By:</h2>
-                <button>5026</button>
+                <button onClick = {() => props.sortTeamsQualities("auto-pickup")}>Auto-Pickup</button>
             </div>
         </div>
     )
