@@ -30,6 +30,15 @@ export class Team extends Component{
         window.addEventListener("resize", this.handleResize)
     }
 
+    componentDidUpdate (prevProps) {
+        if(prevProps != this.props){
+        console.log("A team updated...?")
+        }
+        else{
+            console.log("sad")
+        }
+    }
+
     componentWillUnmount() {
         window.removeEventListener("resize", this.handleResize)
     }

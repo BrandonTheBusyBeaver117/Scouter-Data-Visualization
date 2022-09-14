@@ -315,7 +315,8 @@ export class TeamModifier extends Component {
     }
 
     /**
-     * Input an array of teams, runs through map, and returns array of team components
+     * @param {Array} arrayOfTeams an array of team numbers
+     * @returns {Array} An array of team components
      */
     getTeamComponents(arrayOfTeams) {
         const arrayOfTeamsComponents = []
@@ -445,8 +446,8 @@ export class TeamModifier extends Component {
     }
 
     /**
-     * 
-     * @param {String} quality 
+     * Input a quality you would like to sort by and the program will set the sorted teams to chosen teams
+     * @param {String} quality The datatype you would like to sort the teams by
      */
 
     sortTeamsQualities(quality){
