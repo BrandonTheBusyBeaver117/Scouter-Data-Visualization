@@ -5,11 +5,7 @@ import Searchbar from './Searchbar';
 import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
 
-import "./DataCollector";
-
-
-import axios from "axios";
-import DataGetter from './DataCollector';
+import DataCollector from './DataCollector';
 export class TeamModifier extends Component {
 
 
@@ -80,13 +76,13 @@ export class TeamModifier extends Component {
 
         console.log("waiting...")
 
-        const dataGetter = new DataGetter();
-        await dataGetter.getData().then(() => {
-            this.matchData = dataGetter.getMatchData();
-            this.teamData = dataGetter.getTeamData();
+        const dataCollector = new DataCollector();
+        await dataCollector.getData().then(() => {
+            this.matchData = dataCollector.getMatchData();
+            this.teamData = dataCollector.getTeamData();
 
             this.setState({
-                googleSheetHeaders: dataGetter.getGoogleSheetHeaders()
+                googleSheetHeaders: dataCollector.getGoogleSheetHeaders()
             })
 
             console.log("MAKING TEAMS")
