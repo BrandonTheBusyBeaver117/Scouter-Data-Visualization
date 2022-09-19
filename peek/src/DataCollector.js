@@ -8,18 +8,21 @@ export default class DataGetter {
         this.matchData = []
         this.googleSheetHeaders = "N/A"
 
+        // Could put this in constructor
+        this.teamColumn = 1;
+
     }
 
     getTeamData () {
         return this.teamData;
     }
 
-    getmatchData () {
+    getMatchData () {
         return this.matchData;
     }
 
-    getTeamData () {
-        return this.teamData;
+    getGoogleSheetHeaders () {
+        return this.googleSheetHeaders;
     }
 
     getData() {
@@ -79,7 +82,7 @@ getTBAData() {
 
         const responseHeaders = response.data[0];
 
-        if (responseHeaders.length !== this.state.googleSheetHeaders.length) {
+        if (responseHeaders.length !== this.googleSheetHeaders.length) {
 
             this.googleSheetHeaders = responseHeaders
             console.log("headers are set")
@@ -88,7 +91,7 @@ getTBAData() {
 
             for (let i = 0; i < responseHeaders.length; i++) {
 
-                if (responseHeaders[i] !== this.state.googleSheetHeaders[i]) {
+                if (responseHeaders[i] !== this.googleSheetHeaders[i]) {
                     this.googleSheetHeaders = responseHeaders
                     console.log("headers are set")
 
@@ -115,7 +118,7 @@ getTBAData() {
         
         for (const [index, team] of this.teamData.entries()) {//Iterates through all previous data
 
-            if (Match[this.state.teamColumn] == team[0]) {//Checks if the Team already exists 
+            if (Match[this.teamColumn] == team[0]) {//Checks if the Team already exists 
 
 
                 alteredTeamData[index].push(Match)
@@ -129,7 +132,7 @@ getTBAData() {
         }
 
         if (!teamNumberFound) {
-            console.log("uh oh, team: \"" + Match[this.state.teamColumn] + "\" does not exist")
+            console.log("uh oh, team: \"" + Match[this.teamColumn] + "\" does not exist")
         } // Checking if this match's team number was valid
 
     }

@@ -5,8 +5,11 @@ import Searchbar from './Searchbar';
 import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
 
+import "./DataCollector";
+
 
 import axios from "axios";
+import DataGetter from './DataCollector';
 export class TeamModifier extends Component {
 
 
@@ -73,153 +76,24 @@ export class TeamModifier extends Component {
     }
 
 
-    setTeamData(newData) {
-        this.teamData = [...newData]
-    }
-
-    getTBAData() {
-
-        return axios.get('/getData').then(response => {
-
-            /*
-            Ideas to make this more efficient:
-            Save a previous iteration of the json file, then constantly compare it to the current json file
-            Only if you see a difference, then you iterate through the entire array
-            then change the rest of the data on the site
-
-            This might only be useful for google sheets however
-            */
-
-            const newData = []
-
-            for (const team of response.data.rankings) {
-
-                newData.push([
-                    Number(team.team_key.replace("frc", "")),//gets rid of the "frc" before the number
-                    team.rank]);
-            }//This is basically a for-each loop. It iterates through the entire response data array and saves the rankings     
-            this.setTeamData(newData)
-            /*maybe return team rankings, or just use objectappend to combine 
-            the two arrays with spreadsheets and make one big object or something            
-            */
-            console.log("TBA data received")
-        }).catch(error => {
-            console.log("Error occured!" + error)
-        })
-    }
-
-
-    setMatchData(newMatches) {
-        this.matchData = [...newMatches]
-    }
-
-    getSpreadsheetData() {
-        return axios.get('/getSpreadsheetData').then(response => {
-
-            //Checks if the headers are the same as before
-            //Only if they're different do they change
-            //Although, this may not be needed, or a better comparison might be needed
-
-            const responseHeaders = response.data[0];
-
-            if (responseHeaders.length !== this.state.googleSheetHeaders.length) {
-
-                this.setState({ googleSheetHeaders: responseHeaders })
-                console.log("headers are set")
-
-            } else {
-
-                for (let i = 0; i < responseHeaders.length; i++) {
-
-                    if (responseHeaders[i] !== this.state.googleSheetHeaders[i]) {
-                        this.setState({ googleSheetHeaders: responseHeaders })
-                        console.log("headers are set")
-
-                    }
-
-                }
-
-            }
-
-            this.setMatchData(response.data)
-
-            this.parseThroughSpreadSheetData()
-        }).catch(error => console.log(error))
-
-
-    }
-
-    parseThroughSpreadSheetData() {
-
-        let alteredTeamData = this.teamData.slice()
-        console.log("Here's the team data: ")
-
-        for (const Match of this.matchData) {// Gets the individual match data
-            let teamNumberFound = false;
-            
-            for (const [index, team] of this.teamData.entries()) {//Iterates through all previous data
-
-                if (Match[this.state.teamColumn] == team[0]) {//Checks if the Team already exists 
-
-
-                    alteredTeamData[index].push(Match)
-
-                    teamNumberFound = true; // Says that this match was successfully found
-
-                    /*
-                    this.setState({
-                        teamData : alteredTeamData
-                    })
-                    */
-
-                    break
-                }
-
-            }
-
-            if (!teamNumberFound) {
-                console.log("uh oh, team: \"" + Match[this.state.teamColumn] + "\" does not exist")
-            } // Checking if this match's team number was valid
-
-        }
-        this.setTeamData(alteredTeamData)
-    }
-
-
-    getData() {
-
-        return new Promise((resolve) => {
-            this.getTBAData().then(() => {
-
-                this.getSpreadsheetData().then(() => resolve(true))
-                //lol this is so cursed 
-                //Basically, we get TBA data first
-                //Only then do we get spreadsheetdata
-                //then, when both of those finish, we resolve
-            })
-
-        })
-
-
-    }
-
-
     async createTeams() {
 
         console.log("waiting...")
 
-        await this.getData().then(() => {
+        const dataGetter = new DataGetter();
+        await dataGetter.getData().then(() => {
+            this.matchData = dataGetter.getMatchData();
+            this.teamData = dataGetter.getTeamData();
+
+            this.setState({
+                googleSheetHeaders: dataGetter.getGoogleSheetHeaders()
+            })
 
             console.log("MAKING TEAMS")
     
 
             this.createSortedTeamInformation()
 
-            let teamArray = this.teamData.map((item, iterate) => <Team key={iterate}
-                googleSheetHeaders={this.state.googleSheetHeaders}
-                teamData={item}
-                toggleMenu={this.toggleMenu}
-            />)
             
             const newMapOfTeamElements = new Map()
             console.log(this.teamData)
@@ -482,7 +356,7 @@ export class TeamModifier extends Component {
         }
         console.log(sortedTeamQualities)
         this.setChosenTeams(arrayOfSortedTeams)
-
+        
         
     }
 
