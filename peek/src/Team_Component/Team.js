@@ -21,27 +21,25 @@ export class Team extends Component{
 
     }
     componentDidMount () {
-        this.formatter()
+        this.formatter()       
 
-        const initialMargin =  this.calculateMargin()
-
-        this.setState({marginHorizontal: initialMargin}) 
-        
-        window.addEventListener("resize", this.handleResize)
     }
 
-    componentDidUpdate (prevProps) {
-        if(prevProps != this.props){
-        console.log("A team updated...?")
-        }
-        else{
-            console.log("sad")
-        }
+    componentDidUpdate (prevProps, prevState) {
+        const newMargin = this.props.marginHorizontal()
+        console.log(newMargin)
+         if(prevState.marginHorizontal != newMargin){
+             console.log("did it work?")
+             this.setState({marginHorizontal: newMargin})
+             console.log("Margin horizontal :" + newMargin)
+         }
+
+         if(prevProps.test != this.props.test) {
+             console.log(this.props.test)
+         } 
     }
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.handleResize)
-    }
+
     handleClick = () => {
         this.props.toggleMenu(false, 5026, 5026, true)
 
@@ -137,63 +135,11 @@ export class Team extends Component{
     }
 
 
-
-    calculateMargin = () => {
-        const windowWidth = document.documentElement.clientWidth
-        
-        const usableArea = windowWidth - 300  //Gets the area of the screen, not including the side menu
-
-        const MINIMUM_SPACE_FOR_TEAM = 450; //Minimum space for a team should be 450px (including margin)
-
-        const numberOfTeamsDisplayed = Math.floor(usableArea / MINIMUM_SPACE_FOR_TEAM)
-
-        //console.log(`usable Area ${usableArea} \nnumber of teams calculated to be displayed ${numberOfTeamsDisplayed}`)
-        
-
-       
-
-        //400 represents the actual width of the Team
-        //We're getting the area that is not taken up by the actual viewable teams themselves
-        //Then, we divide by however many teams there are and their two sides
-        //That way each side should receive the same margin
-        let margin = ((usableArea - numberOfTeamsDisplayed*400) / (numberOfTeamsDisplayed*2)) + "px"
-
-        //console.log("total space this team takes up: "+( ((usableArea - numberOfTeamsDisplayed*400) / (numberOfTeamsDisplayed*2)*2)+350))
-
-        if(numberOfTeamsDisplayed === 0) {
-            margin = "auto"
-        }
-
-        /*
-        const intMargin = Number(margin.replace("px", ""))
-
-        
-        console.log("total area taken up by teams is: " + ((intMargin*2*numberOfTeamsDisplayed)+400*numberOfTeamsDisplayed))
-        console.log("total area: " + usableArea)
-        console.log(`25px ${this.state.marginHorizontal}`)
-        */
-
-        return margin
-
-    }
-
-
-    handleResize =  () => {
-        const calculatedMargin = this.calculateMargin()
-       console.log("recalculated margin: " + calculatedMargin)
-        this.setState({
-            marginHorizontal: calculatedMargin
-        })
-
-
-    }
-
-
     render() {
         //this is where the team blocky thing should be rendered
-       
+        const margin = this.props.marginHorizontal()
         return(
-        <div className='teamComponent' style = {{margin: `25px ${this.state.marginHorizontal}`, }}>
+        <div className='teamComponent' style = {{margin: `25px ${margin}px`}}>
             <h1>{this.props.teamData[0]}</h1>
             <h2>Rank: {this.props.teamData[1]}</h2>
             

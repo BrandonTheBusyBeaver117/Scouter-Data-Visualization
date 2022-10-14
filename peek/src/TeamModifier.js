@@ -6,7 +6,9 @@ import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
 
 import DataCollector from './DataCollector';
+import TeamMarginController from './Team_Component/TeamMarginController';
 export class TeamModifier extends Component {
+
 
 
 
@@ -16,20 +18,19 @@ export class TeamModifier extends Component {
         this.teamData = []
         this.mapOfTeamElements = new Map()
         this.sortedTeamInformation =  new Map()
-        this.chosenTeamEnum = {
-                                isEmpty: "empty",
-                                isDefault: "default",
-                                isUserChosen: "user"
-                                }
+
+        this.chosenTeams = []
+
 
         this.state = {
 
             googleSheetHeaders: "n/a",
             chosenTeams: [],
             chosenTeamsStringKey: [],
-            
-            chosenTeamState: this.chosenTeamEnum.isDefault,
 
+            teamMarginController: new TeamMarginController("5026"),
+            
+            pleaseChange: false,
 
             //Individual year variables
 
@@ -50,12 +51,25 @@ export class TeamModifier extends Component {
 
     componentDidMount = () => {
         console.log("mounted")
+
         this.createTeams()
 
+        window.addEventListener("resize", () => this.setState({pleaseChange : true}))
+        //this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
+
+    }
+
+    componentWillUnmount () {
+        window.removeEventListener("resize", () => this.setState({pleaseChange : true}))
     }
     componentDidUpdate(__prevProps, prevState) {
-        //If prevState.something != this.state.something, then update
         
+        //If prevState.something != this.state.something, then update
+        if(prevState.chosenTeamsStringKey != this.state.chosenTeamsStringKey){
+            console.log("update!")
+            this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
+        }
+        console.log(this.state.pleaseChange)
       }
 
 
@@ -93,6 +107,14 @@ export class TeamModifier extends Component {
             
             const newMapOfTeamElements = new Map()
             console.log(this.teamData)
+
+            const allTeamArray = []
+            for (const team of this.teamData) {
+                allTeamArray.push(team[0])
+            }
+            const newTeamMarginController = new TeamMarginController(allTeamArray)
+            this.setState({teamMarginController : newTeamMarginController})
+
             for (const [index, team] of this.teamData.entries()) {
                 console.log(team)
                 console.log(index)
@@ -100,6 +122,8 @@ export class TeamModifier extends Component {
                     googleSheetHeaders={this.state.googleSheetHeaders}
                     teamData={team}
                     toggleMenu={this.toggleMenu}
+                    marginHorizontal = {() => this.state.teamMarginController.getMargins().get(team[0])}
+                    test = {this.state.pleaseChange}
                 />)
             }
             console.log(newMapOfTeamElements)
@@ -107,16 +131,7 @@ export class TeamModifier extends Component {
  
             this.setMapOfTeamElements(newMapOfTeamElements)
 
-
-            //Default behavior to just set all teams to be shown
-            this.setState({chosenTeamState: this.chosenTeamEnum.isDefault})
-                
-
-                const allTeamArray = []
-                console.log(this.mapOfTeamElements)
-                for (const key of this.mapOfTeamElements.keys()){
-                    allTeamArray.push(key)
-                }
+           
 
                 console.log(allTeamArray)
                 //I need to somehow iterate through all the teams?
@@ -136,51 +151,30 @@ export class TeamModifier extends Component {
     }
 
     setChosenTeams(newTeamArray) {
-        console.log(newTeamArray)
-       const arrayOfTeamComponents = this.getTeamComponents(newTeamArray)
-       
-       if(this.state.chosenTeamState === this.chosenTeamEnum.isDefault || this.state.chosenTeamState == this.chosenTeamEnum.isEmpty) {
-            this.setState({chosenTeams: [...arrayOfTeamComponents], 
-                        chosenTeamState: this.chosenTeamEnum.isUserChosen})
 
-        } else if (this.state.chosenTeamState === this.chosenTeamEnum.isUserChosen) {
-          
-            this.setState({chosenTeams: [...arrayOfTeamComponents]})
-            console.log(arrayOfTeamComponents)
-            console.log(newTeamArray)
-        }
-        
-        console.log(newTeamArray)
+
+        this.chosenTeams = this.getTeamComponents(newTeamArray)
+
         this.setState({chosenTeamsStringKey: [...newTeamArray]})
-        
-        console.log(this.state.chosenTeamsStringKey)
-
-
-        console.log(this.state.chosenTeams)
 
         
     }
 
-    clearChosenTeams(chosenTeams = []) {
-        if(chosenTeams.length === 0){
-            this.setState({chosenTeams: [], 
-                            chosenTeamState: this.chosenTeamEnum.isEmpty})
-        } else{
-            const newMap = new Map(this.state.chosenTeams)
-            for (const team in chosenTeams){
-                if (this.state.chosenTeams.has(team)){
-                    
-                    console.log(newMap)
-                    newMap.delete(team)
+    clearChosenTeams(removedTeams = []) {
+        if(removedTeams.length === 0){
 
-                    
-                } else{
-                    console.log(this.state.chosenTeams.has(team))
-                    console.log(team + " doesn't seem to exist")
+            this.setChosenTeams([])
+        
+        } else{
+            const newTeamArray = []
+
+            for(const chosenTeam of this.state.chosenTeamsStringKey.length) {
+                if (!removedTeams.includes(chosenTeam)) {
+                    newTeamArray.push(chosenTeam)
                 }
-                
             }
-            this.setState({chosenTeams: newMap})
+
+            this.setChosenTeams(newTeamArray);
         }
     }
 
@@ -371,7 +365,7 @@ export class TeamModifier extends Component {
                     clicked={this.state.clicked}
                 />
 
-                <div id="Teams">{this.state.chosenTeams}</div>
+                <div id="Teams">{this.chosenTeams}</div>
 
             </div>
         )
