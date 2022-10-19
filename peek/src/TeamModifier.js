@@ -5,9 +5,10 @@ import Searchbar from './Searchbar';
 import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
 
-
-import axios from "axios";
+import DataCollector from './DataCollector';
+import TeamMarginController from './Team_Component/TeamMarginController';
 export class TeamModifier extends Component {
+
 
 
 
@@ -17,20 +18,19 @@ export class TeamModifier extends Component {
         this.teamData = []
         this.mapOfTeamElements = new Map()
         this.sortedTeamInformation =  new Map()
-        this.chosenTeamEnum = {
-                                isEmpty: "empty",
-                                isDefault: "default",
-                                isUserChosen: "user"
-                                }
+
+        this.chosenTeams = []
+
 
         this.state = {
 
             googleSheetHeaders: "n/a",
             chosenTeams: [],
             chosenTeamsStringKey: [],
-            
-            chosenTeamState: this.chosenTeamEnum.isDefault,
 
+            teamMarginController: new TeamMarginController("5026"),
+            
+            pleaseChange: false,
 
             //Individual year variables
 
@@ -51,12 +51,28 @@ export class TeamModifier extends Component {
 
     componentDidMount = () => {
         console.log("mounted")
+
         this.createTeams()
 
+        window.addEventListener("resize", () => this.setState({pleaseChange : true}))
+        //this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
+
+    }
+
+    componentWillUnmount () {
+        window.removeEventListener("resize", () => this.setState({pleaseChange : true}))
     }
     componentDidUpdate(__prevProps, prevState) {
-        //If prevState.something != this.state.something, then update
         
+        //If prevState.something != this.state.something, then update
+        console.log("Previous state " + prevState.chosenTeamsStringKey + "\nCurrent state " + this.state.chosenTeamsStringKey)
+        console.log(prevState.chosenTeamsStringKey)
+        if(JSON.stringify(prevState.chosenTeamsStringKey) != JSON.stringify(this.state.chosenTeamsStringKey)){
+            console.log("update!")
+            this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
+        
+        }
+        console.log(this.state.pleaseChange)
       }
 
 
@@ -73,156 +89,35 @@ export class TeamModifier extends Component {
     }
 
 
-    setTeamData(newData) {
-        this.teamData = [...newData]
-    }
-
-    getTBAData() {
-
-        return axios.get('/getData').then(response => {
-
-            /*
-            Ideas to make this more efficient:
-            Save a previous iteration of the json file, then constantly compare it to the current json file
-            Only if you see a difference, then you iterate through the entire array
-            then change the rest of the data on the site
-
-            This might only be useful for google sheets however
-            */
-
-            const newData = []
-
-            for (const team of response.data.rankings) {
-
-                newData.push([
-                    Number(team.team_key.replace("frc", "")),//gets rid of the "frc" before the number
-                    team.rank]);
-            }//This is basically a for-each loop. It iterates through the entire response data array and saves the rankings     
-            this.setTeamData(newData)
-            /*maybe return team rankings, or just use objectappend to combine 
-            the two arrays with spreadsheets and make one big object or something            
-            */
-            console.log("TBA data received")
-        }).catch(error => {
-            console.log("Error occured!" + error)
-        })
-    }
-
-
-    setMatchData(newMatches) {
-        this.matchData = [...newMatches]
-    }
-
-    getSpreadsheetData() {
-        return axios.get('/getSpreadsheetData').then(response => {
-
-            //Checks if the headers are the same as before
-            //Only if they're different do they change
-            //Although, this may not be needed, or a better comparison might be needed
-
-            const responseHeaders = response.data[0];
-
-            if (responseHeaders.length !== this.state.googleSheetHeaders.length) {
-
-                this.setState({ googleSheetHeaders: responseHeaders })
-                console.log("headers are set")
-
-            } else {
-
-                for (let i = 0; i < responseHeaders.length; i++) {
-
-                    if (responseHeaders[i] !== this.state.googleSheetHeaders[i]) {
-                        this.setState({ googleSheetHeaders: responseHeaders })
-                        console.log("headers are set")
-
-                    }
-
-                }
-
-            }
-
-            this.setMatchData(response.data)
-
-            this.parseThroughSpreadSheetData()
-        }).catch(error => console.log(error))
-
-
-    }
-
-    parseThroughSpreadSheetData() {
-
-        let alteredTeamData = this.teamData.slice()
-        console.log("Here's the team data: ")
-
-        for (const Match of this.matchData) {// Gets the individual match data
-            let teamNumberFound = false;
-            
-            for (const [index, team] of this.teamData.entries()) {//Iterates through all previous data
-
-                if (Match[this.state.teamColumn] == team[0]) {//Checks if the Team already exists 
-
-
-                    alteredTeamData[index].push(Match)
-
-                    teamNumberFound = true; // Says that this match was successfully found
-
-                    /*
-                    this.setState({
-                        teamData : alteredTeamData
-                    })
-                    */
-
-                    break
-                }
-
-            }
-
-            if (!teamNumberFound) {
-                console.log("uh oh, team: \"" + Match[this.state.teamColumn] + "\" does not exist")
-            } // Checking if this match's team number was valid
-
-        }
-        this.setTeamData(alteredTeamData)
-    }
-
-
-    getData() {
-
-        return new Promise((resolve) => {
-            this.getTBAData().then(() => {
-
-                this.getSpreadsheetData().then(() => resolve(true))
-                //lol this is so cursed 
-                //Basically, we get TBA data first
-                //Only then do we get spreadsheetdata
-                //then, when both of those finish, we resolve
-            })
-
-        })
-
-
-    }
-
-
     async createTeams() {
 
         console.log("waiting...")
 
-        await this.getData().then(() => {
+        const dataCollector = new DataCollector();
+        await dataCollector.getData().then(() => {
+            this.matchData = dataCollector.getMatchData();
+            this.teamData = dataCollector.getTeamData();
+
+            this.setState({
+                googleSheetHeaders: dataCollector.getGoogleSheetHeaders()
+            })
 
             console.log("MAKING TEAMS")
     
 
             this.createSortedTeamInformation()
 
-            let teamArray = this.teamData.map((item, iterate) => <Team key={iterate}
-                googleSheetHeaders={this.state.googleSheetHeaders}
-                teamData={item}
-                toggleMenu={this.toggleMenu}
-            />)
             
             const newMapOfTeamElements = new Map()
             console.log(this.teamData)
+
+            const allTeamArray = []
+            for (const team of this.teamData) {
+                allTeamArray.push(team[0])
+            }
+            const newTeamMarginController = new TeamMarginController(allTeamArray)
+            this.setState({teamMarginController : newTeamMarginController})
+
             for (const [index, team] of this.teamData.entries()) {
                 console.log(team)
                 console.log(index)
@@ -230,6 +125,8 @@ export class TeamModifier extends Component {
                     googleSheetHeaders={this.state.googleSheetHeaders}
                     teamData={team}
                     toggleMenu={this.toggleMenu}
+                    marginHorizontal = {() => this.state.teamMarginController.getMargins().get(team[0])}
+                    test = {this.state.pleaseChange}
                 />)
             }
             console.log(newMapOfTeamElements)
@@ -237,16 +134,7 @@ export class TeamModifier extends Component {
  
             this.setMapOfTeamElements(newMapOfTeamElements)
 
-
-            //Default behavior to just set all teams to be shown
-            this.setState({chosenTeamState: this.chosenTeamEnum.isDefault})
-                
-
-                const allTeamArray = []
-                console.log(this.mapOfTeamElements)
-                for (const key of this.mapOfTeamElements.keys()){
-                    allTeamArray.push(key)
-                }
+           
 
                 console.log(allTeamArray)
                 //I need to somehow iterate through all the teams?
@@ -261,61 +149,44 @@ export class TeamModifier extends Component {
         })
     }
 
+
+
     setMapOfTeamElements(newMap) {
         this.mapOfTeamElements = newMap
     }
 
     setChosenTeams(newTeamArray) {
-        console.log(newTeamArray)
-       const arrayOfTeamComponents = this.getTeamComponents(newTeamArray)
-       
-       if(this.state.chosenTeamState === this.chosenTeamEnum.isDefault || this.state.chosenTeamState == this.chosenTeamEnum.isEmpty) {
-            this.setState({chosenTeams: [...arrayOfTeamComponents], 
-                        chosenTeamState: this.chosenTeamEnum.isUserChosen})
 
-        } else if (this.state.chosenTeamState === this.chosenTeamEnum.isUserChosen) {
-          
-            this.setState({chosenTeams: [...arrayOfTeamComponents]})
-            console.log(arrayOfTeamComponents)
-            console.log(newTeamArray)
-        }
+
         
-        console.log(newTeamArray)
+        this.chosenTeams = this.getTeamComponents(newTeamArray)
+
         this.setState({chosenTeamsStringKey: [...newTeamArray]})
-        
-        console.log(this.state.chosenTeamsStringKey)
-
-
-        console.log(this.state.chosenTeams)
 
         
     }
 
-    clearChosenTeams(chosenTeams = []) {
-        if(chosenTeams.length === 0){
-            this.setState({chosenTeams: [], 
-                            chosenTeamState: this.chosenTeamEnum.isEmpty})
-        } else{
-            const newMap = new Map(this.state.chosenTeams)
-            for (const team in chosenTeams){
-                if (this.state.chosenTeams.has(team)){
-                    
-                    console.log(newMap)
-                    newMap.delete(team)
+    clearChosenTeams(removedTeams = []) {
+        if(removedTeams.length === 0){
 
-                    
-                } else{
-                    console.log(this.state.chosenTeams.has(team))
-                    console.log(team + " doesn't seem to exist")
+            this.setChosenTeams([])
+        
+        } else{
+            const newTeamArray = []
+
+            for(const chosenTeam of this.state.chosenTeamsStringKey) {
+                if (!removedTeams.includes(chosenTeam)) {
+                    newTeamArray.push(chosenTeam)
                 }
-                
             }
-            this.setState({chosenTeams: newMap})
+
+            this.setChosenTeams(newTeamArray);
         }
     }
 
     /**
-     * Input an array of teams, runs through map, and returns array of team components
+     * @param {Array} arrayOfTeams an array of team numbers
+     * @returns {Array} An array of team components
      */
     getTeamComponents(arrayOfTeams) {
         const arrayOfTeamsComponents = []
@@ -445,8 +316,8 @@ export class TeamModifier extends Component {
     }
 
     /**
-     * 
-     * @param {String} quality 
+     * Input a quality you would like to sort by and the program will set the sorted teams to chosen teams
+     * @param {String} quality The datatype you would like to sort the teams by
      */
 
     sortTeamsQualities(quality){
@@ -481,14 +352,37 @@ export class TeamModifier extends Component {
         }
         console.log(sortedTeamQualities)
         this.setChosenTeams(arrayOfSortedTeams)
-
+        
         
     }
 
 
+    neoGetTeamComponents (chosenTeams) {
+        this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
 
+        const arrayOfTeams = []
+        for (const team of this.teamData) {
+            if (chosenTeams.includes(team[0])) {               
+                arrayOfTeams.push(
+                <Team key={team[0]}
+                    googleSheetHeaders={this.state.googleSheetHeaders}
+                    teamData={team}
+                    toggleMenu={this.toggleMenu}
+                    marginHorizontal = {this.state.teamMarginController.getMargins().get(team[0])}
+                    test = {this.state.pleaseChange}
+                />)
+
+            }
+
+        }
+
+        return arrayOfTeams
+    }
 
     render() {
+
+        let teamComponents = this.neoGetTeamComponents(this.state.chosenTeamsStringKey);
+        //teamComponents = this.chosenTeams;
         return (
             <div>
                 <Searchbar teamData={this.teamData} setChosenTeams = {this.setChosenTeams}/>
@@ -500,7 +394,7 @@ export class TeamModifier extends Component {
                     clicked={this.state.clicked}
                 />
 
-                <div id="Teams">{this.state.chosenTeams}</div>
+                <div id="Teams">{teamComponents}</div>
 
             </div>
         )
