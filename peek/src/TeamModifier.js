@@ -65,9 +65,12 @@ export class TeamModifier extends Component {
     componentDidUpdate(__prevProps, prevState) {
         
         //If prevState.something != this.state.something, then update
-        if(prevState.chosenTeamsStringKey != this.state.chosenTeamsStringKey){
+        console.log("Previous state " + prevState.chosenTeamsStringKey + "\nCurrent state " + this.state.chosenTeamsStringKey)
+        console.log(prevState.chosenTeamsStringKey)
+        if(JSON.stringify(prevState.chosenTeamsStringKey) != JSON.stringify(this.state.chosenTeamsStringKey)){
             console.log("update!")
             this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
+        
         }
         console.log(this.state.pleaseChange)
       }
@@ -146,6 +149,8 @@ export class TeamModifier extends Component {
         })
     }
 
+
+
     setMapOfTeamElements(newMap) {
         this.mapOfTeamElements = newMap
     }
@@ -153,6 +158,7 @@ export class TeamModifier extends Component {
     setChosenTeams(newTeamArray) {
 
 
+        
         this.chosenTeams = this.getTeamComponents(newTeamArray)
 
         this.setState({chosenTeamsStringKey: [...newTeamArray]})
@@ -168,7 +174,7 @@ export class TeamModifier extends Component {
         } else{
             const newTeamArray = []
 
-            for(const chosenTeam of this.state.chosenTeamsStringKey.length) {
+            for(const chosenTeam of this.state.chosenTeamsStringKey) {
                 if (!removedTeams.includes(chosenTeam)) {
                     newTeamArray.push(chosenTeam)
                 }
@@ -351,9 +357,32 @@ export class TeamModifier extends Component {
     }
 
 
+    neoGetTeamComponents (chosenTeams) {
+        this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
 
+        const arrayOfTeams = []
+        for (const team of this.teamData) {
+            if (chosenTeams.includes(team[0])) {               
+                arrayOfTeams.push(
+                <Team key={team[0]}
+                    googleSheetHeaders={this.state.googleSheetHeaders}
+                    teamData={team}
+                    toggleMenu={this.toggleMenu}
+                    marginHorizontal = {this.state.teamMarginController.getMargins().get(team[0])}
+                    test = {this.state.pleaseChange}
+                />)
+
+            }
+
+        }
+
+        return arrayOfTeams
+    }
 
     render() {
+
+        let teamComponents = this.neoGetTeamComponents(this.state.chosenTeamsStringKey);
+        //teamComponents = this.chosenTeams;
         return (
             <div>
                 <Searchbar teamData={this.teamData} setChosenTeams = {this.setChosenTeams}/>
@@ -365,7 +394,7 @@ export class TeamModifier extends Component {
                     clicked={this.state.clicked}
                 />
 
-                <div id="Teams">{this.chosenTeams}</div>
+                <div id="Teams">{teamComponents}</div>
 
             </div>
         )

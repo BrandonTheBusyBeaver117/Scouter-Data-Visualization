@@ -25,18 +25,15 @@ export class Team extends Component{
 
     }
 
-    componentDidUpdate (prevProps, prevState) {
-        const newMargin = this.props.marginHorizontal()
+    componentDidUpdate (prevProps) {
+        const newMargin = this.props.marginHorizontal
         console.log(newMargin)
-         if(prevState.marginHorizontal != newMargin){
-             console.log("did it work?")
+         if(prevProps.marginHorizontal != this.props.marginHorizontal){
+             //console.log("did it work?")
              this.setState({marginHorizontal: newMargin})
-             console.log("Margin horizontal :" + newMargin)
+             console.log("Margin horizontal: " + newMargin)
          }
 
-         if(prevProps.test != this.props.test) {
-             console.log(this.props.test)
-         } 
     }
 
 
@@ -137,9 +134,9 @@ export class Team extends Component{
 
     render() {
         //this is where the team blocky thing should be rendered
-        const margin = this.props.marginHorizontal()
+        
         return(
-        <div className='teamComponent' style = {{margin: `25px ${margin}px`}}>
+        <div className='teamComponent' style = {{margin: `25px ${this.props.marginHorizontal}px`}}>
             <h1>{this.props.teamData[0]}</h1>
             <h2>Rank: {this.props.teamData[1]}</h2>
             
