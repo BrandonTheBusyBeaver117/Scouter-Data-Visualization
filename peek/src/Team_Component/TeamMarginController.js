@@ -55,11 +55,15 @@ export default class TeamMarginController {
         // Creating a map with all the teams and their margins
         const newTeamMarginsMap = new Map(marginMap);
 
-        // Total space in the window
-        const windowWidth = document.documentElement.clientWidth
+        // Total horizontal space in the window
+        const windowWidth = document.documentElement.clientWidth;
         
-        // The area of the screen, not including the side menu
-        const usableArea = windowWidth - 300  
+        const widthSideMenu = 300;
+
+        const extraSpace = 50;
+
+        // The area of the screen, not including the side menu and extra for scrollbar
+        const usableArea = windowWidth - widthSideMenu - extraSpace;  
 
         // Keeping track of the teams and their width in the current row
         let currentRowTotalWidth = 0;
@@ -71,7 +75,8 @@ export default class TeamMarginController {
         // Traversing to access every team
        for (const teamMargins of newTeamMarginsMap) {
            count++;
-        console.log(currentRowTotalWidth)
+        //console.log(currentRowTotalWidth)
+       
 
            // teamMargins is an array with [0] being the key and [1] being the value
            // teamMarginObject is thus the team margin object defined for each team
@@ -85,13 +90,11 @@ export default class TeamMarginController {
            // There should also be at least one team in the current row
            // We also want to calculate if we've reached the end of the list
            if(((minimumTotalWidth + currentRowTotalWidth >= usableArea) && (currentTeamsInRow.length != 0) )|| count === this.teams.length){
-            console.log("minimum total width: " + minimumTotalWidth)
-            console.log("current row total width: " + currentRowTotalWidth)
-            console.log("usable area: " + usableArea)
+           
             // Keeping track of the row minimum width (without margins)
             let currentRowMinimumWidth = 0;
                
-
+            
                 // Find the minimum width of the row (without margins)
                for(const team of currentTeamsInRow) {
                    const componentWidth = team[1].getWidth();
@@ -100,18 +103,23 @@ export default class TeamMarginController {
                // Getting the leftover area and then dividing by the amount of sides there are 
                // (There are currentTeamsInRow.length * 2 teams)
  
-               console.log("How many teams: " + currentTeamsInRow.length)
-               console.log("Current teams: " + currentTeamsInRow)
-               console.log("Space for margins: " + (usableArea - currentRowMinimumWidth))
-               console.log("how many sides: " + (currentTeamsInRow.length * 2))
                const rowMargin = Math.floor((usableArea - currentRowMinimumWidth) / (currentTeamsInRow.length * 2)); 
-               console.log("rowmargin: " + rowMargin)
-               console.log("space??? " + (currentRowMinimumWidth + (rowMargin * currentTeamsInRow.length *2)))
+              
+               if(rowMargin > 100 || rowMargin < 70) {
+                console.log("DANGER!!!")
+                console.log("current teams: " + currentTeamsInRow)
+                console.log("Row margin: " + rowMargin)
+                console.log("Count: " + count)
+               }
+
                // Set all the teams in the current row to have the same margin
                for(const team of currentTeamsInRow) {
                    
                    newTeamMarginsMap.get(team[0]).setMargin(rowMargin)
+
                }
+
+
 
                // Resetting the widths and teams in the row, because we've moved on to the next row
                currentRowTotalWidth = minimumTotalWidth;
@@ -136,7 +144,7 @@ export default class TeamMarginController {
 
                 // Add the current team to the row
                 currentTeamsInRow.push(teamMargins)
-                console.log("new current teams in row: " + currentTeamsInRow)
+                //console.log("new current teams in row: " + currentTeamsInRow)
            }
            
        }
@@ -180,9 +188,10 @@ export default class TeamMarginController {
  * Keeps track of team's Margin
  */
 class TeamMargin {
-    constructor (width = 400, margin = 50) {
+    constructor (width = 400, margin = 50, height = 350) {
         this.margin = margin;
         this.width = width;
+        this.height = height
 
     }
     getMargin () {
@@ -192,10 +201,21 @@ class TeamMargin {
     getWidth () {
         return this.width
     }
+
     setMargin(newMargin) {
         this.margin = newMargin
     }
+
     setWidth (newWidth) {
         this.width = newWidth;
     }
+
+    setHeight (height) {
+       this.height = height;
+    }
+
+    getHeight () {
+        return this.height
+    }
+
 }
