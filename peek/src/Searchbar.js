@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./SearchBar.scss"
 
 
 export default function Searchbar(props) {
 
     const [searchableTeamResults, setSearchableTeamResults] = useState([]);
-    const [chosenTeams, setChosenTeamsArray] = useState([]);
     const [totalTeamsComponent, setTotalTeamComponents] = useState([]);
     const [teamsForComparison, setTeamsForComparison] = useState([]);
     const [searchbarValue, setSearchbarValue] = useState("");
@@ -19,21 +18,44 @@ export default function Searchbar(props) {
         }
     }
 
-    const handleClick = newTeam => {
-
-        console.log("CLICK")
-        console.log(newTeam)
-        console.log(props.chosenTeams)
-        const newArray = noDoubles(props.chosenTeams, newTeam)
-
-        console.log(newArray)
-        props.setChosenTeams(newArray)
-
-        //setChosenTeamsArray(prevChosenTeams => noDoubles(prevChosenTeams, newTeam))
-
+    const getPropsChosenTeams = () => {
+        return props.chosenTeams
     }
 
-    useEffect((prevProps) => {
+    const prevChosenTeams = useRef(props.chosenTeams)
+
+    const handleClick = newTeam => {
+
+        console.log(props.chosenTeams)
+        console.log(newTeam)
+
+        
+        
+        const newArray = noDoubles(prevChosenTeams.current, newTeam)
+        props.setChosenTeams(newArray)
+        
+        console.log(newArray)
+        
+    }
+
+
+
+    useEffect(() => {
+       
+        //Makes all the team components and stores them in an array
+        const allTeamComponents = []
+        for(const [iterate, item] of props.teamData.entries()){
+            //console.log(item[0])
+            allTeamComponents.push( 
+            //Also might make this my own component
+            //If not, I need to add class and its own scss file
+            //Might be where caching comes in?
+            // I kinda want to format it so that name is on left, ranking on the far right
+            
+            <p key ={iterate} onClick = {() => handleClick(item[0])}>Team {item[0]} --- rank: {item[1]}</p> 
+            )
+        }
+        setTotalTeamComponents(allTeamComponents)
 
 
         if (prevProps?.teamData != props.teamData) {
@@ -72,68 +94,32 @@ export default function Searchbar(props) {
 
         }
 
-
-        /*
-            If the chosen teams have changed, then execute
-    
-            Because useEffect is also running based on the searchbar value, we also need to check the length
-            The searchbar value can change without the change of chosen teams
-            Initially, prevState chosen teams is null, so when searchbar makes it check anyways, it might run
-            Then because we have no chosen teams, it'll show no team components
-            just making sure that we do have chosen teams before we update the team components
-        */
-        /*
-         if (prevState?.chosenTeams != chosenTeams && chosenTeams.length > 0){
-             console.log("New teams")
-             props.setChosenTeams(chosenTeams)
-     
-             // Change the string passed into this handleChange if you want the searchbar to disappear
-     
-             handleChange(searchbarValue)
-         }
-         */
-
-
-
-
-
-
-
     }, [props.teamData])
+    
 
-    // Setting the chosen teams
-    // Might just use props.chosen teams from now on
     useEffect(() => {
 
-        console.log(chosenTeams)
-        console.log(props.chosenTeams)
-
-        setChosenTeamsArray(props.chosenTeams)
+        console.log("New teams")
+ // Change the string passed into this handleChange if you want the searchbar to disappear
+        // I.e. make it ""
         handleChange(searchbarValue)
-
-
-
+        prevChosenTeams.current = props.chosenTeams
     }, [props.chosenTeams])
 
-
-    // Handling searchbar change
     useEffect(() => {
-
         console.log(searchbarValue)
         handleChange(searchbarValue)
     }, [searchbarValue])
+   
 
 
-
-
-    /*
+    /**
         When there's a change to the searchbar, this function will run
 
         It takes in the event, which will be stored in "response"
 
         It works to filter through the teams and output team results
     */
-
     const handleChange = inputValue => {
 
         console.log("Searchbar change?")
@@ -166,8 +152,8 @@ export default function Searchbar(props) {
                 const team = teamsForComparison[teamIndex];//Defining the team in this iteration
 
                 const arrayTeamNumber = [...team.teamNumber] //Splits the team number into an array of characters
-                //console.log(chosenTeams)
-                //console.log(chosenTeams.includes(Number(team.teamNumber)))
+                if (!props.chosenTeams.includes(Number(team.teamNumber))){
+           
 
                 //like, if default, don't check whether the team is already chosen (cause every team will be chosen)
                 // Otherwise, make sure that the chosen teams haven't been chosen yet
