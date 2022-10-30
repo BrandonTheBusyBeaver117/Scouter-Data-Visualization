@@ -119,8 +119,8 @@ export class TeamModifier extends Component {
             this.setState({teamMarginController : newTeamMarginController})
 
             for (const [index, team] of this.teamData.entries()) {
-                console.log(team)
-                console.log(index)
+                //console.log(team)
+                //console.log(index)
                 newMapOfTeamElements.set(team[0], <Team key={index}
                     googleSheetHeaders={this.state.googleSheetHeaders}
                     teamData={team}
@@ -137,8 +137,8 @@ export class TeamModifier extends Component {
            
 
                 console.log(allTeamArray)
-                //I need to somehow iterate through all the teams?
-                this.setChosenTeams(allTeamArray)
+                // This sets the default teams
+                this.setChosenTeams([])
                 console.log(this.state.chosenTeams)
 
             
@@ -190,6 +190,7 @@ export class TeamModifier extends Component {
      */
     getTeamComponents(arrayOfTeams) {
         const arrayOfTeamsComponents = []
+        console.log(arrayOfTeams)
         for (const team of arrayOfTeams){
             arrayOfTeamsComponents.push(this.mapOfTeamElements.get(team))
             console.log(team)
@@ -217,7 +218,7 @@ export class TeamModifier extends Component {
         console.log(this.teamData)
 
         const initialTeamMap = new Map()
-        //Initalizing Map with the keys, but empty values to be filled in later
+        //Initializing Map with the keys, but empty values to be filled in later
         for (const header of this.state.googleSheetHeaders){
             initialTeamMap.set(header, [])
         }
@@ -231,10 +232,10 @@ export class TeamModifier extends Component {
             console.log(matches)
             /*
                 something to note here is that if there was a null value 
-                (like somone leaving the comment's block blank), this script 
+                (like someone leaving the comment's block blank), this script 
                 would not just add anything to the key list
                 in that way, you cannot map these data points to matches for sure
-                unless you're really certain that thre's no null value
+                unless you're really certain that there's no null value
                 
                 one easy way to fix this is to, in the scouting app, set a default 
                 response for every criteria (which I might do)
@@ -260,7 +261,7 @@ export class TeamModifier extends Component {
                     const key = this.state.googleSheetHeaders[i] // The header will be the key to the map
                 
                     const oldValue = newTeamMap.get(key)// Getting the old value for this particular key in the map
-                
+                    //console.log(oldValue)
                     newTeamMap.set(key, [...(oldValue), match[i]])
                     
                 } 
@@ -385,8 +386,18 @@ export class TeamModifier extends Component {
         //teamComponents = this.chosenTeams;
         return (
             <div>
-                <Searchbar teamData={this.teamData} setChosenTeams = {this.setChosenTeams}/>
-                <SideMenu sortTeamsQualities = {this.sortTeamsQualities} />
+                <Searchbar 
+                    chosenTeams = {this.state.chosenTeamsStringKey} 
+                    teamData={this.teamData} 
+                    setChosenTeams = {this.setChosenTeams}
+                />
+                
+                <SideMenu 
+                    chosenTeams = {this.state.chosenTeamsStringKey} 
+                    sortTeamsQualities = {this.sortTeamsQualities} 
+                    setChosenTeams = {this.setChosenTeams} 
+                />
+
                 <ContextMenu
                     menuToggled={this.state.toggleMenu}
                     mouseX={this.state.xPositionOfContextMenu}
