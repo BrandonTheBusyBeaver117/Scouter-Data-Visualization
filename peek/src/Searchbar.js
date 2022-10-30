@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./SearchBar.scss"
 
 
@@ -22,21 +22,23 @@ export default function Searchbar (props) {
         return props.chosenTeams
     }
 
+    const prevChosenTeams = useRef(props.chosenTeams)
+
     const handleClick = newTeam => {
 
         console.log(props.chosenTeams)
         console.log(newTeam)
 
         
-        const oldTeams = getPropsChosenTeams()
-
-        console.log(oldTeams)
-        const newArray = noDoubles(oldTeams, newTeam)
+        
+        const newArray = noDoubles(prevChosenTeams.current, newTeam)
         props.setChosenTeams(newArray)
         
         console.log(newArray)
         
     }
+
+
 
     useEffect(() => {
        
@@ -82,6 +84,7 @@ export default function Searchbar (props) {
  // Change the string passed into this handleChange if you want the searchbar to disappear
         // I.e. make it ""
         handleChange(searchbarValue)
+        prevChosenTeams.current = props.chosenTeams
     }, [props.chosenTeams])
 
     useEffect(() => {
