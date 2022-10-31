@@ -5,6 +5,23 @@ export default function SideMenu (props) {
 
     const[teamButtons, setTeamButtons] = useState([])
     
+    const createTeamButtons = (teamList) => {
+        console.log("Trying to createTeamButtons")
+        console.log(teamList)
+
+        const newTeamButtons = []
+        for (const team of teamList) {
+            const newTeamButton = <div id = {team} key = {team}>
+                                        <button class = "teamSelector" >{team}</button>
+                                        <button class = "delete" onClick = {() => props.clearChosenTeams([team])}>x</button>
+                                  </div>
+            newTeamButtons.push(newTeamButton)
+        }
+
+
+        console.log(newTeamButtons)
+        return newTeamButtons
+    }
 
 
 
@@ -13,12 +30,12 @@ export default function SideMenu (props) {
 
             <div id = "TeamButtons">
                 <h2>Teams Selected</h2>
-                <button>5026</button>
+                <div>{createTeamButtons(props.chosenTeams)}</div>
                 <h2>Sort By:</h2>
                 <button onClick = {() => props.sortTeamsQualities("auto-pickup")}>Auto-Pickup</button>
-                <h2>Clear Teams:</h2>
-                <button id = "clear" onClick = {() => props.setChosenTeams([])}>CLEAR</button>
             </div>
+            <h2>Clear Teams:</h2>
+                <button id = "clear" onClick = {() => props.setChosenTeams([])}>CLEAR</button>
         </div>
     )
 

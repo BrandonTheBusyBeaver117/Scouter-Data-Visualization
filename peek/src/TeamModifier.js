@@ -44,9 +44,10 @@ export class TeamModifier extends Component {
         }
 
         //Bindings
-        this.toggleMenu = this.toggleMenu.bind(this)
-        this.setChosenTeams = this.setChosenTeams.bind(this)
-        this.sortTeamsQualities = this.sortTeamsQualities.bind(this)
+        this.toggleMenu = this.toggleMenu.bind(this);
+        this.setChosenTeams = this.setChosenTeams.bind(this);
+        this.sortTeamsQualities = this.sortTeamsQualities.bind(this);
+        this.clearChosenTeams = this.clearChosenTeams.bind(this);
     }
 
     componentDidMount = () => {
@@ -396,6 +397,7 @@ export class TeamModifier extends Component {
                     chosenTeams = {this.state.chosenTeamsStringKey} 
                     sortTeamsQualities = {this.sortTeamsQualities} 
                     setChosenTeams = {this.setChosenTeams} 
+                    clearChosenTeams = {this.clearChosenTeams}
                 />
 
                 <ContextMenu

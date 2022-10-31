@@ -10,15 +10,18 @@
 
 
     $transition-Time: 0.25s;
+    $defaultButtonColor : rgb(150, 230, 255);
+
     button {
-        background-color: rgb(150, 230, 255);
+        background-color: $defaultButtonColor;
         border-radius: 16px;
-        margin: 5px 2px;
+        margin: 5px 0px;
         padding: 10px 0px;
         width: 50%;
-
+        display: inline;
 
         transition: background-color $transition-Time linear;
+
 
     }
     button:hover {
@@ -31,8 +34,41 @@
     h2{
         color: black;
     }
+    .teamSelector {
+
+    }
+
+    .teamSelector:hover {
+        background-color: rgb(75, 200, 255);
+        transition: background-color $transition-Time linear;
+        $deleteButtonColor : rgb(210, 210, 210);
+    }
+
+
     #clear {
         background-color: rgb(255, 15, 40);
+        
 
+    }
+
+    .delete{
+        $widthOfDelete :10%;
+        
+    
+        //border-radius: 0px ;
+        //display: inline-block;
+        border: rgba(255,255,255, 0);
+        background-color: rgba(255,255,255, 0);
+        width: $widthOfDelete;
+        margin-left: -$widthOfDelete;
+        opacity: 0;
+        color: background-color;
+    }
+    .delete:hover {
+        opacity: 1;
+        border-radius: 0 16px 16px 0;
+        transition: opacity $transition-Time linear;
+        //background-color: rgb(160, 160, 160);
+        background-color: rgba(255,255,255, 0);
     }
 }
