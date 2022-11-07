@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import "./Team.scss"
-
+import DataChart from '../DataChart.js';
 export class Team extends Component{
 
     /*Basically this class should hold all the data
@@ -140,6 +140,7 @@ export class Team extends Component{
             <h1>{this.props.teamData[0]}</h1>
             <h2>Rank: {this.props.teamData[1]}</h2>
             
+            <DataChart/>
             {this.state.table}
             
 
