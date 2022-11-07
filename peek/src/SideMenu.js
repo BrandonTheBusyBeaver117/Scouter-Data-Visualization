@@ -12,8 +12,8 @@ export default function SideMenu (props) {
         const newTeamButtons = []
         for (const team of teamList) {
             const newTeamButton = <div id = {team} key = {team}>
-                                        <button class = "teamSelector" >{team}</button>
-                                        <button class = "delete" onClick = {() => props.clearChosenTeams([team])}>x</button>
+                                        <button className = "teamSelector" >{team}</button>
+                                        <button className = "delete" onClick = {() => props.clearChosenTeams([team])}>x</button>
                                   </div>
             newTeamButtons.push(newTeamButton)
         }
