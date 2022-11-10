@@ -372,6 +372,7 @@ export class TeamModifier extends Component {
                     toggleMenu={this.toggleMenu}
                     marginHorizontal = {this.state.teamMarginController.getMargins().get(team[0])}
                     test = {this.state.pleaseChange}
+                    sortedTeamInformationMap = {this.sortedTeamInformation.get(team[0])}
                 />)
 
             }
