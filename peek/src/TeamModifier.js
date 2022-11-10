@@ -398,6 +398,7 @@ export class TeamModifier extends Component {
                     sortTeamsQualities = {this.sortTeamsQualities} 
                     setChosenTeams = {this.setChosenTeams} 
                     clearChosenTeams = {this.clearChosenTeams}
+                    teamInformation = {this.sortedTeamInformation}
                 />
 
                 <ContextMenu
