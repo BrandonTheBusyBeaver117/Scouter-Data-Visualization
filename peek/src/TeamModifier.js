@@ -288,9 +288,12 @@ export class TeamModifier extends Component {
             const valueRightTeam = firstTeamRight[1]
             const valueLeftTeam = firstTeamLeft[1]
             if (valueLeftTeam > valueRightTeam) {
+                sortedArray.push(sortedTeamLeft.shift())
+            } else if (valueLeftTeam < valueRightTeam) {
                 sortedArray.push(sortedTeamRight.shift())
             } else {
                 sortedArray.push(sortedTeamLeft.shift())
+                sortedArray.push(sortedTeamRight.shift())
             }
         }
         
@@ -345,7 +348,7 @@ export class TeamModifier extends Component {
             console.log([teamKey, average])
         }
 
-        const sortedTeamQualities = this.mergeSortTeams(arrayOfTeamQualities).reverse()
+        const sortedTeamQualities = this.mergeSortTeams(arrayOfTeamQualities)
         
         const arrayOfSortedTeams = []
 
@@ -363,12 +366,12 @@ export class TeamModifier extends Component {
         this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
 
         const arrayOfTeams = []
+        /*
         for (const team of this.teamData) {
             if (chosenTeams.includes(team[0])) {               
                 arrayOfTeams.push(
                 <Team key={team[0]}
                     googleSheetHeaders={this.state.googleSheetHeaders}
-                    teamData={team}
                     toggleMenu={this.toggleMenu}
                     marginHorizontal = {this.state.teamMarginController.getMargins().get(team[0])}
                     test = {this.state.pleaseChange}
@@ -377,6 +380,17 @@ export class TeamModifier extends Component {
 
             }
 
+        }
+        */
+
+        for (const chosenTeam of chosenTeams) {
+            arrayOfTeams.push(
+                <Team key={chosenTeam}
+                    googleSheetHeaders={this.state.googleSheetHeaders}
+                    toggleMenu={this.toggleMenu}
+                    marginHorizontal = {this.state.teamMarginController.getMargins().get(chosenTeam)}
+                    sortedTeamInformationMap = {this.sortedTeamInformation.get(chosenTeam)}
+                />)
         }
 
         return arrayOfTeams
