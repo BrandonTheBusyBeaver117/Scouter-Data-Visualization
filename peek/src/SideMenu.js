@@ -3,32 +3,41 @@ import "./SideMenu.scss"
 
 export default function SideMenu (props) {
 
-    const[teamButtons, setTeamButtons] = useState([])
     const[optionState, setOptionState] = useState("")
     
     const createTeamButtons = (teamList) => {
-        console.log("Trying to createTeamButtons")
-        console.log(teamList)
 
         const newTeamButtons = []
-        for (const team of teamList) {
-            const newTeamButton = <div id = {team} key = {team}>
+        if(teamList.length === 0){
+            newTeamButtons.push(
+                <div>
+                    <button className = "teamSelector" >No teams selected</button>
+                </div>
+            )
+        } else {
+            for (const team of teamList) {
+                const newTeamButton = <div id = {team} key = {team}>
                                         <button className = "teamSelector" >{team}</button>
                                         <button className = "delete" onClick = {() => props.clearChosenTeams([team])}>x</button>
-                                  </div>
-            newTeamButtons.push(newTeamButton)
+                                      </div>
+                newTeamButtons.push(newTeamButton)
+            }
         }
 
-
-        console.log(newTeamButtons)
         return newTeamButtons
-    }
+    } 
 
     const optionSelector = (teamMap) => {
+
+        // Finding the first team in the map
+        // Starting an iterator, getting the first element, then getting its value (the team)
         const firstTeam = teamMap.values().next().value;
 
+        // Finding the keys of the first team
+        // If it's undefined, then just make the keys an empty array
         const attributes = firstTeam?.keys() ?? [];
 
+        // Array of all the options
         const options = [];
 
         for (const attribute of attributes){
@@ -51,7 +60,9 @@ export default function SideMenu (props) {
                 <h2>Teams Selected</h2>
                 <div>{createTeamButtons(props.chosenTeams)}</div>
                 <h2>Sort Teams by:</h2>
-                <button Sort = {() => props.sortTeamsQualities(optionState)}>{optionState}</button>
+                <button onClick = {() => props.sortTeamsQualities(optionState)}>
+                    {optionState === "" ? "No Quality selected" : optionState}
+                </button>
                 {optionSelector(props.teamInformation)}
            </div>
             <h2>Clear Teams:</h2>
