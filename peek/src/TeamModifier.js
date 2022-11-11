@@ -29,8 +29,6 @@ export class TeamModifier extends Component {
             chosenTeamsStringKey: [],
 
             teamMarginController: new TeamMarginController("5026"),
-            
-            pleaseChange: false,
 
             //Individual year variables
 
@@ -55,13 +53,11 @@ export class TeamModifier extends Component {
 
         this.createTeams()
 
-        window.addEventListener("resize", () => this.setState({pleaseChange : true}))
         //this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
 
     }
 
     componentWillUnmount () {
-        window.removeEventListener("resize", () => this.setState({pleaseChange : true}))
     }
     componentDidUpdate(__prevProps, prevState) {
         
@@ -73,7 +69,6 @@ export class TeamModifier extends Component {
             this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
         
         }
-        console.log(this.state.pleaseChange)
       }
 
 
@@ -127,7 +122,6 @@ export class TeamModifier extends Component {
                     teamData={team}
                     toggleMenu={this.toggleMenu}
                     marginHorizontal = {() => this.state.teamMarginController.getMargins().get(team[0])}
-                    test = {this.state.pleaseChange}
                 />)
             }
             console.log(newMapOfTeamElements)
