@@ -3,7 +3,7 @@ import "./SideMenu.scss"
 
 export default function SideMenu (props) {
 
-    const[optionState, setOptionState] = useState("")
+    //const[optionState, setOptionState] = useState("")
     
     const createTeamButtons = (teamList) => {
 
@@ -45,7 +45,7 @@ export default function SideMenu (props) {
         }
         return (
                 <div>
-                    <select value = {optionState} onChange={event => setOptionState(event.target.value)}>
+                    <select value = {props.selectedQuality} onChange={event => props.setSelectedQuality(event.target.value)}>
                     {options}
                     </select>
                 </div>
@@ -60,8 +60,8 @@ export default function SideMenu (props) {
                 <h2>Teams Selected</h2>
                 <div>{createTeamButtons(props.chosenTeams)}</div>
                 <h2>Sort Teams by:</h2>
-                <button onClick = {() => props.sortTeamsQualities(optionState)}>
-                    {optionState === "" ? "No Quality selected" : optionState}
+                <button onClick = {() => props.sortTeamsQualities(props.selectedQuality)}>
+                    {props.selectedQuality === "" ? "No Quality selected" : props.selectedQuality}
                 </button>
                 {optionSelector(props.teamInformation)}
            </div>

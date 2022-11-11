@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 import "./DataChart.scss"
 
-import { Chart as ChartJS, CategoryScale, LineController, LineElement, PointElement, LinearScale, Title, Tooltip, Legend } from "chart.js"
-import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LineController, LineElement, ArcElement, PointElement, LinearScale, Title, Tooltip, Legend } from "chart.js"
+import { Line, Pie } from 'react-chartjs-2';
 
-ChartJS.register(CategoryScale, LineController, LineElement, PointElement, LinearScale, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LineController, LineElement, ArcElement, PointElement, LinearScale,  Title, Tooltip, Legend)
 
 export default function DataChart(props) {
 
@@ -42,25 +42,69 @@ export default function DataChart(props) {
             }
         })
 
-    }, [])
+    }, [props.teamData])
 
     console.log(props.teamData)
 
-    return (
+    const createChart = (matches, teamData, selectedQuality) => {
 
-        <div className='chart'>
+        const data = [...teamData]
+        console.log(data)
 
-            <Line
+        if (data.includes("FALSE") || data.includes("TRUE")) {
+
+            console.log(data)
+            let numFalse = 0;
+            let numTrue = 0;
+
+                for (const match of data) {
+                    if(match === "FALSE") {
+                       numFalse++;
+                    } else if(match === "TRUE") {
+                        numTrue++;
+                    }
+                }
+            
+            return <Pie 
                 className='dataChart'
-                datasetIdKey='id'
+                datasetIdKey='booleanPieChart'
                 data={{
                     // Should be match numbers
-                    labels: props.matches,
+                    labels: ["Success", "Failed"],
                     datasets: [
                         {
                             id: 1,
                             label: '',
-                            data: props.teamData,
+                            data: [numTrue, numFalse],
+                            backgroundColor: ["rgb(0, 255, 115)", "rgb(255, 15, 40)"]
+                        }
+                    ]
+                }}
+                options={{ 
+                        // If there are two values, then have a border radius
+                        // Otherwise, complete the entire pie chart
+                        borderWidth : data.includes("TRUE") && data.includes("FALSE") ? 2 : 0,
+                        maintainAspectRatio: false, 
+                        plugins: {
+                            title: {
+                                display: true,
+                                text : selectedQuality
+                            }
+                        }
+                    }}
+                    />
+        } else {
+            return <Line
+                className='dataChart'
+                datasetIdKey='defaultLineChart'
+                data={{
+                    // Should be match numbers
+                    labels: matches,
+                    datasets: [
+                        {
+                            id: 1,
+                            label: '',
+                            data: data,
                             backgroundColor: "rgb(150, 230, 255)"
                         }
                     ]
@@ -69,18 +113,29 @@ export default function DataChart(props) {
                         maintainAspectRatio: false, 
                         scales: {
                             y: {
-                                min: 0
+                                min: 0,
+                                ticks: {
+                                    stepSize: 1
+                                }
                             }
                         },
                         plugins: {
                             title: {
                                 display: true,
-                                text : "Auto-Pickup"
+                                text : selectedQuality
                             }
                         }
                     }}
 
             />
+        }
+
+    }
+
+    return (
+
+        <div className='chart'>
+            {createChart(props.matches, props.teamData, props.selectedQuality)}
         </div>
     )
 

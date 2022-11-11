@@ -49,6 +49,7 @@ export class Team extends Component{
         //this is where the team blocky thing should be rendered
         
         console.log(this.props.sortedTeamInformationMap)
+        console.log(this.props.sortedTeamInformationMap.get(this.props.selectedQuality))
         return(
         <div className='teamComponent' style = {{margin: `25px ${this.props.marginHorizontal}px`}}>
             <h1>{this.props.sortedTeamInformationMap.get("teamNumber")}</h1>
@@ -56,7 +57,10 @@ export class Team extends Component{
             
             <DataChart 
                 matches = {this.props.sortedTeamInformationMap.get("matchNum")}
-                teamData = {this.props.sortedTeamInformationMap.get("auto-pickup")}/>
+                teamData = {this.props.sortedTeamInformationMap.get(this.props.selectedQuality)}
+                selectedQuality = {this.props.selectedQuality}
+
+            />
             
             
 

@@ -30,6 +30,8 @@ export class TeamModifier extends Component {
 
             teamMarginController: new TeamMarginController("5026"),
 
+            selectedQuality: "",
+
             //Individual year variables
 
             teamColumn: 1, //Column (in array notation) where team number is defined, in case it (for whatever reason) changes year to year
@@ -46,6 +48,7 @@ export class TeamModifier extends Component {
         this.setChosenTeams = this.setChosenTeams.bind(this);
         this.sortTeamsQualities = this.sortTeamsQualities.bind(this);
         this.clearChosenTeams = this.clearChosenTeams.bind(this);
+        this.setSelectedQuality = this.setSelectedQuality.bind(this);
     }
 
     componentDidMount = () => {
@@ -145,6 +148,9 @@ export class TeamModifier extends Component {
     }
 
 
+    setSelectedQuality(newSelectedQuality) {
+        this.setState({selectedQuality : newSelectedQuality})
+    }
 
     setMapOfTeamElements(newMap) {
         this.mapOfTeamElements = newMap
@@ -384,6 +390,7 @@ export class TeamModifier extends Component {
                     toggleMenu={this.toggleMenu}
                     marginHorizontal = {this.state.teamMarginController.getMargins().get(chosenTeam)}
                     sortedTeamInformationMap = {this.sortedTeamInformation.get(chosenTeam)}
+                    selectedQuality = {this.state.selectedQuality}
                 />)
         }
 
@@ -408,6 +415,8 @@ export class TeamModifier extends Component {
                     setChosenTeams = {this.setChosenTeams} 
                     clearChosenTeams = {this.clearChosenTeams}
                     teamInformation = {this.sortedTeamInformation}
+                    selectedQuality = {this.state.selectedQuality}
+                    setSelectedQuality = {this.setSelectedQuality}
                 />
 
                 <ContextMenu
