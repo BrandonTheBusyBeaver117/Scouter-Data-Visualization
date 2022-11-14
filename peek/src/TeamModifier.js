@@ -17,8 +17,6 @@ export class TeamModifier extends Component {
         this.matchData = []
         this.teamData = []
         this.mapOfTeamElements = new Map()
-        this.sortedTeamInformation =  new Map()
-
         this.chosenTeams = []
 
 
@@ -31,6 +29,7 @@ export class TeamModifier extends Component {
             teamMarginController: new TeamMarginController("5026"),
 
             selectedQuality: "",
+            sortedTeamInformation: new Map(),
 
             //Individual year variables
 
@@ -71,6 +70,17 @@ export class TeamModifier extends Component {
             console.log("update!")
             this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
         
+        }
+
+        if(JSON.stringify(prevState.selectedQuality) === JSON.stringify("") && this.state.sortedTeamInformation.size > 0){
+            // Finding the first team in the map
+            // Starting an iterator, getting the first element, then getting its value (the team)
+            const firstTeam = this.state.sortedTeamInformation.values().next().value;
+
+            // Finding the keys of the first team
+            const defaultAttribute = firstTeam?.keys().next().value;
+            this.setSelectedQuality(defaultAttribute)
+            console.log(defaultAttribute)
         }
       }
 
@@ -205,7 +215,7 @@ export class TeamModifier extends Component {
      * @returns {map} SortedTeamInformation
      */
     getSortedTeamInformation() {
-        return this.sortedTeamInformation
+        return this.state.sortedTeamInformation
     }
 
     createSortedTeamInformation() {
@@ -223,6 +233,9 @@ export class TeamModifier extends Component {
         for (const header of this.state.googleSheetHeaders){
             initialTeamMap.set(header, [])
         }
+
+        const localSortedTeamInformationMap = new Map();
+
         for (const team of this.teamData){
             const newTeamMap = new Map(initialTeamMap)
             console.log(team)
@@ -268,9 +281,11 @@ export class TeamModifier extends Component {
                 } 
             }
             
-                this.sortedTeamInformation.set(team[0], newTeamMap)// Setting teamnum to be key of newTeamMap
+               localSortedTeamInformationMap.set(team[0], newTeamMap)// Setting teamnum to be key of newTeamMap
                 }
-            //console.log(arrayOfMaps)
+            
+        // Setting the map to state
+        this.setState({sortedTeamInformation : new Map(localSortedTeamInformationMap)})
     }
 
 
@@ -389,7 +404,7 @@ export class TeamModifier extends Component {
                     googleSheetHeaders={this.state.googleSheetHeaders}
                     toggleMenu={this.toggleMenu}
                     marginHorizontal = {this.state.teamMarginController.getMargins().get(chosenTeam)}
-                    sortedTeamInformationMap = {this.sortedTeamInformation.get(chosenTeam)}
+                    sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
                     selectedQuality = {this.state.selectedQuality}
                 />)
         }
@@ -414,7 +429,7 @@ export class TeamModifier extends Component {
                     sortTeamsQualities = {this.sortTeamsQualities} 
                     setChosenTeams = {this.setChosenTeams} 
                     clearChosenTeams = {this.clearChosenTeams}
-                    teamInformation = {this.sortedTeamInformation}
+                    teamInformation = {this.state.sortedTeamInformation}
                     selectedQuality = {this.state.selectedQuality}
                     setSelectedQuality = {this.setSelectedQuality}
                 />

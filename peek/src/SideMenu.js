@@ -41,8 +41,9 @@ export default function SideMenu (props) {
         const options = [];
 
         for (const attribute of attributes){
-            options.push(<option value = {attribute ?? ""}>{attribute ?? ""}</option>)
+            options.push(<option key = {attribute} value = {attribute}>{attribute}</option>)
         }
+
         return (
                 <div>
                     <select value = {props.selectedQuality} onChange={event => props.setSelectedQuality(event.target.value)}>
