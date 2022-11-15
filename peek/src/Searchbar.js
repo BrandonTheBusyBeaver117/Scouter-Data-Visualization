@@ -206,7 +206,14 @@ onChange, run this function with the current input to sort through our teams, an
         return (
         
             <div className = "Searchbar">
-                <input id = "searchbar" type="text" placeholder="Search Teams" value = {searchbarValue}  onInput = {event => setSearchbarValue(event.target.value)} />
+                <input 
+                    id = "searchbar" 
+                    type = "text" 
+                    placeholder = "Search Teams" 
+                    value = {searchbarValue}  
+                    onInput = {event => setSearchbarValue(event.target.value)} 
+                    autoComplete = "off"
+                />
                 <div className = "results">{searchableTeamResults}</div>
             </div>
         )
