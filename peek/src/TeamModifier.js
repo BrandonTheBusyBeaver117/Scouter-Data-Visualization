@@ -6,10 +6,7 @@ import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
 
 import DataCollector from './DataCollector';
-import TeamMarginController from './Team_Component/TeamMarginController';
 export class TeamModifier extends Component {
-
-
 
 
     constructor() {
@@ -26,14 +23,8 @@ export class TeamModifier extends Component {
             chosenTeams: [],
             chosenTeamsStringKey: [],
 
-            teamMarginController: new TeamMarginController("5026"),
-
             selectedQuality: "",
             sortedTeamInformation: new Map(),
-
-            //Individual year variables
-
-            teamColumn: 1, //Column (in array notation) where team number is defined, in case it (for whatever reason) changes year to year
 
             // Context menu
             toggleMenu: false,
@@ -55,8 +46,6 @@ export class TeamModifier extends Component {
 
         this.createTeams()
 
-        //this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
-
     }
 
     componentWillUnmount () {
@@ -64,13 +53,9 @@ export class TeamModifier extends Component {
     componentDidUpdate(__prevProps, prevState) {
         
         //If prevState.something != this.state.something, then update
-        console.log("Previous state " + prevState.chosenTeamsStringKey + "\nCurrent state " + this.state.chosenTeamsStringKey)
-        console.log(prevState.chosenTeamsStringKey)
-        if(JSON.stringify(prevState.chosenTeamsStringKey) != JSON.stringify(this.state.chosenTeamsStringKey)){
-            console.log("update!")
-            this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
-        
-        }
+        //console.log("Previous state " + prevState.chosenTeamsStringKey + "\nCurrent state " + this.state.chosenTeamsStringKey)
+        //console.log(prevState.chosenTeamsStringKey)
+
 
         if(JSON.stringify(prevState.selectedQuality) === JSON.stringify("") && this.state.sortedTeamInformation.size > 0){
             // Finding the first team in the map
@@ -124,8 +109,6 @@ export class TeamModifier extends Component {
             for (const team of this.teamData) {
                 allTeamArray.push(team[0])
             }
-            const newTeamMarginController = new TeamMarginController(allTeamArray)
-            this.setState({teamMarginController : newTeamMarginController})
 
             for (const [index, team] of this.teamData.entries()) {
                 //console.log(team)
@@ -134,7 +117,6 @@ export class TeamModifier extends Component {
                     googleSheetHeaders={this.state.googleSheetHeaders}
                     teamData={team}
                     toggleMenu={this.toggleMenu}
-                    marginHorizontal = {() => this.state.teamMarginController.getMargins().get(team[0])}
                 />)
             }
             console.log(newMapOfTeamElements)
@@ -238,12 +220,14 @@ export class TeamModifier extends Component {
 
         for (const team of this.teamData){
             const newTeamMap = new Map(initialTeamMap)
+
             console.log(team)
             newTeamMap.set("teamNumber", team[0])
             newTeamMap.set("teamRank", team[1])
 
             const matches = team.slice(2) // THis is an array of all the matches, skipping over teamnum and rank
             console.log(matches)
+
             /*
                 something to note here is that if there was a null value 
                 (like someone leaving the comment's block blank), this script 
@@ -271,7 +255,7 @@ export class TeamModifier extends Component {
 
             for(const match of matches){
 
-                for(let i = this.state.teamColumn; i < match.length; i++){// We start when the Team number starts
+                for(let i = 0; i < match.length; i++){// We start when the Team number starts
                     const key = this.state.googleSheetHeaders[i] // The header will be the key to the map
                 
                     const oldValue = newTeamMap.get(key)// Getting the old value for this particular key in the map
@@ -378,32 +362,15 @@ export class TeamModifier extends Component {
 
 
     neoGetTeamComponents (chosenTeams) {
-        this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
+
 
         const arrayOfTeams = []
-        /*
-        for (const team of this.teamData) {
-            if (chosenTeams.includes(team[0])) {               
-                arrayOfTeams.push(
-                <Team key={team[0]}
-                    googleSheetHeaders={this.state.googleSheetHeaders}
-                    toggleMenu={this.toggleMenu}
-                    marginHorizontal = {this.state.teamMarginController.getMargins().get(team[0])}
-                    test = {this.state.pleaseChange}
-                    sortedTeamInformationMap = {this.sortedTeamInformation.get(team[0])}
-                />)
-
-            }
-
-        }
-        */
 
         for (const chosenTeam of chosenTeams) {
             arrayOfTeams.push(
                 <Team key={chosenTeam}
                     googleSheetHeaders={this.state.googleSheetHeaders}
                     toggleMenu={this.toggleMenu}
-                    marginHorizontal = {this.state.teamMarginController.getMargins().get(chosenTeam)}
                     sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
                     selectedQuality = {this.state.selectedQuality}
                 />)
