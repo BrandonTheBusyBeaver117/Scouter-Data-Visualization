@@ -57,13 +57,9 @@ export class TeamModifier extends Component {
         //console.log(prevState.chosenTeamsStringKey)
 
 
-        if(JSON.stringify(prevState.selectedQuality) === JSON.stringify("") && this.state.sortedTeamInformation.size > 0){
-            // Finding the first team in the map
-            // Starting an iterator, getting the first element, then getting its value (the team)
-            const firstTeam = this.state.sortedTeamInformation.values().next().value;
-
-            // Finding the keys of the first team
-            const defaultAttribute = firstTeam?.keys().next().value;
+        if(prevState.selectedQuality === "" && this.state.sortedTeamInformation.size > 0){
+            // Finding the first quality (the first google sheet header)
+            const defaultAttribute = this.state.googleSheetHeaders[0]
             this.setSelectedQuality(defaultAttribute)
             console.log(defaultAttribute)
         }
@@ -221,12 +217,12 @@ export class TeamModifier extends Component {
         for (const team of this.teamData){
             const newTeamMap = new Map(initialTeamMap)
 
-            console.log(team)
+            //console.log(team)
             newTeamMap.set("teamNumber", team[0])
             newTeamMap.set("teamRank", team[1])
 
             const matches = team.slice(2) // THis is an array of all the matches, skipping over teamnum and rank
-            console.log(matches)
+            //console.log(matches)
 
             /*
                 something to note here is that if there was a null value 
