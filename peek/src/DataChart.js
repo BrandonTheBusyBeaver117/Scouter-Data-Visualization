@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import "./DataChart.scss"
 
 import { Chart as ChartJS, CategoryScale, LineController, LineElement, ArcElement, PointElement, LinearScale, Title, Tooltip, Legend } from "chart.js"
@@ -10,47 +8,12 @@ ChartJS.register(CategoryScale, LineController, LineElement, ArcElement, PointEl
 export default function DataChart(props) {
 
 
-    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-    //console.log(props.data)
-    const [chartData, setChartData] = useState({})
-
-    const [chartOptions, setChartOptions] = useState({})
-
-    useEffect(() => {
-        setChartData({
-            labels: ["Tova", "Lexie", "Isaac", "Audrey", "Danny"],
-            datasets: [
-                {
-                    label: "idk",
-                    data: [12, 55, 34, 120, 720],
-                    borderColor: "rgb(53,126,235)",
-                    backgroundColor: "rgba(53,126,235, 0.4)"
-                }
-            ]
-        })
-
-        setChartOptions({
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: "top"
-                },
-                title: {
-                    display: true,
-                    text: "test",
-                }
-            }
-        })
-
-    }, [props.teamData])
-
-    console.log(props.teamData)
-
     const createChart = (matches, teamData, selectedQuality) => {
 
         const data = [...teamData]
-        console.log(data)
-
+        //console.log(data)
+        //console.log(typeof data[0])
+        
         if (data.includes("FALSE") || data.includes("TRUE")) {
 
             console.log(data)
@@ -87,50 +50,86 @@ export default function DataChart(props) {
                         maintainAspectRatio: false, 
                         plugins: {
                             title: {
-                                display: true,
+                                display: false,
                                 text : selectedQuality
                             }
                         }
                     }}
                     />
+        } else if (!isNaN(data[0]) ){
+        
+        let yOption = {};
+
+        if(data.includes("0")){
+            yOption = {
+                ticks: {
+                    stepSize: 1
+                }  
+                }
+
+            
         } else {
+            yOption = {
+                min: 0,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+            
+        }
+
             return <Line
                 className='dataChart'
                 datasetIdKey='defaultLineChart'
                 data={{
                     // Should be match numbers
-                    labels: matches,
+                    labels: matches.map((matchNum) => "Match #" + matchNum ),
                     datasets: [
                         {
                             id: 1,
-                            label: '',
+                            label: selectedQuality,
                             data: data,
-                            backgroundColor: "rgb(150, 230, 255)"
+                            backgroundColor: "rgb(15, 230, 255)",
+                            borderColor: "rgb(205, 205, 205)",
+                            borderWidth: 2,
+                            
+
                         }
                     ]
                 }}
                 options={{ 
                         maintainAspectRatio: false, 
                         scales: {
-                            y: {
-                                min: 0,
-                                ticks: {
-                                    stepSize: 1
-                                }
+                            y:  yOption,
+                            x: {
+                                title : {
+                                    display: true,
+                                    text: "Match Number"
+                                },
+                            },
+                            
+                        },
+                        elements : {
+                            point: {
+                                borderWidth : 10
                             }
                         },
                         plugins: {
                             title: {
-                                display: true,
+                                display: false,
                                 text : selectedQuality
                             }
                         }
                     }}
 
             />
+        } else {
+            return data.map((dataPoint) => <p>{dataPoint}</p>)
         }
 
     }
+
+    
 
     return (
 
