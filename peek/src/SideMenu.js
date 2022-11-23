@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SideMenu.scss"
 
 export default function SideMenu (props) {
@@ -56,11 +56,19 @@ export default function SideMenu (props) {
                 )
     }
 
+    // Update the selected quality and sort
     const updateTeamSelectedProperty = (newSelectedQuality) => {
         props.setSelectedQuality(newSelectedQuality)
         props.sortTeamsQualities(newSelectedQuality)
     }
 
+    // Once the teammodifier has a selected quality, use it if we have none in this component
+    useEffect(() => {
+        if(optionState === "") {
+            setOptionState(props.selectedQuality)
+        }
+        
+    },[props.selectedQuality])
     
 
     console.log(props.teamInformation)
