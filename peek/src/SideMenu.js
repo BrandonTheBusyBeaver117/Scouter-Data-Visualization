@@ -3,7 +3,7 @@ import "./SideMenu.scss"
 
 export default function SideMenu (props) {
 
-    //const[optionState, setOptionState] = useState("")
+    const[optionState, setOptionState] = useState("")
     
     const createTeamButtons = (teamList) => {
 
@@ -33,25 +33,35 @@ export default function SideMenu (props) {
         // Starting an iterator, getting the first element, then getting its value (the team)
         const firstTeam = teamMap.values().next().value;
 
-        // Finding the keys of the first team
-        // If it's undefined, then just make the keys an empty array
-        const attributes = firstTeam?.keys() ?? [];
-
         // Array of all the options
         const options = [];
 
-        for (const attribute of attributes){
-            options.push(<option key = {attribute} value = {attribute}>{attribute}</option>)
+        // Makes sure that the team isn't undefined (duh)
+        if(firstTeam !== undefined){
+            // Iterates through all the attributes and data of the team
+            for(const [attribute, data] of firstTeam) {
+                // Checks if the data is actually iterable (for the data chart)
+                if(typeof data[Symbol.iterator] === 'function'){
+                    options.push(<option key = {attribute} value = {attribute}>{attribute}</option>)
+                }
+            }
         }
 
         return (
                 <div>
-                    <select value = {props.selectedQuality} onChange={event => props.setSelectedQuality(event.target.value)}>
+                    <select value = {optionState} onChange={event => setOptionState(event.target.value)}>
                     {options}
                     </select>
                 </div>
                 )
     }
+
+    const updateTeamSelectedProperty = (newSelectedQuality) => {
+        props.setSelectedQuality(newSelectedQuality)
+        props.sortTeamsQualities(newSelectedQuality)
+    }
+
+    
 
     console.log(props.teamInformation)
     return (
@@ -61,8 +71,8 @@ export default function SideMenu (props) {
                 <h2>Teams Selected</h2>
                 <div>{createTeamButtons(props.chosenTeams)}</div>
                 <h2>Sort Teams by:</h2>
-                <button onClick = {() => props.sortTeamsQualities(props.selectedQuality)}>
-                    {props.selectedQuality === "" ? "No Quality selected" : props.selectedQuality}
+                <button onClick = {() => updateTeamSelectedProperty(optionState)}>
+                    {optionState}
                 </button>
                 {optionSelector(props.teamInformation)}
            </div>
