@@ -9,24 +9,21 @@ export default function Searchbar (props) {
     const [teamsForComparison, setTeamsForComparison] = useState([]);
     const [searchbarValue, setSearchbarValue] = useState("");
 
-
-    const noDoubles = (previousTeams, newTeam) => {
-        if(previousTeams.includes(newTeam)) {
-            return [...previousTeams]
-        } else {
-            return [...previousTeams, newTeam]
-        }
-    }
-
     // Allows chosen teams values to persist 
     const prevChosenTeams = useRef(props.chosenTeams)
 
-    const handleClick = newTeam => {
+    const handleResultClick = newTeam => {
 
         console.log(props.chosenTeams)
         console.log(newTeam)
 
-        
+        const noDoubles = (previousTeams, newTeam) => {
+            if(previousTeams.includes(newTeam)) {
+                return [...previousTeams]
+            } else {
+                return [...previousTeams, newTeam]
+            }
+        }
         
         const newArray = noDoubles(prevChosenTeams.current, newTeam)
         props.setChosenTeams(newArray)
@@ -35,6 +32,38 @@ export default function Searchbar (props) {
         
     }
 
+
+
+   
+        // Thanks to Ben Bud
+        // Solution found at https://stackoverflow.com/a/42234988
+ 
+    const lastClickedClassName = useRef("")
+    const searchbarValueRef = useRef("")
+    useEffect(() => {
+      /**
+       * Alert if clicked on outside of element
+       */
+      function handleClickOutside(event) {
+         
+        if (event.target.className !== "insideSearchbar" ) {
+          //alert("You clicked outside of me!");
+          console.log("click outside")
+          setSearchableTeamResults([])// Says that there's no results
+        } else if(lastClickedClassName.current !== "insideSearchbar" && event.target.className === "insideSearchbar") {
+            handleChange(searchbarValueRef.current)
+            console.log("Click inside")
+        }
+        lastClickedClassName.current = event.target.className
+        console.log(searchbarValue)
+    }
+      // Bind the event listener
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    },[]);
 
 
     useEffect(() => {
@@ -49,7 +78,11 @@ export default function Searchbar (props) {
             //Might be where caching comes in?
             // I kinda want to format it so that name is on left, ranking on the far right
             
-            <p key ={iterate} onClick = {() => handleClick(item[0])}>Team {item[0]} --- rank: {item[1]}</p> 
+            <p 
+                key ={iterate} 
+                onClick = {() => handleResultClick(item[0])}
+                className= "insideSearchbar"
+            >Team {item[0]} --- rank: {item[1]}</p> 
             )
         }
         setTotalTeamComponents(allTeamComponents)
@@ -90,14 +123,13 @@ export default function Searchbar (props) {
     useEffect(() => {
         console.log(searchbarValue)
         handleChange(searchbarValue)
+        searchbarValueRef.current = searchbarValue
     }, [searchbarValue])
    
 
 
     /**
         When there's a change to the searchbar, this function will run
-
-        It takes in the event, which will be stored in "response"
 
         It works to filter through the teams and output team results
     */
@@ -119,7 +151,7 @@ export default function Searchbar (props) {
 
             let anyResultFound = false; // Were there any results found?
 
-            //console.log("string: " + response + "length: " + response.length)
+            console.log("string: " + response + "length: " + response.length)
 
 
             /*
@@ -180,16 +212,16 @@ export default function Searchbar (props) {
 
                } else {
                    //If there's no result found, then the state will just be plain text that says the following message
-                   setSearchableTeamResults(<p>No teams found with that number</p>)
+                   setSearchableTeamResults(<p  className="insideSearchbar">No teams found with that number</p>)
                }
 
         }else{
             //display warning that they need to have only numbers
-            setSearchableTeamResults(<p>Hey! No letters allowed!</p>)
+            setSearchableTeamResults(<p className="insideSearchbar">Hey! No letters allowed!</p>)
         }
 
     
-        console.log(searchbarValue)
+        //console.log(searchbarValue)
 
         
     };
@@ -200,21 +232,19 @@ onChange, run this function with the current input to sort through our teams, an
 
 */
 
-
-
-
         return (
         
-            <div className = "Searchbar">
-                <input 
-                    id = "searchbar" 
-                    type = "text" 
-                    placeholder = "Search Teams" 
-                    value = {searchbarValue}  
-                    onInput = {event => setSearchbarValue(event.target.value)} 
-                    autoComplete = "off"
-                />
-                <div className = "results">{searchableTeamResults}</div>
+            <div className = "Searchbar" >
+                    <input 
+                        id = "searchbar" 
+                        type = "text" 
+                        placeholder = "Search Teams" 
+                        value = {searchbarValue}  
+                        onInput = {event => setSearchbarValue(event.target.value)} 
+                        autoComplete = "off"
+                        className= "insideSearchbar"
+                    />
+                    <div className = "results">{searchableTeamResults}</div>
             </div>
         )
      
