@@ -383,7 +383,7 @@ export class TeamModifier extends Component {
             <div>
                 <Searchbar 
                     chosenTeams = {this.state.chosenTeamsStringKey} 
-                    teamData={this.teamData} 
+                    teamInformation = {this.state.sortedTeamInformation}
                     setChosenTeams = {this.setChosenTeams}
                 />
                 
