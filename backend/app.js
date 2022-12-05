@@ -49,35 +49,26 @@ app.get("/getSpreadsheetData", async (req, res) => {
 
     );
 
+    client.authorize( (err, tokens) => {
 
-    function getSpreadsheetData () {
-        client.authorize( (err) => {
+        if(err){
+            console.log("you have angered a higher being \n" + err);
+        } else {
+            readSpreadsheet(client).then(response =>{
 
-            if(err){
-                console.log("Something bad happened with \n" + err);
+            console.log(response);
+            res.json(response)
+            }).catch(error => {
+                console.log(error)
+                res.json(error)
+            })
+             
+
             
-                setTimeout(() => getSpreadsheetData(), 1500)
-            
-            } else {
-                readSpreadsheet(client).then(response =>{
-    
-                console.log(response);
-                res.json(response)
-                }).catch(error => {
-                    console.log(error)
-                    res.json(error)
-                })
-                
-            }
-    
-    
-        })
+        }
 
-        
-    
-        getSpreadsheetData()
 
-    }
+    })
 
     async function readSpreadsheet(client) {
 
