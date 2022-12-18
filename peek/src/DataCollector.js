@@ -11,6 +11,8 @@ export default class DataCollector {
         // Could put this in constructor
         this.teamColumn = 1;
 
+        this.sheetsRetrievalErrors = 0;
+
     }
 
     getTeamData () {
@@ -104,7 +106,20 @@ getTBAData() {
         this.matchData = response.data
 
         this.parseThroughSpreadSheetData()
-    }).catch(error => console.log(error))
+    }).catch(error =>{
+
+        if(this.sheetsRetrievalErrors < 3){
+            console.log(error) 
+            alert("check console")
+
+            this.sheetsRetrievalErrors++;
+            return setTimeout(this.getSpreadsheetData, 1500);
+        } else {
+            // read from local cache
+            alert("reading from cache, plz implement ")
+        }
+        
+    } )
 
 }
 
