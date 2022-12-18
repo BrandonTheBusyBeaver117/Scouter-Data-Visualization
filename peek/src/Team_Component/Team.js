@@ -51,7 +51,8 @@ export class Team extends Component{
         console.log(this.props.sortedTeamInformationMap)
         console.log(this.props.sortedTeamInformationMap.get(this.props.selectedQuality))
         return(
-        <div className='teamComponent'>
+        <div className='teamComponent' 
+            id = {"team" + this.props.sortedTeamInformationMap.get("teamNumber")}>
             <h1>{this.props.sortedTeamInformationMap.get("teamNumber")}</h1>
             <h2>Rank: {this.props.sortedTeamInformationMap.get("teamRank")}</h2>
             
