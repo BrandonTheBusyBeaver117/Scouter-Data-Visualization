@@ -1,11 +1,13 @@
 .teamComponent {
     width: 400px;
     height: 350px;
-    margin: 25px 75px;     
+    margin: 25px 75px;
+    // USE FLEXBOX!!!
+    // https://www.internetingishard.com/html-and-css/flexbox/#:~:text=distributing%20multiple%20flex%20items    
     
     background-color: white;
 
-    overflow:auto;
+    overflow: auto;
 
     display: inline-block;
 

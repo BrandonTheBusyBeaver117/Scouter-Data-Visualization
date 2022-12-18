@@ -381,11 +381,16 @@ export class TeamModifier extends Component {
         //teamComponents = this.chosenTeams;
         return (
             <div>
-                <Searchbar 
-                    chosenTeams = {this.state.chosenTeamsStringKey} 
-                    teamInformation = {this.state.sortedTeamInformation}
-                    setChosenTeams = {this.setChosenTeams}
-                />
+                <header>
+                    <Searchbar 
+                        chosenTeams = {this.state.chosenTeamsStringKey} 
+                        teamInformation = {this.state.sortedTeamInformation}
+                        setChosenTeams = {this.setChosenTeams}
+                    />
+
+                    <div id = "sortingMessage">Currently sorting by: {this.state.selectedQuality}</div>
+                </header>
+                
                 
                 <SideMenu 
                     chosenTeams = {this.state.chosenTeamsStringKey} 

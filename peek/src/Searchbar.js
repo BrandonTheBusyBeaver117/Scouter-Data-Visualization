@@ -128,9 +128,9 @@ export default function Searchbar(props) {
 
     return (
 
-        <div className="Searchbar" >
+        <div className= "searchbar" >
             <input
-                id="searchbar"
+                id="inputBox"
                 type="text"
                 placeholder="Search Teams"
                 value={searchbarValue}
