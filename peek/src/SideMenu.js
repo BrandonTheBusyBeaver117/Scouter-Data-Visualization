@@ -59,7 +59,21 @@ export default function SideMenu (props) {
     // Update the selected quality and sort
     const updateTeamSelectedProperty = (newSelectedQuality) => {
         props.setSelectedQuality(newSelectedQuality)
-        props.sortTeamsQualities(newSelectedQuality)
+
+        // Finding the first team in the map
+        // Starting an iterator, getting the first element, then getting its value (the team)
+        const firstTeam = props.teamInformation.values().next().value;
+
+        const data = firstTeam.get(newSelectedQuality)
+
+        // Assumes that data actually exists...
+        // If the data is actually something we can process, then sort
+        // Otherwise, if it's a string (like a comment), then do not sort
+        if(data.includes("TRUE") || data.includes("FALSE") || !isNaN(data[0])){
+            props.sortTeamsQualities(newSelectedQuality)
+        } 
+        
+
     }
 
     // Once the teammodifier has a selected quality, use it if we have none in this component
