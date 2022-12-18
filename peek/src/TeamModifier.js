@@ -276,23 +276,35 @@ export class TeamModifier extends Component {
         while ( sortedTeamLeft.length > 0 && sortedTeamRight.length > 0 ) {
             
             
+
+            // Because of our data structure, the team is an array
+            // First element is the teamnumber
             const firstTeamRight = sortedTeamRight[0]
             const firstTeamLeft = sortedTeamLeft[0]
 
 
+            // The second element is the value (the average)
             const valueRightTeam = firstTeamRight[1]
             const valueLeftTeam = firstTeamLeft[1]
+
+            // If the value on the left is bigger, then we push the entire team to the front of the array
+            // The team, again, is made up of the teamnumber and the average
             if (valueLeftTeam > valueRightTeam) {
                 sortedArray.push(sortedTeamLeft.shift())
             } else if (valueLeftTeam < valueRightTeam) {
+            // If the value on the right is bigger, then we push the entire team to the front of the array
                 sortedArray.push(sortedTeamRight.shift())
             } else {
+            // Else, if the values are equal, keep the original order and shift them both
                 sortedArray.push(sortedTeamLeft.shift())
                 sortedArray.push(sortedTeamRight.shift())
             }
         }
         
+        console.log([...sortedArray, ...sortedTeamLeft, ...sortedTeamRight])
 
+        // the sorted array, plus any leftover arrays, just in case the sorted arrays are inequal in size
+        // any leftovers should be the smallest one left
         return [...sortedArray, ...sortedTeamLeft, ...sortedTeamRight]
 
     }
@@ -337,9 +349,35 @@ export class TeamModifier extends Component {
             const mapOfTeam = allTeamData.get(Number(teamKey))
             console.log(mapOfTeam)
             const arrayOfQuality = mapOfTeam.get(quality)
+
+            let castedArray = [];
+                
+            if(arrayOfQuality.includes("TRUE") || arrayOfQuality.includes("FALSE")) {
+
+                // Converting the strings to booleans
+                // If the data is TRUE, then the comparison returns true
+                // Otherwise, it returns false, which is the FALSE data
+                // Then, you can add them later (true is 1, false is 0)
+                castedArray = arrayOfQuality.map((data) => data === "TRUE");
+
+                //console.log(arrayOfQuality)
+                //console.log(castedArray)
+
+            } else {
             
-            const average = (arrayOfQuality.reduce((previous, current) => Number(previous) + Number(current))) / arrayOfQuality.length
+                castedArray = arrayOfQuality.map((data) => Number(data));
+
+            }
+
+            const total = (castedArray.reduce((previous, current) => previous + current)) 
+
+            const average = total / arrayOfQuality.length;
+
+            // IDK if this is good code, but basically the "teams" that we're pushing to be compared have two pieces of data
+            // We basically make the teamKey and the average 1 element
+            // It's compared later
             arrayOfTeamQualities.push([teamKey, average])
+
             console.log([teamKey, average])
         }
 
