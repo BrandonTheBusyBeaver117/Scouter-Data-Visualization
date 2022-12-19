@@ -28,8 +28,6 @@ $initialDistance: $heightOfSearchBox + 2px; // 2px again because we want borders
     //background-color: black;
     width: $widthOfSearches;
     display: flex;
-    justify-content: center;
-    flex-direction: column;
 }
 
 
@@ -38,9 +36,11 @@ $initialDistance: $heightOfSearchBox + 2px; // 2px again because we want borders
     display: flex;
     justify-content: center;
     flex-direction: column;
+    position: absolute;
+    top:$initialDistance;
     p{     
     //height: 2.5em; 
-    position: absolute; 
+    //position: absolute; 
         font-size: 18px; 
         margin: 0; 
         
@@ -50,7 +50,8 @@ $initialDistance: $heightOfSearchBox + 2px; // 2px again because we want borders
         padding-bottom: $padding; 
         //padding: $padding; 
         border: 2px solid #ddd; 
-        width: $widthOfSearches;
+        // Subtract the additional border width
+        width: calc($widthOfSearches - 4px);
         text-align: center; 
     } 
     p:hover { 
@@ -58,70 +59,6 @@ $initialDistance: $heightOfSearchBox + 2px; // 2px again because we want borders
         transition: 0.2s linear; 
         background-color: rgb(0, 255, 115); 
     } 
-
-    p:nth-child(1){ 
-        @extend p; 
-        top: $initialDistance; 
-        
-        } 
-    
-        p:nth-child(2){ 
-            @extend p; 
-            top: $initialDistance + $incrementDistance; 
-            
-        } 
-        p:nth-child(3){ 
-            @extend p; 
-            top: $initialDistance + 2*$incrementDistance; 
-            
-        } 
-    
-        p:nth-child(4){ 
-            @extend p; 
-            top: $initialDistance + 3*$incrementDistance; 
-            
-        } 
-    
-        p:nth-child(5){ 
-            @extend p; 
-            top: $initialDistance + 4*$incrementDistance; 
-            
-        } 
-    
-        p:nth-child(6){ 
-            @extend p; 
-            top: $initialDistance + 5*$incrementDistance; 
-            
-        } 
-        p:nth-child(7){ 
-            @extend p; 
-            top: $initialDistance + 6 * $incrementDistance; 
-            
-        } 
-    
-        p:nth-child(8){ 
-            @extend p; 
-            top: $initialDistance + 7 * $incrementDistance; 
-            
-        } 
-    
-        p:nth-child(9){ 
-            @extend p; 
-            top: $initialDistance + 8 * $incrementDistance; 
-            
-        } 
-    
-        p:nth-child(10){ 
-            @extend p; 
-            top: $initialDistance + 9 * $incrementDistance; 
-            
-        } 
-    
-        p:nth-child(11){ 
-            @extend p; 
-            top: $initialDistance + 10 * $incrementDistance; 
-            
-        } 
     
 }
 #inputBox { 
