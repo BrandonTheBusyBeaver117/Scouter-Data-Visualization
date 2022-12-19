@@ -1,3 +1,32 @@
 #Teams {
     margin-left: 300px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+#sortingMessage {
+    background-color: aquamarine;
+    top: 0px;
+    margin: 5px 40px;
+    font-size: 1.1em;
+    display: inline;
+    color: black;
+    padding: 0.75em;
+    border-radius: 0.75em;
+
+}
+
+header {
+    background-color: #282c34;//Found in index.css  
+                                //If background color ever changes in index, please change it here as well 
+    position: sticky; 
+    top: 0px; 
+    width: calc(100% - 300px); // Offsetting the sidemenu
+    display: flex;
+    justify-content: center;
+
+    //border: 1px solid #fff;  /* For debugging */
+
+    margin-left: 300px; // This directly corresponds to the "margin-left" property for the team div in TeamModifier.scss
 }

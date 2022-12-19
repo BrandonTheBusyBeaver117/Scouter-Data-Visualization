@@ -6,10 +6,7 @@ import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
 
 import DataCollector from './DataCollector';
-import TeamMarginController from './Team_Component/TeamMarginController';
 export class TeamModifier extends Component {
-
-
 
 
     constructor() {
@@ -17,8 +14,6 @@ export class TeamModifier extends Component {
         this.matchData = []
         this.teamData = []
         this.mapOfTeamElements = new Map()
-        this.sortedTeamInformation =  new Map()
-
         this.chosenTeams = []
 
 
@@ -28,13 +23,8 @@ export class TeamModifier extends Component {
             chosenTeams: [],
             chosenTeamsStringKey: [],
 
-            teamMarginController: new TeamMarginController("5026"),
-            
-            pleaseChange: false,
-
-            //Individual year variables
-
-            teamColumn: 1, //Column (in array notation) where team number is defined, in case it (for whatever reason) changes year to year
+            selectedQuality: "",
+            sortedTeamInformation: new Map(),
 
             // Context menu
             toggleMenu: false,
@@ -48,6 +38,7 @@ export class TeamModifier extends Component {
         this.setChosenTeams = this.setChosenTeams.bind(this);
         this.sortTeamsQualities = this.sortTeamsQualities.bind(this);
         this.clearChosenTeams = this.clearChosenTeams.bind(this);
+        this.setSelectedQuality = this.setSelectedQuality.bind(this);
     }
 
     componentDidMount = () => {
@@ -55,25 +46,23 @@ export class TeamModifier extends Component {
 
         this.createTeams()
 
-        window.addEventListener("resize", () => this.setState({pleaseChange : true}))
-        //this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
-
     }
 
     componentWillUnmount () {
-        window.removeEventListener("resize", () => this.setState({pleaseChange : true}))
     }
     componentDidUpdate(__prevProps, prevState) {
         
         //If prevState.something != this.state.something, then update
-        console.log("Previous state " + prevState.chosenTeamsStringKey + "\nCurrent state " + this.state.chosenTeamsStringKey)
-        console.log(prevState.chosenTeamsStringKey)
-        if(JSON.stringify(prevState.chosenTeamsStringKey) != JSON.stringify(this.state.chosenTeamsStringKey)){
-            console.log("update!")
-            this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
-        
+        //console.log("Previous state " + prevState.chosenTeamsStringKey + "\nCurrent state " + this.state.chosenTeamsStringKey)
+        //console.log(prevState.chosenTeamsStringKey)
+
+
+        if(prevState.selectedQuality === "" && this.state.sortedTeamInformation.size > 0){
+            // Finding the first quality (the first google sheet header)
+            const defaultAttribute = this.state.googleSheetHeaders[0]
+            this.setSelectedQuality(defaultAttribute)
+            console.log(defaultAttribute)
         }
-        console.log(this.state.pleaseChange)
       }
 
 
@@ -116,8 +105,6 @@ export class TeamModifier extends Component {
             for (const team of this.teamData) {
                 allTeamArray.push(team[0])
             }
-            const newTeamMarginController = new TeamMarginController(allTeamArray)
-            this.setState({teamMarginController : newTeamMarginController})
 
             for (const [index, team] of this.teamData.entries()) {
                 //console.log(team)
@@ -126,8 +113,6 @@ export class TeamModifier extends Component {
                     googleSheetHeaders={this.state.googleSheetHeaders}
                     teamData={team}
                     toggleMenu={this.toggleMenu}
-                    marginHorizontal = {() => this.state.teamMarginController.getMargins().get(team[0])}
-                    test = {this.state.pleaseChange}
                 />)
             }
             console.log(newMapOfTeamElements)
@@ -151,6 +136,9 @@ export class TeamModifier extends Component {
     }
 
 
+    setSelectedQuality(newSelectedQuality) {
+        this.setState({selectedQuality : newSelectedQuality})
+    }
 
     setMapOfTeamElements(newMap) {
         this.mapOfTeamElements = newMap
@@ -205,7 +193,7 @@ export class TeamModifier extends Component {
      * @returns {map} SortedTeamInformation
      */
     getSortedTeamInformation() {
-        return this.sortedTeamInformation
+        return this.state.sortedTeamInformation
     }
 
     createSortedTeamInformation() {
@@ -223,14 +211,19 @@ export class TeamModifier extends Component {
         for (const header of this.state.googleSheetHeaders){
             initialTeamMap.set(header, [])
         }
+
+        const localSortedTeamInformationMap = new Map();
+
         for (const team of this.teamData){
             const newTeamMap = new Map(initialTeamMap)
-            console.log(team)
+
+            //console.log(team)
             newTeamMap.set("teamNumber", team[0])
             newTeamMap.set("teamRank", team[1])
 
             const matches = team.slice(2) // THis is an array of all the matches, skipping over teamnum and rank
-            console.log(matches)
+            //console.log(matches)
+
             /*
                 something to note here is that if there was a null value 
                 (like someone leaving the comment's block blank), this script 
@@ -258,7 +251,7 @@ export class TeamModifier extends Component {
 
             for(const match of matches){
 
-                for(let i = this.state.teamColumn; i < match.length; i++){// We start when the Team number starts
+                for(let i = 0; i < match.length; i++){// We start when the Team number starts
                     const key = this.state.googleSheetHeaders[i] // The header will be the key to the map
                 
                     const oldValue = newTeamMap.get(key)// Getting the old value for this particular key in the map
@@ -268,9 +261,11 @@ export class TeamModifier extends Component {
                 } 
             }
             
-                this.sortedTeamInformation.set(team[0], newTeamMap)// Setting teamnum to be key of newTeamMap
+               localSortedTeamInformationMap.set(team[0], newTeamMap)// Setting teamnum to be key of newTeamMap
                 }
-            //console.log(arrayOfMaps)
+            
+        // Setting the map to state
+        this.setState({sortedTeamInformation : new Map(localSortedTeamInformationMap)})
     }
 
 
@@ -281,20 +276,35 @@ export class TeamModifier extends Component {
         while ( sortedTeamLeft.length > 0 && sortedTeamRight.length > 0 ) {
             
             
+
+            // Because of our data structure, the team is an array
+            // First element is the teamnumber
             const firstTeamRight = sortedTeamRight[0]
             const firstTeamLeft = sortedTeamLeft[0]
 
 
+            // The second element is the value (the average)
             const valueRightTeam = firstTeamRight[1]
             const valueLeftTeam = firstTeamLeft[1]
+
+            // If the value on the left is bigger, then we push the entire team to the front of the array
+            // The team, again, is made up of the teamnumber and the average
             if (valueLeftTeam > valueRightTeam) {
+                sortedArray.push(sortedTeamLeft.shift())
+            } else if (valueLeftTeam < valueRightTeam) {
+            // If the value on the right is bigger, then we push the entire team to the front of the array
                 sortedArray.push(sortedTeamRight.shift())
             } else {
+            // Else, if the values are equal, keep the original order and shift them both
                 sortedArray.push(sortedTeamLeft.shift())
+                sortedArray.push(sortedTeamRight.shift())
             }
         }
         
+        console.log([...sortedArray, ...sortedTeamLeft, ...sortedTeamRight])
 
+        // the sorted array, plus any leftover arrays, just in case the sorted arrays are inequal in size
+        // any leftovers should be the smallest one left
         return [...sortedArray, ...sortedTeamLeft, ...sortedTeamRight]
 
     }
@@ -339,13 +349,39 @@ export class TeamModifier extends Component {
             const mapOfTeam = allTeamData.get(Number(teamKey))
             console.log(mapOfTeam)
             const arrayOfQuality = mapOfTeam.get(quality)
+
+            let castedArray = [];
+                
+            if(arrayOfQuality.includes("TRUE") || arrayOfQuality.includes("FALSE")) {
+
+                // Converting the strings to booleans
+                // If the data is TRUE, then the comparison returns true
+                // Otherwise, it returns false, which is the FALSE data
+                // Then, you can add them later (true is 1, false is 0)
+                castedArray = arrayOfQuality.map((data) => data === "TRUE");
+
+                //console.log(arrayOfQuality)
+                //console.log(castedArray)
+
+            } else {
             
-            const average = (arrayOfQuality.reduce((previous, current) => Number(previous) + Number(current))) / arrayOfQuality.length
+                castedArray = arrayOfQuality.map((data) => Number(data));
+
+            }
+
+            const total = (castedArray.reduce((previous, current) => previous + current)) 
+
+            const average = total / arrayOfQuality.length;
+
+            // IDK if this is good code, but basically the "teams" that we're pushing to be compared have two pieces of data
+            // We basically make the teamKey and the average 1 element
+            // It's compared later
             arrayOfTeamQualities.push([teamKey, average])
+
             console.log([teamKey, average])
         }
 
-        const sortedTeamQualities = this.mergeSortTeams(arrayOfTeamQualities).reverse()
+        const sortedTeamQualities = this.mergeSortTeams(arrayOfTeamQualities)
         
         const arrayOfSortedTeams = []
 
@@ -360,23 +396,18 @@ export class TeamModifier extends Component {
 
 
     neoGetTeamComponents (chosenTeams) {
-        this.state.teamMarginController.updateMargins(this.state.chosenTeamsStringKey)
+
 
         const arrayOfTeams = []
-        for (const team of this.teamData) {
-            if (chosenTeams.includes(team[0])) {               
-                arrayOfTeams.push(
-                <Team key={team[0]}
+
+        for (const chosenTeam of chosenTeams) {
+            arrayOfTeams.push(
+                <Team key={chosenTeam}
                     googleSheetHeaders={this.state.googleSheetHeaders}
-                    teamData={team}
                     toggleMenu={this.toggleMenu}
-                    marginHorizontal = {this.state.teamMarginController.getMargins().get(team[0])}
-                    test = {this.state.pleaseChange}
-                    sortedTeamInformationMap = {this.sortedTeamInformation.get(team[0])}
+                    sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
+                    selectedQuality = {this.state.selectedQuality}
                 />)
-
-            }
-
         }
 
         return arrayOfTeams
@@ -388,18 +419,25 @@ export class TeamModifier extends Component {
         //teamComponents = this.chosenTeams;
         return (
             <div>
-                <Searchbar 
-                    chosenTeams = {this.state.chosenTeamsStringKey} 
-                    teamData={this.teamData} 
-                    setChosenTeams = {this.setChosenTeams}
-                />
+                <header>
+                    <Searchbar 
+                        chosenTeams = {this.state.chosenTeamsStringKey} 
+                        teamInformation = {this.state.sortedTeamInformation}
+                        setChosenTeams = {this.setChosenTeams}
+                    />
+
+                    <div id = "sortingMessage">Currently sorting by: {this.state.selectedQuality}</div>
+                </header>
+                
                 
                 <SideMenu 
                     chosenTeams = {this.state.chosenTeamsStringKey} 
                     sortTeamsQualities = {this.sortTeamsQualities} 
                     setChosenTeams = {this.setChosenTeams} 
                     clearChosenTeams = {this.clearChosenTeams}
-                    teamInformation = {this.sortedTeamInformation}
+                    teamInformation = {this.state.sortedTeamInformation}
+                    selectedQuality = {this.state.selectedQuality}
+                    setSelectedQuality = {this.setSelectedQuality}
                 />
 
                 <ContextMenu

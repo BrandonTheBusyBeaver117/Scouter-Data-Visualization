@@ -1,39 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SideMenu.scss"
 
 export default function SideMenu (props) {
 
-    const[teamButtons, setTeamButtons] = useState([])
     const[optionState, setOptionState] = useState("")
     
     const createTeamButtons = (teamList) => {
-        console.log("Trying to createTeamButtons")
-        console.log(teamList)
 
         const newTeamButtons = []
-        for (const team of teamList) {
-            const newTeamButton = <div id = {team} key = {team}>
-                                        <button className = "teamSelector" >{team}</button>
+        if(teamList.length === 0){
+            newTeamButtons.push(
+                <div>
+                    <button className = "teamSelector" >No teams selected</button>
+                </div>
+            )
+        } else {
+            for (const team of teamList) {
+                const newTeamButton = <div key = {team}>
+                                        <button className = "teamSelector" onClick = {() => document.getElementById("team" + team).scrollIntoView({behavior: "smooth", block: "center"})}>{team}</button>
                                         <button className = "delete" onClick = {() => props.clearChosenTeams([team])}>x</button>
-                                  </div>
-            newTeamButtons.push(newTeamButton)
+                                      </div>
+                newTeamButtons.push(newTeamButton)
+            }
         }
 
-
-        console.log(newTeamButtons)
         return newTeamButtons
-    }
+    } 
 
     const optionSelector = (teamMap) => {
+
+        // Finding the first team in the map
+        // Starting an iterator, getting the first element, then getting its value (the team)
         const firstTeam = teamMap.values().next().value;
 
-        const attributes = firstTeam?.keys() ?? [];
-
+        // Array of all the options
         const options = [];
 
-        for (const attribute of attributes){
-            options.push(<option value = {attribute ?? ""}>{attribute ?? ""}</option>)
+        // Makes sure that the team isn't undefined (duh)
+        if(firstTeam !== undefined){
+            // Iterates through all the attributes and data of the team
+            for(const [attribute, data] of firstTeam) {
+                // Checks if the data is actually iterable (for the data chart)
+                if(typeof data[Symbol.iterator] === 'function'){
+                    options.push(<option key = {attribute} value = {attribute}>{attribute}</option>)
+                }
+            }
         }
+
         return (
                 <div>
                     <select value = {optionState} onChange={event => setOptionState(event.target.value)}>
@@ -43,6 +56,35 @@ export default function SideMenu (props) {
                 )
     }
 
+    // Update the selected quality and sort
+    const updateTeamSelectedProperty = (newSelectedQuality) => {
+        props.setSelectedQuality(newSelectedQuality)
+
+        // Finding the first team in the map
+        // Starting an iterator, getting the first element, then getting its value (the team)
+        const firstTeam = props.teamInformation.values().next().value;
+
+        const data = firstTeam.get(newSelectedQuality)
+
+        // Assumes that data actually exists...
+        // If the data is actually something we can process, then sort
+        // Otherwise, if it's a string (like a comment), then do not sort
+        if(data.includes("TRUE") || data.includes("FALSE") || !isNaN(data[0])){
+            props.sortTeamsQualities(newSelectedQuality)
+        } 
+        
+
+    }
+
+    // Once the teammodifier has a selected quality, use it if we have none in this component
+    useEffect(() => {
+        if(optionState === "") {
+            setOptionState(props.selectedQuality)
+        }
+        
+    },[props.selectedQuality])
+    
+
     console.log(props.teamInformation)
     return (
         <div id = "SideMenu">
@@ -51,7 +93,9 @@ export default function SideMenu (props) {
                 <h2>Teams Selected</h2>
                 <div>{createTeamButtons(props.chosenTeams)}</div>
                 <h2>Sort Teams by:</h2>
-                <button Sort = {() => props.sortTeamsQualities(optionState)}>{optionState}</button>
+                <button onClick = {() => updateTeamSelectedProperty(optionState)}>
+                    {optionState}
+                </button>
                 {optionSelector(props.teamInformation)}
            </div>
             <h2>Clear Teams:</h2>
