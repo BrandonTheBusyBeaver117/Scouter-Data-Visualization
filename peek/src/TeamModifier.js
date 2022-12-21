@@ -4,6 +4,7 @@ import { ContextMenu } from './ContextMenu';
 import Searchbar from './Searchbar';
 import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
+import InformationSource from './InformationSource';
 
 import DataCollector from './DataCollector';
 export class TeamModifier extends Component {
@@ -16,7 +17,8 @@ export class TeamModifier extends Component {
 
         this.state = {
 
-            inputSource: null,
+            inputSource: "https://docs.google.com/spreadsheets/d/1CKLOwi0YJVL01nasfPA0QrBuVvlBR75ypgbgoyoGRgk/edit#gid=851727545",
+            eventKey: "2022cave",
             teamData: [], 
 
             googleSheetHeaders: "n/a",
@@ -38,6 +40,8 @@ export class TeamModifier extends Component {
         this.sortTeamsQualities = this.sortTeamsQualities.bind(this);
         this.clearChosenTeams = this.clearChosenTeams.bind(this);
         this.setSelectedQuality = this.setSelectedQuality.bind(this);
+        this.setInputSource = this.setInputSource.bind(this);
+        this.setEventKey = this.setEventKey.bind(this);
     }
 
     componentDidMount = () => {
@@ -64,7 +68,8 @@ export class TeamModifier extends Component {
         }
 
         // If the input source has changed, then recreate the teams
-        if(prevState.inputSource !== this.state.inputSource) {
+        if(prevState.inputSource !== this.state.inputSource || prevState.eventKey !== this.state.eventKey) {
+            console.log("change in input source!")
             this.createTeams()
         }
 
@@ -88,7 +93,7 @@ export class TeamModifier extends Component {
 
         console.log("waiting...")
 
-        const dataCollector = new DataCollector(this.state.inputSource);
+        const dataCollector = new DataCollector(this.state.inputSource, this.state.eventKey);
 
         await dataCollector.getData().then(() => {
             this.teamData = dataCollector.getTeamData();
@@ -109,6 +114,13 @@ export class TeamModifier extends Component {
         })
     }
 
+    setEventKey(newKey) {
+        this.setState({eventKey: newKey})
+    }
+
+    setInputSource(newInputSource) {
+        this.setState({inputSource: newInputSource})
+    }    
 
     setTeamData(newData) {
         this.setState({teamData: newData});
@@ -388,6 +400,7 @@ export class TeamModifier extends Component {
                     />
 
                     <div id = "sortingMessage">Currently sorting by: {this.state.selectedQuality}</div>
+                    <InformationSource setInputSource = {this.setInputSource} setEventKey = {this.setEventKey}/>
                 </header>
                 
                 

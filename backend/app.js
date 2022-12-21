@@ -14,8 +14,6 @@ const headers = {
     'X-TBA-Auth-Key': tbaKey
 };
 
-const eventKey = "2022cave"
-
 app.set("json spaces", 2) // indents JSON, makes it easier to read (not needed in the final app)
 
 
@@ -25,9 +23,11 @@ app.get('/', (req, res) => {
 
 app.get("/getData", (req, res) => {
 
-    axios.get("https://www.thebluealliance.com/api/v3/event/" + eventKey + "/rankings", { headers })
+    console.log(req.headers.eventkey)
+
+    axios.get("https://www.thebluealliance.com/api/v3/event/" + req.headers.eventkey + "/rankings", { headers: headers })
         .then(response => {
-            console.log(response.data)
+            //console.log(response.data)
             res.json(response.data)
 
         }).catch(error => {
@@ -39,6 +39,7 @@ app.get("/getData", (req, res) => {
  
 app.get("/getSpreadsheetData", async (req, res) => {
 
+    console.log(req.headers.spreadsheetId)
     
     const client = new google.auth.JWT(
 
@@ -54,7 +55,7 @@ app.get("/getSpreadsheetData", async (req, res) => {
         if(err){
             console.log("you have angered a higher being \n" + err);
         } else {
-            readSpreadsheet(client).then(response =>{
+            readSpreadsheet(client, req.headers.spreadsheetid).then(response =>{
 
             console.log(response);
             res.json(response)
@@ -70,13 +71,13 @@ app.get("/getSpreadsheetData", async (req, res) => {
 
     })
 
-    async function readSpreadsheet(client) {
+    async function readSpreadsheet(client, spreadsheetId) {
 
         const googleSheetsAPI = google.sheets({version:'v4', auth:client})
 
         let sheets = await googleSheetsAPI.spreadsheets.values.get({
 
-            spreadsheetId: "1CKLOwi0YJVL01nasfPA0QrBuVvlBR75ypgbgoyoGRgk",
+            spreadsheetId: spreadsheetId,
             range: "'Raw Data'!A1:X450"
 
         })
