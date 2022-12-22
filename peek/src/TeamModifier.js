@@ -5,6 +5,7 @@ import Searchbar from './Searchbar';
 import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
 import InformationSource from './InformationSource';
+import InformationSourceDisplay from './InformationSourceDisplay';
 
 import DataCollector from './DataCollector';
 export class TeamModifier extends Component {
@@ -392,18 +393,7 @@ export class TeamModifier extends Component {
 
         return (
             <div>
-                <header>
-                    <Searchbar 
-                        chosenTeams = {this.state.chosenTeams} 
-                        teamInformation = {this.state.sortedTeamInformation}
-                        setChosenTeams = {this.setChosenTeams}
-                    />
 
-                    <div id = "sortingMessage">Currently sorting by: {this.state.selectedQuality}</div>
-                    <InformationSource setInputSource = {this.setInputSource} setEventKey = {this.setEventKey}/>
-                </header>
-                
-                
                 <SideMenu 
                     chosenTeams = {this.state.chosenTeams} 
                     sortTeamsQualities = {this.sortTeamsQualities} 
@@ -414,6 +404,30 @@ export class TeamModifier extends Component {
                     setSelectedQuality = {this.setSelectedQuality}
                 />
 
+               
+
+                <header>
+                    <Searchbar 
+                        chosenTeams = {this.state.chosenTeams} 
+                        teamInformation = {this.state.sortedTeamInformation}
+                        setChosenTeams = {this.setChosenTeams}
+                    />
+
+                    <div id = "sortingMessage">Currently sorting by: {this.state.selectedQuality}</div>
+                    
+                    <InformationSourceDisplay 
+                        currentInputSource = {this.state.inputSource} 
+                        setInputSource = {this.setInputSource}
+
+                        currentEventKey = {this.state.eventKey}
+                        setEventKey = {this.setEventKey}
+                    />
+                    
+                </header>
+                
+                
+                <div id="Teams">{teamComponents}</div>
+
                 <ContextMenu
                     menuToggled={this.state.toggleMenu}
                     mouseX={this.state.xPositionOfContextMenu}
@@ -421,7 +435,7 @@ export class TeamModifier extends Component {
                     clicked={this.state.clicked}
                 />
 
-                <div id="Teams">{teamComponents}</div>
+                
 
             </div>
         )

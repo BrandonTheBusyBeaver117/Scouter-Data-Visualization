@@ -28,6 +28,7 @@ $initialDistance: $heightOfSearchBox + 2px; // 2px again because we want borders
     //background-color: black;
     width: $widthOfSearches;
     display: flex;
+    margin: 5px 0px;
 }
 
 
