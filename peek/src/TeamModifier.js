@@ -4,6 +4,8 @@ import { ContextMenu } from './ContextMenu';
 import Searchbar from './Searchbar';
 import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
+import InformationSource from './InformationSource';
+import InformationSourceDisplay from './InformationSourceDisplay';
 
 import DataCollector from './DataCollector';
 export class TeamModifier extends Component {
@@ -11,17 +13,17 @@ export class TeamModifier extends Component {
 
     constructor() {
         super();
-        this.matchData = []
         this.teamData = []
         this.mapOfTeamElements = new Map()
-        this.chosenTeams = []
-
 
         this.state = {
 
+            inputSource: "https://docs.google.com/spreadsheets/d/1CKLOwi0YJVL01nasfPA0QrBuVvlBR75ypgbgoyoGRgk/edit#gid=851727545",
+            eventKey: "2022cave",
+            teamData: [], 
+
             googleSheetHeaders: "n/a",
             chosenTeams: [],
-            chosenTeamsStringKey: [],
 
             selectedQuality: "",
             sortedTeamInformation: new Map(),
@@ -39,6 +41,8 @@ export class TeamModifier extends Component {
         this.sortTeamsQualities = this.sortTeamsQualities.bind(this);
         this.clearChosenTeams = this.clearChosenTeams.bind(this);
         this.setSelectedQuality = this.setSelectedQuality.bind(this);
+        this.setInputSource = this.setInputSource.bind(this);
+        this.setEventKey = this.setEventKey.bind(this);
     }
 
     componentDidMount = () => {
@@ -63,6 +67,13 @@ export class TeamModifier extends Component {
             this.setSelectedQuality(defaultAttribute)
             console.log(defaultAttribute)
         }
+
+        // If the input source has changed, then recreate the teams
+        if(prevState.inputSource !== this.state.inputSource || prevState.eventKey !== this.state.eventKey) {
+            console.log("change in input source!")
+            this.createTeams()
+        }
+
       }
 
 
@@ -83,9 +94,9 @@ export class TeamModifier extends Component {
 
         console.log("waiting...")
 
-        const dataCollector = new DataCollector();
+        const dataCollector = new DataCollector(this.state.inputSource, this.state.eventKey);
+
         await dataCollector.getData().then(() => {
-            this.matchData = dataCollector.getMatchData();
             this.teamData = dataCollector.getTeamData();
 
             this.setState({
@@ -96,37 +107,6 @@ export class TeamModifier extends Component {
     
 
             this.createSortedTeamInformation()
-
-            
-            const newMapOfTeamElements = new Map()
-            console.log(this.teamData)
-
-            const allTeamArray = []
-            for (const team of this.teamData) {
-                allTeamArray.push(team[0])
-            }
-
-            for (const [index, team] of this.teamData.entries()) {
-                //console.log(team)
-                //console.log(index)
-                newMapOfTeamElements.set(team[0], <Team key={index}
-                    googleSheetHeaders={this.state.googleSheetHeaders}
-                    teamData={team}
-                    toggleMenu={this.toggleMenu}
-                />)
-            }
-            console.log(newMapOfTeamElements)
-           
- 
-            this.setMapOfTeamElements(newMapOfTeamElements)
-
-           
-
-                console.log(allTeamArray)
-                // This sets the default teams
-                this.setChosenTeams([])
-                console.log(this.state.chosenTeams)
-
             
             //this.sortTeamsQualities(8)
             
@@ -135,6 +115,17 @@ export class TeamModifier extends Component {
         })
     }
 
+    setEventKey(newKey) {
+        this.setState({eventKey: newKey})
+    }
+
+    setInputSource(newInputSource) {
+        this.setState({inputSource: newInputSource})
+    }    
+
+    setTeamData(newData) {
+        this.setState({teamData: newData});
+    }
 
     setSelectedQuality(newSelectedQuality) {
         this.setState({selectedQuality : newSelectedQuality})
@@ -147,10 +138,7 @@ export class TeamModifier extends Component {
     setChosenTeams(newTeamArray) {
 
 
-        
-        this.chosenTeams = this.getTeamComponents(newTeamArray)
-
-        this.setState({chosenTeamsStringKey: [...newTeamArray]})
+        this.setState({chosenTeams: [...newTeamArray]})
 
         
     }
@@ -163,7 +151,7 @@ export class TeamModifier extends Component {
         } else{
             const newTeamArray = []
 
-            for(const chosenTeam of this.state.chosenTeamsStringKey) {
+            for(const chosenTeam of this.state.chosenTeams) {
                 if (!removedTeams.includes(chosenTeam)) {
                     newTeamArray.push(chosenTeam)
                 }
@@ -173,20 +161,6 @@ export class TeamModifier extends Component {
         }
     }
 
-    /**
-     * @param {Array} arrayOfTeams an array of team numbers
-     * @returns {Array} An array of team components
-     */
-    getTeamComponents(arrayOfTeams) {
-        const arrayOfTeamsComponents = []
-        console.log(arrayOfTeams)
-        for (const team of arrayOfTeams){
-            arrayOfTeamsComponents.push(this.mapOfTeamElements.get(team))
-            console.log(team)
-            console.log(this.mapOfTeamElements.get(team))
-        }
-        return arrayOfTeamsComponents
-    }
     /**
      * This is a map, where each key is a team number.
      * Each element is another map, each one having a different quality of the team
@@ -340,7 +314,7 @@ export class TeamModifier extends Component {
         //So like...get the teams currently displayed, find their qualities, and sort them 
         // We need to pass in the teams and compare somehow...
         console.log(quality)
-       const arrayOfChosenTeams = this.state.chosenTeamsStringKey;
+       const arrayOfChosenTeams = this.state.chosenTeams;
 
        const arrayOfTeamQualities = []
        for (const teamKey of arrayOfChosenTeams) {
@@ -415,23 +389,13 @@ export class TeamModifier extends Component {
 
     render() {
 
-        let teamComponents = this.neoGetTeamComponents(this.state.chosenTeamsStringKey);
-        //teamComponents = this.chosenTeams;
+        let teamComponents = this.neoGetTeamComponents(this.state.chosenTeams);
+
         return (
             <div>
-                <header>
-                    <Searchbar 
-                        chosenTeams = {this.state.chosenTeamsStringKey} 
-                        teamInformation = {this.state.sortedTeamInformation}
-                        setChosenTeams = {this.setChosenTeams}
-                    />
 
-                    <div id = "sortingMessage">Currently sorting by: {this.state.selectedQuality}</div>
-                </header>
-                
-                
                 <SideMenu 
-                    chosenTeams = {this.state.chosenTeamsStringKey} 
+                    chosenTeams = {this.state.chosenTeams} 
                     sortTeamsQualities = {this.sortTeamsQualities} 
                     setChosenTeams = {this.setChosenTeams} 
                     clearChosenTeams = {this.clearChosenTeams}
@@ -440,6 +404,30 @@ export class TeamModifier extends Component {
                     setSelectedQuality = {this.setSelectedQuality}
                 />
 
+               
+
+                <header>
+                    <Searchbar 
+                        chosenTeams = {this.state.chosenTeams} 
+                        teamInformation = {this.state.sortedTeamInformation}
+                        setChosenTeams = {this.setChosenTeams}
+                    />
+
+                    <div id = "sortingMessage">Currently sorting by: {this.state.selectedQuality}</div>
+                    
+                    <InformationSourceDisplay 
+                        currentInputSource = {this.state.inputSource} 
+                        setInputSource = {this.setInputSource}
+
+                        currentEventKey = {this.state.eventKey}
+                        setEventKey = {this.setEventKey}
+                    />
+                    
+                </header>
+                
+                
+                <div id="Teams">{teamComponents}</div>
+
                 <ContextMenu
                     menuToggled={this.state.toggleMenu}
                     mouseX={this.state.xPositionOfContextMenu}
@@ -447,7 +435,7 @@ export class TeamModifier extends Component {
                     clicked={this.state.clicked}
                 />
 
-                <div id="Teams">{teamComponents}</div>
+                
 
             </div>
         )

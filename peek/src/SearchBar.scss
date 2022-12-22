@@ -28,11 +28,12 @@ $initialDistance: $heightOfSearchBox + 2px; // 2px again because we want borders
     //background-color: black;
     width: $widthOfSearches;
     display: flex;
+    margin: 5px 0px;
 }
 
 
 .results{
-    width: 100%; 
+    width: $widthOfSearches; 
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -51,7 +52,7 @@ $initialDistance: $heightOfSearchBox + 2px; // 2px again because we want borders
         //padding: $padding; 
         border: 2px solid #ddd; 
         // Subtract the additional border width
-        width: calc($widthOfSearches - 4px);
+        width: calc(100% - 4px);
         text-align: center; 
     } 
     p:hover { 

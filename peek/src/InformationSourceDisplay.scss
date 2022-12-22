@@ -1,0 +1,96 @@
+
+$transition-Time: 0.25s;
+$defaultButtonColor : rgb(150, 230, 255);
+
+
+#InformationSourceDisplay {
+
+    button {
+        
+        background-color: $defaultButtonColor;
+        border-radius: 16px;
+        margin: 5px 0px;
+        padding: 0.75em;
+        display: inline;
+
+        transition: background-color $transition-Time linear;
+
+
+    }
+    button:hover {
+        transition: background-color $transition-Time linear;
+        background-color: rgb(75, 200, 255);
+        cursor: pointer;
+    }
+
+   
+}
+
+
+#InfoSourceInput {
+
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    left:0;
+    top:0;
+    background-color: rgba(0,0,0, 0.5);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+    #InformationSource{
+
+        margin: auto;        
+       
+
+
+        background-color: rgba(50, 125, 255, 0.85);
+
+        border-radius: 3em;
+
+        padding: 2%;
+
+        font-size: 1.3em;
+
+        button {
+            font-size: 0.8em;
+        }
+
+        input {
+            font-size: 0.7em;
+            display: block;
+            width: 95%;
+            margin: auto;
+            padding: 0.3em;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4%;
+            margin-top: 4%;
+        }
+
+        form{
+            margin-bottom: 4%;
+            
+        }
+
+        #typeChooser {
+            display: flex;
+            justify-content: space-around;
+    
+    
+        }
+
+        #submissionOptions {
+            display: flex;
+            justify-content: space-around;
+        }
+
+      
+    }
+   
+}
