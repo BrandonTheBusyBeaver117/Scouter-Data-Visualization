@@ -28,9 +28,11 @@ app.get("/getData", (req, res) => {
     axios.get("https://www.thebluealliance.com/api/v3/event/" + req.headers.eventkey + "/rankings", { headers: headers })
         .then(response => {
             //console.log(response.data)
+            console.log("tba ok in theory")
             res.json(response.data)
 
         }).catch(error => {
+            console.log("tba bad")
             res.json(error)
         })
 
@@ -53,7 +55,10 @@ app.get("/getSpreadsheetData", async (req, res) => {
     client.authorize( (err, tokens) => {
 
         if(err){
+
             console.log("you have angered a higher being \n" + err);
+            res.json({error: err})
+            
         } else {
             readSpreadsheet(client, req.headers.spreadsheetid).then(response =>{
 
@@ -61,7 +66,7 @@ app.get("/getSpreadsheetData", async (req, res) => {
             res.json(response)
             }).catch(error => {
                 console.log(error)
-                res.json(error)
+                
             })
              
 

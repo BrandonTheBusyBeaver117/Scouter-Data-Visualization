@@ -106,6 +106,7 @@ export default class DataCollector {
             
         } else {
             alert("This is not a valid data source")
+            tbaData.then(this.readFromCacheSpreadsheet())
         }
 
        
@@ -127,18 +128,52 @@ export default class DataCollector {
 
         return axios.get('/getData', config).then(response => {
 
-            /*
-            Ideas to make this more efficient:
-            Save a previous iteration of the json file, then constantly compare it to the current json file
-            Only if you see a difference, then you iterate through the entire array
-            then change the rest of the data on the site
-    
-            This might only be useful for google sheets however
-            */
+            if(response.data.rankings){
+                // Sending the data to local storage for later use
+                localStorage.setItem("teamRankingData", JSON.stringify(response.data.rankings))
 
-            const newData = []
+                this.parseTbaData(response.data.rankings)
+            } else {
 
-            for (const team of response.data.rankings) {
+                console.log("cached tba data being read")
+                const cachedData = localStorage.getItem("teamRankingData")
+                
+                // Makes sure that the data isn't null or undefined before parsing
+                if(cachedData) {
+                    this.parseTbaData(JSON.parse(cachedData))
+                } else {
+                    alert("Something went wrong with getting The Blue Alliance data...")
+                }
+
+            }
+
+
+        }).catch(error => {
+
+            // Not sure if this clause is necessary
+
+            console.log(error)
+
+            const cachedData = localStorage.getItem("teamRankingData")
+
+            // Makes sure that the data isn't null or undefined before parsing
+            if(cachedData) {
+                this.parseTbaData(JSON.parse(cachedData))
+            } else {
+                alert("Something went wrong with getting The Blue Alliance data...")
+            }
+
+
+
+        })
+    }
+
+
+    parseTbaData (teamRankingData) {
+
+        const newData = []
+
+            for (const team of teamRankingData) {
 
                 newData.push([
                     Number(team.team_key.replace("frc", "")),//gets rid of the "frc" before the number
@@ -154,12 +189,9 @@ export default class DataCollector {
 
             console.log(this.teamData)
 
-        }).catch(error => {
-            console.log(error)
-        })
     }
 
-    // ventura spreadsheet id
+
     getSpreadsheetData(sheetId) {
 
         console.log(sheetId)
@@ -170,9 +202,18 @@ export default class DataCollector {
             }
         }
 
-        return axios.get('/getSpreadsheetData', config).then(response => { this.prepareSpreadsheetData(response.data) })
-            .catch(error => {
+        return axios.get('/getSpreadsheetData', config).then(response => { 
+            // if there's no error, then do the normal preparations
+            if(!response.data.error){
 
+                // Starting to parse the spreadsheet data
+                this.prepareSpreadsheetData(response.data) 
+            } else {
+                console.log("reading from cached spreadsheet")
+                this.readFromCacheSpreadsheet()
+            }
+        }).catch(error => {
+                /*
                 if (this.sheetsRetrievalErrors < 3) {
                     console.log(error)
                     alert("check console")
@@ -183,13 +224,48 @@ export default class DataCollector {
                     // read from local cache
                     alert("reading from cache, plz implement ")
                 }
+                */
 
+                // Above code seeeemed like a good idea, but idk how "safe" just retrying the connection is
+
+
+                // console.log(error)
+                // console.log("reading from cache!")
+
+                // alert(error)
+                // this.readFromCacheSpreadsheet()
+
+                // seems like the error clause is useless during testing
+               
             })
 
     }
 
+
+    readFromCacheSpreadsheet() {
+
+        const cachedData = localStorage.getItem("spreadsheetData")
+
+        console.log(JSON.stringify(cachedData))
+
+                // Makes sure that the data isn't null or undefined before parsing
+                if(cachedData) {
+                    this.prepareSpreadsheetData(JSON.parse(cachedData), false)
+                } else {
+                    alert("Something went wrong with getting the spreadsheet data...")
+                }
+    }
+
+
     // Takes in a spreadsheet 
-    prepareSpreadsheetData(spreadsheetData) {
+    prepareSpreadsheetData(spreadsheetData, shouldCache = true) {
+
+        if(shouldCache) {
+            // Sending the data to local storage for later use
+            localStorage.setItem("spreadsheetData", JSON.stringify(spreadsheetData))
+        }
+
+
 
         //Checks if the headers are the same as before
         //Only if they're different do they change
