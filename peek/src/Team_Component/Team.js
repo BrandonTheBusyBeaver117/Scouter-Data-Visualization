@@ -11,39 +11,9 @@ export class Team extends Component{
     constructor(props) {
         
         super(props);
-        
-        this.state = {
-        }
-
-
-
-    }
-    componentDidMount () {
-
-
-    }
-
-    componentDidUpdate (prevProps) {
-
-
     }
 
 
-    handleClick = () => {
-        this.props.toggleMenu(false, 5026, 5026, true)
-
-       
-        
-    }
-
-    handleContextMenu (event) {
-        // Was used for toggling custom context menu on table
-        event.preventDefault()
-        this.props.toggleMenu(true, event.clientX, event.clientY, false)
-        
-        console.log(event.clientX, event.clientY)
-        
-    }
 
     render() {
         //this is where the team blocky thing should be rendered

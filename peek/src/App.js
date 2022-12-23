@@ -1,8 +1,6 @@
 import logo from './logo.svg';
 import './App.scss';
-import {TBA} from "./TBA";
 import {TeamModifier} from "./TeamModifier"
-import {ContextMenu} from "./ContextMenu"
 
 
 function App() {
@@ -20,8 +18,7 @@ function App() {
     <div className="App">
       <body>
         <TeamModifier />
-        
-        <TBA />
+    
       </body>
     </div>
   );

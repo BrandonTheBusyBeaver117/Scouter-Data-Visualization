@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Team } from './Team_Component/Team'
-import { ContextMenu } from './ContextMenu';
 import Searchbar from './Searchbar';
 import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
-import InformationSource from './InformationSource';
 import InformationSourceDisplay from './InformationSourceDisplay';
 
 import DataCollector from './DataCollector';
@@ -13,8 +11,6 @@ export class TeamModifier extends Component {
 
     constructor() {
         super();
-        this.teamData = []
-        this.mapOfTeamElements = new Map()
 
         this.state = {
 
@@ -28,15 +24,9 @@ export class TeamModifier extends Component {
             selectedQuality: "",
             sortedTeamInformation: new Map(),
 
-            // Context menu
-            toggleMenu: false,
-            xPositionOfContextMenu: 0,
-            yPositionOfContextMenu: 0,
-            clicked: false,
         }
 
         //Bindings
-        this.toggleMenu = this.toggleMenu.bind(this);
         this.setChosenTeams = this.setChosenTeams.bind(this);
         this.sortTeamsQualities = this.sortTeamsQualities.bind(this);
         this.clearChosenTeams = this.clearChosenTeams.bind(this);
@@ -52,8 +42,6 @@ export class TeamModifier extends Component {
 
     }
 
-    componentWillUnmount () {
-    }
     componentDidUpdate(__prevProps, prevState) {
         
         //If prevState.something != this.state.something, then update
@@ -78,18 +66,6 @@ export class TeamModifier extends Component {
 
 
 
-    toggleMenu(isToggled, mouseX, mouseY, isClicked) {
-
-        console.log(isToggled + mouseX + mouseY)
-        this.setState({
-            toggleMenu: isToggled,
-            xPositionOfContextMenu: mouseX,
-            yPositionOfContextMenu: mouseY,
-            clicked: isClicked
-        })
-    }
-
-
     async createTeams() {
 
         console.log("waiting...")
@@ -97,7 +73,6 @@ export class TeamModifier extends Component {
         const dataCollector = new DataCollector(this.state.inputSource, this.state.eventKey);
 
         await dataCollector.getData().then(() => {
-            this.teamData = dataCollector.getTeamData();
 
             this.setState({
                 googleSheetHeaders: dataCollector.getGoogleSheetHeaders()
@@ -106,7 +81,7 @@ export class TeamModifier extends Component {
             console.log("MAKING TEAMS")
     
 
-            this.createSortedTeamInformation()
+            this.createSortedTeamInformation(dataCollector.getTeamData())
             
             //this.sortTeamsQualities(8)
             
@@ -129,10 +104,6 @@ export class TeamModifier extends Component {
 
     setSelectedQuality(newSelectedQuality) {
         this.setState({selectedQuality : newSelectedQuality})
-    }
-
-    setMapOfTeamElements(newMap) {
-        this.mapOfTeamElements = newMap
     }
 
     setChosenTeams(newTeamArray) {
@@ -170,7 +141,7 @@ export class TeamModifier extends Component {
         return this.state.sortedTeamInformation
     }
 
-    createSortedTeamInformation() {
+    createSortedTeamInformation(teamData) {
             
         /*
             Look into object fromEntries, which creates object from map
@@ -178,7 +149,7 @@ export class TeamModifier extends Component {
             To a map of header, [data for header] and so forth
             The team num and rank would have to be stored elsewhere
         */
-        console.log(this.teamData)
+        console.log(teamData)
 
         const initialTeamMap = new Map()
         //Initializing Map with the keys, but empty values to be filled in later
@@ -188,7 +159,7 @@ export class TeamModifier extends Component {
 
         const localSortedTeamInformationMap = new Map();
 
-        for (const team of this.teamData){
+        for (const team of teamData){
             const newTeamMap = new Map(initialTeamMap)
 
             //console.log(team)
@@ -426,16 +397,7 @@ export class TeamModifier extends Component {
                 </header>
                 
                 
-                <div id="Teams">{teamComponents}</div>
-
-                <ContextMenu
-                    menuToggled={this.state.toggleMenu}
-                    mouseX={this.state.xPositionOfContextMenu}
-                    mouseY={this.state.yPositionOfContextMenu}
-                    clicked={this.state.clicked}
-                />
-
-                
+                <div id="Teams">{teamComponents}</div>               
 
             </div>
         )
