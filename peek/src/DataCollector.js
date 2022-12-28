@@ -229,13 +229,9 @@ export default class DataCollector {
                 // Above code seeeemed like a good idea, but idk how "safe" just retrying the connection is
 
 
-                // console.log(error)
-                // console.log("reading from cache!")
+                console.log("reading from cached spreadsheet")
+                this.readFromCacheSpreadsheet()
 
-                // alert(error)
-                // this.readFromCacheSpreadsheet()
-
-                // seems like the error clause is useless during testing
                
             })
 
