@@ -46,6 +46,13 @@
         $deleteButtonColor : rgb(210, 210, 210);
     }
 
+    select {
+        padding: 0.3em;
+        border-radius: 0.9em;
+        font-size: 0.9em;
+        margin: 5px 0px;
+    }
+
 
     #clear {
         background-color: rgb(255, 15, 40);
