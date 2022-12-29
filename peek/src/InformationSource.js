@@ -177,7 +177,7 @@ export default function InformationSource(props) {
         {createForm(sourceTypeSelected)}    
         
        
-        <div id = "submissionOptions"> 
+        <div className = "submissionOptions"> 
             <button onClick = {() => handleUpdate(eventKey, sheetLink, fileInput?.current?.files[0], props.currentEventKey, props.currentInputSource)}>Update Data sources</button>
             <button onClick = {() => props.setIsInputShown(false)}>Discard changes</button>
         </div>

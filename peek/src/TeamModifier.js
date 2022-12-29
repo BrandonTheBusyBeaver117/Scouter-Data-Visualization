@@ -6,6 +6,7 @@ import "./TeamModifier.scss";
 import InformationSourceDisplay from './InformationSourceDisplay';
 
 import DataCollector from './DataCollector';
+import UserSettingsButton from './UserSettingsButton';
 export class TeamModifier extends Component {
 
 
@@ -24,6 +25,10 @@ export class TeamModifier extends Component {
             selectedQuality: "",
             sortedTeamInformation: new Map(),
 
+            userSettings: {
+                sortImmediately: true
+            }
+
         }
 
         //Bindings
@@ -33,6 +38,7 @@ export class TeamModifier extends Component {
         this.setSelectedQuality = this.setSelectedQuality.bind(this);
         this.setInputSource = this.setInputSource.bind(this);
         this.setEventKey = this.setEventKey.bind(this);
+        this.setUserSettings = this.setUserSettings.bind(this);
     }
 
     componentDidMount = () => {
@@ -88,6 +94,10 @@ export class TeamModifier extends Component {
         }).catch((error) => {
             console.log(error)
         })
+    }
+
+    setUserSettings(updatedSettings) {
+        this.setState({userSettings: updatedSettings})
     }
 
     setEventKey(newKey) {
@@ -392,6 +402,12 @@ export class TeamModifier extends Component {
 
                         currentEventKey = {this.state.eventKey}
                         setEventKey = {this.setEventKey}
+                    />
+
+                    <UserSettingsButton 
+                        currentUserSettings = {this.state.userSettings}
+                        setUserSettings = {this.setUserSettings}
+
                     />
                     
                 </header>
