@@ -126,7 +126,7 @@ export default class DataCollector {
 
         console.log(config.headers.eventkey)
 
-        return axios.get('/getData', config).then(response => {
+        return axios.get('/getTBAData', config).then(response => {
 
             if(response.data.rankings){
                 // Sending the data to local storage for later use
