@@ -54,11 +54,16 @@ export default function UserSettings (props) {
                 </div>
     }
 
+    const handleUpdate = userSettings => {
+        props.setUserSettings(userSettings);
+        props.setAreSettingsShown(false);
+    }
+
     return <div id = "settingsSelector">
               {createSetting("Sort immediately after changing quality?", "sortImmediately", settings)}
 
             <div className = "submissionOptions"> 
-                <button onClick = {() => props.setUserSettings(settings)}>Update Settings</button>
+                <button onClick = {() => handleUpdate(settings)}>Update Settings</button>
                 <button onClick = {() => props.setAreSettingsShown(false)}>Discard changes</button>
             </div>
             </div>
