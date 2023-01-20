@@ -23,6 +23,7 @@ export class TeamModifier extends Component {
             chosenTeams: [],
 
             selectedQuality: "",
+            sortingQuality: "",
             sortedTeamInformation: new Map(),
 
             userSettings: {
@@ -334,6 +335,8 @@ export class TeamModifier extends Component {
             arrayOfTeamQualities.push([teamKey, average])
 
             console.log([teamKey, average])
+
+            this.setState({sortingQuality: quality})
         }
 
         const sortedTeamQualities = this.mergeSortTeams(arrayOfTeamQualities)
@@ -395,7 +398,7 @@ export class TeamModifier extends Component {
                         setChosenTeams = {this.setChosenTeams}
                     />
 
-                    <div id = "sortingMessage">Currently sorting by: {this.state.selectedQuality}</div>
+                    <div id = "sortingMessage">Currently sorting by: {this.state.sortingQuality}</div>
                     
                     <InformationSourceDisplay 
                         currentInputSource = {this.state.inputSource} 

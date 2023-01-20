@@ -63,14 +63,18 @@ export default function SideMenu (props) {
         // Starting an iterator, getting the first element, then getting its value (the team)
         const firstTeam = props.teamInformation.values().next().value;
 
-        const data = firstTeam.get(newSelectedQuality)
+        console.log(firstTeam)
 
-        // Assumes that data actually exists...
-        // If the data is actually something we can process, then sort
-        // Otherwise, if it's a string (like a comment), then do not sort
-        if(data.includes("TRUE") || data.includes("FALSE") || !isNaN(data[0])){
-            props.sortTeamsQualities(newSelectedQuality)
-        } 
+        if (firstTeam !== undefined){
+            const data = firstTeam.get(newSelectedQuality)
+
+            // Assumes that data actually exists...
+            // If the data is actually something we can process, then sort
+            // Otherwise, if it's a string (like a comment), then do not sort
+            if(data.includes("TRUE") || data.includes("FALSE") || !isNaN(data[0])){
+                props.sortTeamsQualities(newSelectedQuality)
+            } 
+        }
         
 
     }
