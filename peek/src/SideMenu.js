@@ -27,7 +27,7 @@ export default function SideMenu (props) {
         return newTeamButtons
     } 
 
-    const optionSelector = (teamMap) => {
+    const optionSelector = (teamMap, sortImmediately) => {
 
         // Finding the first team in the map
         // Starting an iterator, getting the first element, then getting its value (the team)
@@ -57,9 +57,8 @@ export default function SideMenu (props) {
     }
 
     // Update the selected quality and sort
-    const updateTeamSelectedProperty = (newSelectedQuality) => {
-        props.setSelectedQuality(newSelectedQuality)
-
+    const sortTeams = newSelectedQuality => {
+        
         // Finding the first team in the map
         // Starting an iterator, getting the first element, then getting its value (the team)
         const firstTeam = props.teamInformation.values().next().value;
@@ -83,6 +82,14 @@ export default function SideMenu (props) {
         }
         
     },[props.selectedQuality])
+
+    useEffect(() => {
+        
+        props.setSelectedQuality(optionState)
+
+        if(props.sortImmediately) sortTeams (optionState)
+
+    }, [optionState, props.sortImmediately])
     
 
     console.log(props.teamInformation)
@@ -93,10 +100,10 @@ export default function SideMenu (props) {
                 <h2>Teams Selected</h2>
                 <div>{createTeamButtons(props.chosenTeams)}</div>
                 <h2>Sort Teams by:</h2>
-                <button onClick = {() => updateTeamSelectedProperty(optionState)}>
+                <button onClick = {() => sortTeams(optionState)} style={{display: props.sortImmediately ? "none" : ""}}>
                     {optionState}
                 </button>
-                {optionSelector(props.teamInformation)}
+                {optionSelector(props.teamInformation, props.sortImmediately)}
            </div>
             <h2>Clear Teams:</h2>
                 <button id = "clear" onClick = {() => props.setChosenTeams([])}>CLEAR</button>

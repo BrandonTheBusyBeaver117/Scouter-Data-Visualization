@@ -383,6 +383,7 @@ export class TeamModifier extends Component {
                     teamInformation = {this.state.sortedTeamInformation}
                     selectedQuality = {this.state.selectedQuality}
                     setSelectedQuality = {this.setSelectedQuality}
+                    sortImmediately = {this.state.userSettings.sortImmediately}
                 />
 
                
