@@ -3,6 +3,10 @@ import "./DataChart.scss"
 import { Chart as ChartJS, CategoryScale, LineController, LineElement, ArcElement, PointElement, LinearScale, Title, Tooltip, Legend } from "chart.js"
 import { Line, Pie } from 'react-chartjs-2';
 
+import chartTrendline from 'chartjs-plugin-trendline';
+
+ChartJS.register(chartTrendline);
+
 ChartJS.register(CategoryScale, LineController, LineElement, ArcElement, PointElement, LinearScale,  Title, Tooltip, Legend)
 
 export default function DataChart(props) {
@@ -78,6 +82,8 @@ export default function DataChart(props) {
             
         }
 
+        const trendLineColor = "blue";
+
             return <Line
                 className='dataChart'
                 datasetIdKey='defaultLineChart'
@@ -92,7 +98,12 @@ export default function DataChart(props) {
                             backgroundColor: "rgb(15, 230, 255)",
                             borderColor: "rgb(205, 205, 205)",
                             borderWidth: 2,
-                            
+                            trendlineLinear: {
+                                lineStyle: "dotted",
+                                width: 3,
+                                colorMin: trendLineColor, 
+                                colorMax: trendLineColor
+                            }
 
                         }
                     ]
