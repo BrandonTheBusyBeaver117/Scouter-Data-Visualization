@@ -353,33 +353,17 @@ export class TeamModifier extends Component {
     }
 
 
-    neoGetTeamComponents (chosenTeams) {
-
-        const arrayOfTeams = []
-
-        for (const chosenTeam of chosenTeams) {
-            arrayOfTeams.push(
-                <Team key={chosenTeam}
-                    googleSheetHeaders={this.state.googleSheetHeaders}
-                    toggleMenu={this.toggleMenu}
-                    sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
-                    selectedQuality = {this.state.selectedQuality}
-                />)
-        }
-
-        return arrayOfTeams
-    }
-
     render() {
 
-        let teamComponents = this.state.chosenTeams.map((chosenTeam) => {
+        let teamComponents = this.state.chosenTeams.map((chosenTeam) => 
+
             <Team key={chosenTeam}
                 googleSheetHeaders={this.state.googleSheetHeaders}
                 toggleMenu={this.toggleMenu}
                 sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
                 selectedQuality = {this.state.selectedQuality}
             />
-        })
+        )
 
         return (
             <div>
