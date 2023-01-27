@@ -360,7 +360,7 @@ export class TeamModifier extends Component {
 
         teamComponents.forEach(chosenTeam => 
         {
-            teamComponents.push
+            teamComponents.push();
             (
             <Team key={chosenTeam}
                 googleSheetHeaders={this.state.googleSheetHeaders}
