@@ -355,15 +355,35 @@ export class TeamModifier extends Component {
 
     render() {
 
-        let teamComponents = this.state.chosenTeams.map((chosenTeam) => 
+        let teamComponents = [];
+        let i = 1;
 
+
+        teamComponents.array.forEach(chosenTeam => 
+        {
+            teamComponents.push
+            (
             <Team key={chosenTeam}
                 googleSheetHeaders={this.state.googleSheetHeaders}
                 toggleMenu={this.toggleMenu}
                 sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
                 selectedQuality = {this.state.selectedQuality}
+                teamRanking = {i}
             />
-        )
+            )
+            i++;
+        });
+
+        // let teamComponents = this.state.chosenTeams.map((chosenTeam) => 
+
+        //     <Team key={chosenTeam}
+        //         googleSheetHeaders={this.state.googleSheetHeaders}
+        //         toggleMenu={this.toggleMenu}
+        //         sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
+        //         selectedQuality = {this.state.selectedQuality}
+        //         teamRanking = {}
+        //     />
+        // )
 
         return (
             <div>
