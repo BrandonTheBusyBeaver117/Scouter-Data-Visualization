@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
-app.get("/getData", (req, res) => {
+app.get("/getTBAData", (req, res) => {
 
     console.log(req.headers.eventkey)
 
