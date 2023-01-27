@@ -358,8 +358,7 @@ export class TeamModifier extends Component {
         let teamComponents = [];
         let i = 1;
 
-
-        teamComponents.array.forEach(chosenTeam => 
+        teamComponents.forEach(chosenTeam => 
         {
             teamComponents.push
             (
