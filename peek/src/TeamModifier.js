@@ -360,16 +360,16 @@ export class TeamModifier extends Component {
 
         teamComponents.forEach(chosenTeam => 
         {
-            teamComponents.push();
+            teamComponents.push
             (
-            <Team key={chosenTeam}
-                googleSheetHeaders={this.state.googleSheetHeaders}
-                toggleMenu={this.toggleMenu}
-                sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
-                selectedQuality = {this.state.selectedQuality}
-                teamRanking = {i}
-            />
-            )
+                <Team key={chosenTeam}
+                    googleSheetHeaders={this.state.googleSheetHeaders}
+                    toggleMenu={this.toggleMenu}
+                    sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
+                    selectedQuality = {this.state.selectedQuality}
+                    teamRanking = {i}
+                />
+                );
             i++;
         });
 
