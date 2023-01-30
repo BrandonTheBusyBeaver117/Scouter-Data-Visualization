@@ -359,8 +359,6 @@ export class TeamModifier extends Component {
         for(let i = 1; i <= chosenTeams.length; i++){
 
             const chosenTeam = chosenTeams [i - 1];
-            console.log(chosenTeam)
-
 
             teamComponents.push(
                 <Team key={chosenTeam}
@@ -371,8 +369,7 @@ export class TeamModifier extends Component {
                 />
             );
         }
-        console.log(teamComponents)
-
+    
         return teamComponents
     }
 
@@ -384,7 +381,6 @@ export class TeamModifier extends Component {
         let teamComponents = this.renderTeamComponents(this.state.chosenTeams, 
             this.state.googleSheetHeaders, this.state.sortedTeamInformation, this.state.selectedQuality)
 
-            console.log(teamComponents)
 
         return (
             <div>
