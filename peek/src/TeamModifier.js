@@ -353,36 +353,38 @@ export class TeamModifier extends Component {
     }
 
 
-    render() {
-
+    renderTeamComponents(chosenTeams, googleSheetHeaders, sortedTeamInformationMap, selectedQuality) {
         let teamComponents = [];
-        let i = 1;
 
-        teamComponents.forEach(chosenTeam => 
-        {
-            teamComponents.push
-            (
+        for(let i = 1; i <= chosenTeams.length; i++){
+
+            const chosenTeam = chosenTeams [i - 1];
+            console.log(chosenTeam)
+
+
+            teamComponents.push(
                 <Team key={chosenTeam}
-                    googleSheetHeaders={this.state.googleSheetHeaders}
-                    toggleMenu={this.toggleMenu}
-                    sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
-                    selectedQuality = {this.state.selectedQuality}
+                    googleSheetHeaders={googleSheetHeaders}
+                    sortedTeamInformationMap = {sortedTeamInformationMap.get(chosenTeam)}
+                    selectedQuality = {selectedQuality}
                     teamRanking = {i}
                 />
-                );
-            i++;
-        });
+            );
+        }
+        console.log(teamComponents)
 
-        // let teamComponents = this.state.chosenTeams.map((chosenTeam) => 
+        return teamComponents
+    }
 
-        //     <Team key={chosenTeam}
-        //         googleSheetHeaders={this.state.googleSheetHeaders}
-        //         toggleMenu={this.toggleMenu}
-        //         sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
-        //         selectedQuality = {this.state.selectedQuality}
-        //         teamRanking = {}
-        //     />
-        // )
+
+    render() {
+
+        
+
+        let teamComponents = this.renderTeamComponents(this.state.chosenTeams, 
+            this.state.googleSheetHeaders, this.state.sortedTeamInformation, this.state.selectedQuality)
+
+            console.log(teamComponents)
 
         return (
             <div>
