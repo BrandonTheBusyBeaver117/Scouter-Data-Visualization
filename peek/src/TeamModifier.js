@@ -176,8 +176,10 @@ export class TeamModifier extends Component {
             //console.log(team)
             newTeamMap.set("teamNumber", team[0])
             newTeamMap.set("teamRank", team[1])
+            newTeamMap.set("teamName", team[2])
 
-            const matches = team.slice(2) // THis is an array of all the matches, skipping over teamnum and rank
+            // Gets the matches from the team data, skipping over the data we already initialized
+            const matches = team.slice(3)
             //console.log(matches)
 
             /*

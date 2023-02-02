@@ -24,7 +24,8 @@ export class Team extends Component{
         <div className='teamComponent' 
             id = {"team" + this.props.sortedTeamInformationMap.get("teamNumber")}>
             <h1>{this.props.sortedTeamInformationMap.get("teamNumber")}</h1>
-            <h2>Rank: {this.props.sortedTeamInformationMap.get("teamRank")}</h2>
+            <h1>{this.props.sortedTeamInformationMap.get("teamName")}</h1>
+            <h2>TBA Ranking: {this.props.sortedTeamInformationMap.get("teamRank")}</h2>
             
             <DataChart 
                 matches = {this.props.sortedTeamInformationMap.get("matchNum")}

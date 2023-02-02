@@ -47,16 +47,10 @@ export default class DataCollector {
 
           const tbaData = this.getTBAData();
 
-        if(this.inputSource === ""){
-            // First get the teamData from The Blue Alliance
-            // Then go to our spreadsheet and read data from there
-            return tbaData.then(() => this.getSpreadsheetData())
-                .catch(error => console.log(error))
-        } else if (this.inputSource instanceof File) {
+       if (this.inputSource instanceof File) {
                 console.log("File, time to parse!")
                
             
-
               async function parseFile (file) {
                 const filePromise = new Promise((resolve, reject) => {
                     Papa.parse(file, {complete: result => {
@@ -126,26 +120,44 @@ export default class DataCollector {
 
         console.log(config.headers.eventkey)
 
-        return axios.get('/getTBAData', config).then(response => {
+        return axios.get('/getTBAData', config).then(rankingResponse => {
 
-            if(response.data.rankings){
-                // Sending the data to local storage for later use
-                localStorage.setItem("teamRankingData", JSON.stringify(response.data.rankings))
+            console.log("Tba rank received?")
 
-                this.parseTbaData(response.data.rankings)
-            } else {
+            const rankings = rankingResponse.data.rankings;
 
-                console.log("cached tba data being read")
-                const cachedData = localStorage.getItem("teamRankingData")
-                
-                // Makes sure that the data isn't null or undefined before parsing
-                if(cachedData) {
-                    this.parseTbaData(JSON.parse(cachedData))
+            console.log(rankings)
+
+            axios.get('/getTBATeamName', config).then(nameResponse => {
+
+                const names = nameResponse.data
+
+                console.log("nameResponse")
+                console.log(nameResponse)
+
+                if(rankings && names){
+                    // Sending the data to local storage for later use
+                    localStorage.setItem("teamRankingData", JSON.stringify(rankings))
+                    localStorage.setItem("teamNameData", JSON.stringify(names))
+                    
+    
+                    this.parseTbaData(rankings, names)
                 } else {
-                    alert("Something went wrong with getting The Blue Alliance data...")
+    
+                    console.log("cached tba data being read")
+                    const cachedRankingData = localStorage.getItem("teamRankingData")
+                    const cachedNameData = localStorage.getItem("teamNameData")
+                    
+                    // Makes sure that the data isn't null or undefined before parsing
+                    if(cachedRankingData && cachedNameData) {
+                        this.parseTbaData(JSON.parse(cachedRankingData), JSON.parse(cachedNameData))
+                    } else {
+                        alert("Something went wrong with getting The Blue Alliance data...")
+                    }
+    
                 }
 
-            }
+            })
 
 
         }).catch(error => {
@@ -169,25 +181,68 @@ export default class DataCollector {
     }
 
 
-    parseTbaData (teamRankingData) {
+    /**
+     * Takes in an array of objects that have the team number and the team name, then finds the name recursively
+     * @param {Array} arrayOfNames The array of the objects that contain the team names
+     * @param {String} targetTeam The number of the team that you want to find the name of
+     * @param {Number} lowIndex The lower bounds of the search
+     * @param {Number} highIndex The higher bounds of the search
+     * @returns {String} The team name of the team with the corresponding number
+     */
+
+    binaryNameSearch(arrayOfNames, targetTeam, lowIndex = 0, highIndex = arrayOfNames.length - 1) {
+
+            if (lowIndex > highIndex) {
+              return "No name...what the heck???"
+            }
+       
+            const midPoint = Math.floor((highIndex + lowIndex) / 2)
+                 
+            const teamNum = String((arrayOfNames[midPoint]).team_number);            
+            
+            // Comparing lexographically
+            if (teamNum == targetTeam) {
+              return arrayOfNames[midPoint].nickname
+       
+            } else if (teamNum < targetTeam) {
+              return this.binaryNameSearch(arrayOfNames, targetTeam, midPoint + 1, highIndex);
+            } else if (teamNum > targetTeam) {
+              return this.binaryNameSearch(arrayOfNames, targetTeam, lowIndex, midPoint - 1);
+            }
+       
+    }
+
+
+
+    /**
+     * @param {Object} teamRankingData An object containing the ranks of all the teams 
+     * @param {Array} teamNameData ASSUMES TBA HAS ALREADY SORTED BY TEAM NUMBER (An array containing the names of all the teams) 
+     */
+    parseTbaData (teamRankingData, teamNameData) {
 
         const newData = []
 
-            for (const team of teamRankingData) {
+        const sortedTeamNameData = teamNameData
 
-                newData.push([
-                    Number(team.team_key.replace("frc", "")),//gets rid of the "frc" before the number
-                    team.rank]);
-            }//This is basically a for-each loop. It iterates through the entire response data array and saves the rankings     
+        console.log(sortedTeamNameData)
 
-            /*maybe return team rankings, or just use object append to combine 
-            the two arrays with spreadsheets and make one big object or something            
-            */
-            console.log("TBA data received")
+        // Iterates through the rankings and searches through the names and saves the teams 
+        for (const team of teamRankingData) {
 
-            this.teamData = [...newData]
+            // Gets rid of the "frc" before the number
+            const teamNum = Number(team.team_key.replace("frc", ""))
 
-            console.log(this.teamData)
+            const teamName = this.binaryNameSearch(sortedTeamNameData, String(teamNum))
+
+            newData.push([teamNum, team.rank, teamName]);
+        }    
+
+        /*maybe return team rankings, or just use object append to combine 
+        the two arrays with spreadsheets and make one big object or something            
+        */
+        console.log("TBA datareceived")
+        this.teamData = [...newData]
+        console.log(this.teamData)
 
     }
 
@@ -205,6 +260,7 @@ export default class DataCollector {
         return axios.get('/getSpreadsheetData', config).then(response => { 
             // if there's no error, then do the normal preparations
             if(!response.data.error){
+                console.log("Spreadsheet data received")
 
                 // Starting to parse the spreadsheet data
                 this.prepareSpreadsheetData(response.data) 
@@ -213,22 +269,7 @@ export default class DataCollector {
                 this.readFromCacheSpreadsheet()
             }
         }).catch(error => {
-                /*
-                if (this.sheetsRetrievalErrors < 3) {
-                    console.log(error)
-                    alert("check console")
-
-                    this.sheetsRetrievalErrors++;
-                    return setTimeout(this.getSpreadsheetData, 1500);
-                } else {
-                    // read from local cache
-                    alert("reading from cache, plz implement ")
-                }
-                */
-
-                // Above code seeeemed like a good idea, but idk how "safe" just retrying the connection is
-
-
+            
                 console.log("reading from cached spreadsheet")
                 this.readFromCacheSpreadsheet()
 
