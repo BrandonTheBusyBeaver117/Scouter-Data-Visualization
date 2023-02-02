@@ -176,8 +176,10 @@ export class TeamModifier extends Component {
             //console.log(team)
             newTeamMap.set("teamNumber", team[0])
             newTeamMap.set("teamRank", team[1])
+            newTeamMap.set("teamName", team[2])
 
-            const matches = team.slice(2) // THis is an array of all the matches, skipping over teamnum and rank
+            // Gets the matches from the team data, skipping over the data we already initialized
+            const matches = team.slice(3)
             //console.log(matches)
 
             /*
@@ -353,17 +355,34 @@ export class TeamModifier extends Component {
     }
 
 
+    renderTeamComponents(chosenTeams, googleSheetHeaders, sortedTeamInformationMap, selectedQuality) {
+        let teamComponents = [];
+
+        for(let i = 1; i <= chosenTeams.length; i++){
+
+            const chosenTeam = chosenTeams [i - 1];
+
+            teamComponents.push(
+                <Team key={chosenTeam}
+                    googleSheetHeaders={googleSheetHeaders}
+                    sortedTeamInformationMap = {sortedTeamInformationMap.get(chosenTeam)}
+                    selectedQuality = {selectedQuality}
+                    teamRanking = {i}
+                />
+            );
+        }
+    
+        return teamComponents
+    }
+
+
     render() {
 
-        let teamComponents = this.state.chosenTeams.map((chosenTeam) => 
+        
 
-            <Team key={chosenTeam}
-                googleSheetHeaders={this.state.googleSheetHeaders}
-                toggleMenu={this.toggleMenu}
-                sortedTeamInformationMap = {this.state.sortedTeamInformation.get(chosenTeam)}
-                selectedQuality = {this.state.selectedQuality}
-            />
-        )
+        let teamComponents = this.renderTeamComponents(this.state.chosenTeams, 
+            this.state.googleSheetHeaders, this.state.sortedTeamInformation, this.state.selectedQuality)
+
 
         return (
             <div>

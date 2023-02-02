@@ -28,11 +28,26 @@ app.get("/getTBAData", (req, res) => {
     axios.get("https://www.thebluealliance.com/api/v3/event/" + req.headers.eventkey + "/rankings", { headers: headers })
         .then(response => {
             //console.log(response.data)
-            console.log("tba ok in theory")
+            console.log("tba ranking server response success")
             res.json(response.data)
 
         }).catch(error => {
-            console.log("tba bad")
+            console.log("tba ranking server response fail")
+            res.json(error)
+        })
+
+})
+
+app.get("/getTBATeamName", (req, res) => {
+
+    axios.get("https://www.thebluealliance.com/api/v3/event/" + req.headers.eventkey + "/teams/simple", { headers: headers })
+        .then(response => {
+        
+            console.log("tba team name response success")
+            res.json(response.data)
+
+        }).catch(error => {
+            console.log("tba team name server response fail")
             res.json(error)
         })
 
@@ -62,7 +77,7 @@ app.get("/getSpreadsheetData", async (req, res) => {
         } else {
             readSpreadsheet(client, req.headers.spreadsheetid).then(response =>{
 
-            console.log(response);
+            //console.log(response);
             res.json(response)
             }).catch(error => {
                 console.log(error)
