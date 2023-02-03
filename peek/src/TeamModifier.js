@@ -440,20 +440,25 @@ export class TeamModifier extends Component {
 
         // The quality being sorted by, is the quality that we just sorted by (the one passed into this function)
         this.setState({sortingQuality: quality})
-        
+
         // The chosen teams should be are sorted teams
         this.setChosenTeams(arrayOfSortedTeams)        
         
     }
 
 
+    // Name is self-explanatory
     renderTeamComponents(chosenTeams, googleSheetHeaders, sortedTeamInformationMap, selectedQuality) {
+        // Array of all the team components
         let teamComponents = [];
 
+        // Iterating through all chosen teams
         for(let i = 1; i <= chosenTeams.length; i++){
 
+            // Getting the chosen team of each iteration
             const chosenTeam = chosenTeams [i - 1];
 
+            // Pushing each team
             teamComponents.push(
                 <Team key={chosenTeam}
                     googleSheetHeaders={googleSheetHeaders}
@@ -471,7 +476,7 @@ export class TeamModifier extends Component {
     render() {
 
         
-
+        // Getting the team components
         let teamComponents = this.renderTeamComponents(this.state.chosenTeams, 
             this.state.googleSheetHeaders, this.state.sortedTeamInformation, this.state.selectedQuality)
 
