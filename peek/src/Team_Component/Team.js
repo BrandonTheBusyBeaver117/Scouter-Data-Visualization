@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import "./Team.scss"
 import DataChart from '../DataChart.js';
+import { BiImageAdd } from "react-icons/bi"
+import axios from "axios";
 export class Team extends Component{
 
     /*Basically this class should hold all the data
@@ -11,9 +13,43 @@ export class Team extends Component{
     constructor(props) {
         
         super(props);
+        this.state = {
+            links: ""
+        }
     }
 
+    componentDidMount() {
+        this.getImages().then( imageLinks =>
+            this.setState({links: imageLinks})
+        )
+    }
 
+    getImages() {
+
+        const teamNumber = this.props.sortedTeamInformationMap.get("teamNumber")
+
+        // Gets all images tagged with the team number
+        return axios.get(`https://res.cloudinary.com/drzeip1bi/image/list/${teamNumber}.json`).then( response =>{
+            const imageLinks = []
+            for(const image of response.data.resources) {
+                
+                const version = image.version
+                const format = image.format
+                const id = image.public_id;
+
+                imageLinks.push(`https://res.cloudinary.com/drzeip1bi/image/upload/v${version}/${id}.${format}`)
+                //console.log(`https://res.cloudinary.com/drzeip1bi/image/upload/v${version}/${id}.${format}`)
+            }
+
+            return imageLinks;
+        }).catch(error => {
+            console.log("Cloudinary Error occurred")
+            console.log(error)
+            return ""
+        })
+
+    }
+   
 
     render() {
         //this is where the team blocky thing should be rendered
@@ -31,10 +67,9 @@ export class Team extends Component{
                 matches = {this.props.sortedTeamInformationMap.get("matchNum")}
                 teamData = {this.props.sortedTeamInformationMap.get(this.props.selectedQuality)}
                 selectedQuality = {this.props.selectedQuality}
-
             />
             
-            
+            {this.state.links === "" ? <BiImageAdd/> : this.state.links.map(link => <img src = {link}/>)}
 
         </div>
         );
