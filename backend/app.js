@@ -1,7 +1,9 @@
-
 const express = require('express');
 const axios = require('axios');
-const { google } = require('googleapis');
+const {
+    google
+} = require('googleapis');
+const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
 const app = express()
@@ -25,7 +27,9 @@ app.get("/getTBAData", (req, res) => {
 
     console.log(req.headers.eventkey)
 
-    axios.get("https://www.thebluealliance.com/api/v3/event/" + req.headers.eventkey + "/rankings", { headers: headers })
+    axios.get("https://www.thebluealliance.com/api/v3/event/" + req.headers.eventkey + "/rankings", {
+            headers: headers
+        })
         .then(response => {
             //console.log(response.data)
             console.log("tba ranking server response success")
@@ -40,9 +44,11 @@ app.get("/getTBAData", (req, res) => {
 
 app.get("/getTBATeamName", (req, res) => {
 
-    axios.get("https://www.thebluealliance.com/api/v3/event/" + req.headers.eventkey + "/teams/simple", { headers: headers })
+    axios.get("https://www.thebluealliance.com/api/v3/event/" + req.headers.eventkey + "/teams/simple", {
+            headers: headers
+        })
         .then(response => {
-        
+
             console.log("tba team name response success")
             res.json(response.data)
 
@@ -53,39 +59,41 @@ app.get("/getTBATeamName", (req, res) => {
 
 })
 
- 
+
 app.get("/getSpreadsheetData", async (req, res) => {
 
     console.log(req.headers.spreadsheetId)
-    
+
     const client = new google.auth.JWT(
 
-        process.env.GOOGLE_CLIENT_EMAIL, 
-        null, 
-        process.env.GOOGLE_PRIVATE_KEY, 
+        process.env.GOOGLE_CLIENT_EMAIL,
+        null,
+        process.env.GOOGLE_PRIVATE_KEY,
         ['https://www.googleapis.com/auth/spreadsheets']
 
     );
 
-    client.authorize( (err, tokens) => {
+    client.authorize((err, tokens) => {
 
-        if(err){
+        if (err) {
 
             console.log("you have angered a higher being \n" + err);
-            res.json({error: err})
-            
-        } else {
-            readSpreadsheet(client, req.headers.spreadsheetid).then(response =>{
+            res.json({
+                error: err
+            })
 
-            //console.log(response);
-            res.json(response)
+        } else {
+            readSpreadsheet(client, req.headers.spreadsheetid).then(response => {
+
+                //console.log(response);
+                res.json(response)
             }).catch(error => {
                 console.log(error)
-                
-            })
-             
 
-            
+            })
+
+
+
         }
 
 
@@ -93,7 +101,10 @@ app.get("/getSpreadsheetData", async (req, res) => {
 
     async function readSpreadsheet(client, spreadsheetId) {
 
-        const googleSheetsAPI = google.sheets({version:'v4', auth:client})
+        const googleSheetsAPI = google.sheets({
+            version: 'v4',
+            auth: client
+        })
 
         let sheets = await googleSheetsAPI.spreadsheets.values.get({
 
@@ -106,51 +117,23 @@ app.get("/getSpreadsheetData", async (req, res) => {
     }
 
 
-/*
-
-
-    const credentials = {
-        
-  "type": process.env.GOOGLE_TYPE,
-  "project_id": process.env.GOOGLE_PROJECT_ID,
-  "private_key_id": process.env.GOOGLE_PRIVATE_KEY_ID,
-  "private_key": process.env.GOOGLE_PRIVATE_KEY,
-  "client_email": process.env.GOOGLE_CLIENT_EMAIL,
-  "client_id": process.env.GOOGLE_CLIENT_ID,
-  "auth_uri": process.env.GOOGLE_AUTH_URI,
-  "token_uri": process.env.GOOGLE_TOKEN_URI,
-  "auth_provider_x509_cert_url": process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
-  "client_x509_cert_url": process.env.GOOGLE_CLIENT_X509_CERT_URL
-
-    }
-
-    //const credentials = JSON.stringify(credentialsJSON)
-
-
-    const auth = new google.auth.GoogleAuth({
-
-        credentials: credentials,
-
-        scopes: "https://www.googleapis.com/auth/spreadsheets"
-
-
-    })
-
-    const client = await auth.getClient();
-
-    const googleSheets = google.sheets({version: "v4", auth:client})
-    
-    const spreadsheetID = "1CKLOwi0YJVL01nasfPA0QrBuVvlBR75ypgbgoyoGRgk"; //perhaps use env?
-
-    console.log(spreadsheetID)
-
-    const data = await googleSheets.spreadsheets.get({auth, spreadsheetID})
- */ 
-
 })
 
 // somehow save it all as an array and maybe map it later?
 
+
+app.get("/getCloudinarySignature", (req, res) => {
+    const timestamp = Math.round(new Date().getTime / 1000)
+    const signature = cloudinary.utils.api_sign_request({
+            timestamp: timestamp
+        },
+        process.env.CLOUDINARY_SECRET
+    );
+    res.json({
+        timestamp,
+        signature
+    })
+})
 
 app.listen(PORT, () => {
     console.log(`Ranking collector listening on port ${PORT}`)
