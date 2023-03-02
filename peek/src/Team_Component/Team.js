@@ -1,6 +1,13 @@
 import React, { Component } from 'react'
 import "./Team.scss"
+import DataChart from '../DataChart.js';
+import { BiImageAdd } from "react-icons/bi"
+import axios from "axios";
+import CloudinaryUploadWidget from "./CloudinaryUploadWidget";
 
+
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
 export class Team extends Component{
 
     /*Basically this class should hold all the data
@@ -11,137 +18,74 @@ export class Team extends Component{
     constructor(props) {
         
         super(props);
-        
         this.state = {
-            table: [],
-            marginHorizontal: "auto",
+            links: ""
         }
-
-
-
-    }
-    componentDidMount () {
-        this.formatter()       
-
     }
 
-    componentDidUpdate (prevProps) {
-        const newMargin = this.props.marginHorizontal
-        console.log(newMargin)
-         if(prevProps.marginHorizontal != this.props.marginHorizontal){
-             //console.log("did it work?")
-             this.setState({marginHorizontal: newMargin})
-             console.log("Margin horizontal: " + newMargin)
-         }
-
-    }
-
-
-    handleClick = () => {
-        this.props.toggleMenu(false, 5026, 5026, true)
-
-       
-        
-    }
-
-    handleContextMenu (event) {
-        event.preventDefault()
-        this.props.toggleMenu(true, event.clientX, event.clientY, false)
-        
-        console.log(event.clientX, event.clientY)
-        
-    }
-
-
-    formatter () {
-       
-        //headers
-        let headerHolder = []
-
-        for(let i = 2; i < this.props.googleSheetHeaders.length; i++){
-            headerHolder.push(<th key = {i} onContextMenu = {(event) => this.handleContextMenu(event)} onClick={this.handleClick}>
-            {this.props.googleSheetHeaders[i]}</th>)
-        }
-
-        const googleSheetHeaders = <tr>{headerHolder}</tr>
-        
-        
-        
-        /*------------------------------------------------------------------------------
-
-        prop.teamData is all the data for the team
-        structure is laid out below, but might be subject to change year to year
-
-        prop.teamData[0] is the team number
-        prop.teamData[1] is the team ranking 
-
-        Every index afterwards contains an individual match that this team performed in
-        prop.teamData[2 --> infinity]
-
-        This is why matchData down below is props.teamData slice starts off at 2, 
-        because the "individual match data" starts at index 2
-        
-        */
-
-
-        /*  
-            allMatchData is going to do exactly what it sounds like
-            It'll hold all the matches' data as an array of "table row" elements
-            That way, we can use it later in the table
-        */
-        let allMatchData = []; // This could be refactored into another map statement, but I think that reduces readability
-        console.log(this.props.teamData);
-
-
-        const matchData = this.props.teamData.slice(2); // 2 represents the index where the matches actually start, ignoring team number and ranking
-
-        
-        //Iterates through all the matches 
-        for(const match of matchData) {
-
-            /*
-                2 represents the match data, skipping past version number (index 0) and team Num (index 1)
-                We basically cut off the first two indexes of the raw individual match
-                Then, we save the new data as a "table data" element in refinedMatchData
-            */
-
-            let refinedMatchData = match.slice(2).map((item) => <td>{item}</td>)
+    componentDidMount() {
+        this.getImages().then( imageLinks =>{
             
-
-            /*
-                Now, with the refined match data, we save that as a single row in allMatchData
-                In the end, allMatchData will have all the refined matches, each as a separate row
-            */
-
-            allMatchData.push(<tr>{refinedMatchData}</tr>)
-        }
-        
-
-        //The final table to be rendered
-        const saveTable = 
-            <table>
-                <thead>{googleSheetHeaders}</thead>
-                <tbody>{allMatchData}</tbody>
-            </table>
-
-
-        this.setState({table: saveTable})// Sets state to the table
-
-        
-
+            this.setState({links: imageLinks})
+            console.log(imageLinks)
+        })
     }
 
+    getImages() {
+
+        const teamNumber = this.props.sortedTeamInformationMap.get("teamNumber")
+
+        // Gets all images tagged with the team number
+        return axios.get(`https://res.cloudinary.com/drzeip1bi/image/list/${teamNumber}.json`).then( response =>{
+            const imageLinks = []
+            for(const image of response.data.resources) {
+                
+                const version = image.version
+                const format = image.format
+                const id = image.public_id;
+
+                imageLinks.push(`https://res.cloudinary.com/drzeip1bi/image/upload/v${version}/${id}.${format}`)
+                //console.log(`https://res.cloudinary.com/drzeip1bi/image/upload/v${version}/${id}.${format}`)
+            }
+
+            return imageLinks;
+        }).catch(error => {
+            console.log("Cloudinary Error occurred")
+            console.log(error)
+            return ""
+        })
+
+    }
+   
 
     render() {
         //this is where the team blocky thing should be rendered
         
+        console.log(this.props.sortedTeamInformationMap)
+        console.log(this.props.sortedTeamInformationMap.get(this.props.selectedQuality))
         return(
-        <div className='teamComponent' style = {{margin: `25px ${this.props.marginHorizontal}px`}}>
-            <h1>{this.props.teamData[0]}</h1>
-            <h2>Rank: {this.props.teamData[1]}</h2>
+        <div className='teamComponent' 
+            id = {"team" + this.props.sortedTeamInformationMap.get("teamNumber")}>
+            <h1>{this.props.sortedTeamInformationMap.get("teamNumber")}</h1>
+            <h1>{this.props.sortedTeamInformationMap.get("teamName")}</h1>
+            <h2>TBA Ranking: {this.props.sortedTeamInformationMap.get("teamRank")}</h2>
             
-            {this.state.table}
-            
+            <DataChart 
+                matches = {this.props.sortedTeamInformationMap.get("matchNum")}
+                teamData = {this.props.sortedTeamInformationMap.get(this.props.selectedQuality)}
+                selectedQuality = {this.props.selectedQuality}
+            />
+            {this.state.links !== "" &&
+            <Carousel infiniteLoop = {true} interval = {4000}>
+
+                {this.state.links.map(link => <div><img src = {link}/></div>)}
+                <div>
+                    <img src = "https://beaverworks.ll.mit.edu/CMS/bw/sites/default/files/BWSI_Timeline_2023.png" />
+                </div>
+            </Carousel>
+            }
+            <CloudinaryUploadWidget teamNumber = {this.props.sortedTeamInformationMap.get("teamNumber")}/>
+            <BiImageAdd/>
 
         </div>
         );
