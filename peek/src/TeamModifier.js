@@ -322,8 +322,8 @@ export class TeamModifier extends Component {
         // Wanna see the sorted array?
         //console.log([...sortedArray, ...sortedTeamLeft, ...sortedTeamRight])
 
-        // the sorted array, plus any leftover arrays, just in case the sorted arrays are inequal in size
-        // any leftovers should be the smallest one left
+        // the sorted array, plus any leftover arrays, just in case the sorted arrays are unequal in size
+        // any leftover arrays should be the smallest values left
         return [...sortedArray, ...sortedTeamLeft, ...sortedTeamRight]
 
     }

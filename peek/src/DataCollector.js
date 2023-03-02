@@ -9,6 +9,7 @@ export default class DataCollector {
         this.googleSheetHeaders = "N/A"
 
         // Could put this in constructor
+        // The index of the column containing the team number in the match data
         this.teamColumn = 1;
 
         this.sheetsRetrievalErrors = 0;
@@ -140,20 +141,11 @@ export default class DataCollector {
                     localStorage.setItem("teamRankingData", JSON.stringify(rankings))
                     localStorage.setItem("teamNameData", JSON.stringify(names))
                     
-    
+                    // Parse the data
                     this.parseTbaData(rankings, names)
                 } else {
-    
-                    console.log("cached tba data being read")
-                    const cachedRankingData = localStorage.getItem("teamRankingData")
-                    const cachedNameData = localStorage.getItem("teamNameData")
                     
-                    // Makes sure that the data isn't null or undefined before parsing
-                    if(cachedRankingData && cachedNameData) {
-                        this.parseTbaData(JSON.parse(cachedRankingData), JSON.parse(cachedNameData))
-                    } else {
-                        alert("Something went wrong with getting The Blue Alliance data...")
-                    }
+                    this.handleTBAError("rankings and names null")
     
                 }
 
@@ -162,24 +154,31 @@ export default class DataCollector {
 
         }).catch(error => {
 
-            // Not sure if this clause is necessary
+            
+           console.log(error)
 
-            console.log(error)
-
-            const cachedData = localStorage.getItem("teamRankingData")
-
-            // Makes sure that the data isn't null or undefined before parsing
-            if(cachedData) {
-                this.parseTbaData(JSON.parse(cachedData))
-            } else {
-                alert("Something went wrong with getting The Blue Alliance data...")
-            }
-
-
+           this.handleTBAError("Actual error block for axios")
 
         })
     }
 
+
+    handleTBAError(location) {
+        
+        console.log("Error, coming from " + location)
+
+        console.log("cached tba data being read")
+        const cachedRankingData = localStorage.getItem("teamRankingData")
+        const cachedNameData = localStorage.getItem("teamNameData")
+        
+        // Makes sure that the data isn't null or undefined before parsing
+        if(cachedRankingData && cachedNameData) {
+            this.parseTbaData(JSON.parse(cachedRankingData), JSON.parse(cachedNameData))
+        } else {
+            alert("Something went wrong with getting The Blue Alliance data...")
+        }
+
+    }
 
     /**
      * Takes in an array of objects that have the team number and the team name, then finds the name recursively
