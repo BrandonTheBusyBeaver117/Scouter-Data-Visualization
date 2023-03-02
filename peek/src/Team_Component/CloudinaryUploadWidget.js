@@ -44,7 +44,7 @@ class CloudinaryUploadWidget extends Component {
         }
       }
     );
-    document.getElementById("upload_widget").addEventListener(
+    document.getElementById(`upload_widget${this.props.teamNumber}`).addEventListener(
       "click",
       function () {
         myWidget.open();
@@ -55,7 +55,7 @@ class CloudinaryUploadWidget extends Component {
 
   render() {
     return (
-      <button id="upload_widget" className="cloudinary-button">
+      <button id={`upload_widget${this.props.teamNumber}`} className="cloudinary-button">
         Upload
       </button>
     );
