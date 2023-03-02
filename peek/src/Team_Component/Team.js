@@ -3,6 +3,11 @@ import "./Team.scss"
 import DataChart from '../DataChart.js';
 import { BiImageAdd } from "react-icons/bi"
 import axios from "axios";
+import CloudinaryUploadWidget from "./CloudinaryUploadWidget";
+
+
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
 export class Team extends Component{
 
     /*Basically this class should hold all the data
@@ -19,9 +24,11 @@ export class Team extends Component{
     }
 
     componentDidMount() {
-        this.getImages().then( imageLinks =>
+        this.getImages().then( imageLinks =>{
+            
             this.setState({links: imageLinks})
-        )
+            console.log(imageLinks)
+        })
     }
 
     getImages() {
@@ -68,8 +75,17 @@ export class Team extends Component{
                 teamData = {this.props.sortedTeamInformationMap.get(this.props.selectedQuality)}
                 selectedQuality = {this.props.selectedQuality}
             />
-            
-            {this.state.links === "" ? <BiImageAdd/> : this.state.links.map(link => <img src = {link}/>)}
+            {this.state.links !== "" &&
+            <Carousel infiniteLoop = {true} interval = {4000}>
+
+                {this.state.links.map(link => <div><img src = {link}/></div>)}
+                <div>
+                    <img src = "https://beaverworks.ll.mit.edu/CMS/bw/sites/default/files/BWSI_Timeline_2023.png" />
+                </div>
+            </Carousel>
+            }
+            <CloudinaryUploadWidget teamNumber = {this.props.sortedTeamInformationMap.get("teamNumber")}/>
+            <BiImageAdd/>
 
         </div>
         );
