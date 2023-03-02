@@ -217,7 +217,6 @@ class Header {
     }
 
 
-
     calculateTotalPoints(data = []) {
         if (data.length > 0) {
             const average = this.calculateAverage(data);
