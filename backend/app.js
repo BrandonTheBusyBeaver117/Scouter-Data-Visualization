@@ -119,22 +119,6 @@ app.get("/getSpreadsheetData", async (req, res) => {
 
 })
 
-// somehow save it all as an array and maybe map it later?
-
-
-app.get("/getCloudinarySignature", (req, res) => {
-    const timestamp = Math.round(new Date().getTime / 1000)
-    const signature = cloudinary.utils.api_sign_request({
-            timestamp: timestamp
-        },
-        process.env.CLOUDINARY_SECRET
-    );
-    res.json({
-        timestamp,
-        signature
-    })
-})
-
 app.listen(PORT, () => {
     console.log(`Ranking collector listening on port ${PORT}`)
 })
