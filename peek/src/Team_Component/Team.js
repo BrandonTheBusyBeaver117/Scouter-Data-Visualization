@@ -82,11 +82,7 @@ export class Team extends Component{
                     interval = {5000} 
                     emulateTouch = {true}
                 >
-
                     {this.state.links.map(link => <div><img src = {link}/></div>)}
-                    <div>
-                        <img src = "https://beaverworks.ll.mit.edu/CMS/bw/sites/default/files/BWSI_Timeline_2023.png" />
-                    </div>
                 </Carousel>
             }
             <CloudinaryUploadWidget teamNumber = {this.props.sortedTeamInformationMap.get("teamNumber")}/>
