@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { BiImageAdd } from "react-icons/bi"
+import "./Cloudinary.scss"
 
 class CloudinaryUploadWidget extends Component {
 
@@ -56,7 +58,8 @@ class CloudinaryUploadWidget extends Component {
   render() {
     return (
       <button id={`upload_widget${this.props.teamNumber}`} className="cloudinary-button">
-        Upload
+        {"Upload\n"}
+        <BiImageAdd/>
       </button>
     );
   }

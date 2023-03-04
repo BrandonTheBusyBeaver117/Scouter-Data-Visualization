@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import "./Team.scss"
 import DataChart from '../DataChart.js';
-import { BiImageAdd } from "react-icons/bi"
 import axios from "axios";
 import CloudinaryUploadWidget from "./CloudinaryUploadWidget";
 
@@ -86,7 +85,7 @@ export class Team extends Component{
                 </Carousel>
             }
             <CloudinaryUploadWidget teamNumber = {this.props.sortedTeamInformationMap.get("teamNumber")}/>
-            <BiImageAdd/>
+
 
         </div>
         );

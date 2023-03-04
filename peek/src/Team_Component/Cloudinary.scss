@@ -1,0 +1,11 @@
+.cloudinary-button {
+    white-space: pre-line;
+    
+    & > svg{
+        $size: min(10vmin, 50px);
+        width: $size;
+        height: $size;
+        
+    }
+    padding-bottom: 0;
+}
