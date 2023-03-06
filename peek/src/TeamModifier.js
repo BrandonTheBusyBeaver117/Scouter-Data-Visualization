@@ -234,19 +234,6 @@ export class TeamModifier extends Component {
 
             */
 
-            /*
-                One thing to consider is the types of data there will be
-                There'll be:
-                    * Team Number
-                    * Ranking
-                    * Version of Scouting App,
-                    * Comments
-                    * Quantitative Data (how much of something) (we can run statistics on these data points)
-                    * Boolean? Data (Whether a robot did something or not)
-
-
-            */
-
             // Goes through all the matches
             for(const match of matches){
                 

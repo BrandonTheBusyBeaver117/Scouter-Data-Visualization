@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import "./Team.scss"
 import DataChart from '../DataChart.js';
-import { BiImageAdd } from "react-icons/bi"
 import axios from "axios";
 import CloudinaryUploadWidget from "./CloudinaryUploadWidget";
 
@@ -76,16 +75,17 @@ export class Team extends Component{
                 selectedQuality = {this.props.selectedQuality}
             />
             {this.state.links !== "" &&
-            <Carousel infiniteLoop = {true} interval = {4000}>
-
-                {this.state.links.map(link => <div><img src = {link}/></div>)}
-                <div>
-                    <img src = "https://beaverworks.ll.mit.edu/CMS/bw/sites/default/files/BWSI_Timeline_2023.png" />
-                </div>
-            </Carousel>
+                <Carousel 
+                    autoPlay = {true}
+                    infiniteLoop = {true} 
+                    interval = {5000} 
+                    emulateTouch = {true}
+                >
+                    {this.state.links.map(link => <div><img src = {link}/></div>)}
+                </Carousel>
             }
             <CloudinaryUploadWidget teamNumber = {this.props.sortedTeamInformationMap.get("teamNumber")}/>
-            <BiImageAdd/>
+
 
         </div>
         );
