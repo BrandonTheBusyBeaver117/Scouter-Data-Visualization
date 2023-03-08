@@ -3,6 +3,7 @@ import "./Team.scss"
 import DataChart from '../DataChart.js';
 import axios from "axios";
 import CloudinaryUploadWidget from "./CloudinaryUploadWidget";
+import { Offline, Online } from "react-detect-offline";
 
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -62,6 +63,7 @@ export class Team extends Component{
         
         console.log(this.props.sortedTeamInformationMap)
         console.log(this.props.sortedTeamInformationMap.get(this.props.selectedQuality))
+        console.log(navigator.onLine)
         return(
         <div className='teamComponent' 
             id = {"team" + this.props.sortedTeamInformationMap.get("teamNumber")}>
@@ -84,8 +86,10 @@ export class Team extends Component{
                     {this.state.links.map(link => <div><img src = {link}/></div>)}
                 </Carousel>
             }
-            <CloudinaryUploadWidget teamNumber = {this.props.sortedTeamInformationMap.get("teamNumber")}/>
-
+            
+            <Online>
+                <CloudinaryUploadWidget teamNumber = {this.props.sortedTeamInformationMap.get("teamNumber")}/>
+            </Online>
 
         </div>
         );
