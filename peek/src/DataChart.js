@@ -1,7 +1,8 @@
 import "./DataChart.scss"
+import { Headings2022, types } from "./Headers";
 
 import { Chart as ChartJS, CategoryScale, LineController, LineElement, ArcElement, PointElement, LinearScale, Title, Tooltip, Legend } from "chart.js"
-import { Line, Pie } from 'react-chartjs-2';
+import { Line, Pie, Bar } from 'react-chartjs-2';
 
 import chartTrendline from 'chartjs-plugin-trendline';
 
@@ -12,25 +13,40 @@ ChartJS.register(CategoryScale, LineController, LineElement, ArcElement, PointEl
 export default function DataChart(props) {
 
 
-    const createChart = (matches, teamData, selectedQuality) => {
-
-        const data = [...teamData]
-        //console.log(data)
-        //console.log(typeof data[0])
+    const createChart = (matches, positiveDataSet, negativeDataSet, selectedQuality, sortingType) => {
         
-        if (data.includes("FALSE") || data.includes("TRUE")) {
+        switch(sortingType){
 
-            console.log(data)
-            let numFalse = 0;
-            let numTrue = 0;
+        case(types.boolean) : {
 
-                for (const match of data) {
-                    if(match === "FALSE") {
-                       numFalse++;
-                    } else if(match === "TRUE") {
-                        numTrue++;
-                    }
-                }
+            console.log(positiveDataSet)
+            console.log(negativeDataSet)
+
+
+            let numFail = 0;
+            let numSuccess = 0;
+
+            
+            for(const dataPoint of negativeDataSet) {
+                if(dataPoint.toUpperCase() === "TRUE") numFail++;
+            }
+            for(const dataPoint of positiveDataSet) {
+                if(dataPoint.toUpperCase() === "TRUE") numSuccess++;
+            }
+
+            // if(positiveDataSet.length > 0) {
+
+            //     for (let i = 0; i < positiveDataSet.length; i++) {
+            //         if(positiveDataSet !== 0 && negativeDataSet !== 0){
+            //             if(positiveDataSet[i].toUpperCase() === "TRUE") numSuccess++;
+            //             if(negativeDataSet[i].toUpperCase() === "TRUE") numFail++;
+            //         } else if(positiveDataSet.length > 0 && negativeDataSet.length === 0) {
+            //             positiveDataSet[i].toUpperCase() === "TRUE" ? numSuccess++ : numFail++;
+            //         } 
+            //     }
+            // } else if (negativeDataSet.length > 0) {
+            //     negativeDataSet.forEach(matchResult => matchResult.toUpperCase() === "TRUE" ? numFail++ : numSuccess++);
+            // }
             
             return <Pie 
                 className='dataChart'
@@ -42,7 +58,7 @@ export default function DataChart(props) {
                         {
                             id: 1,
                             label: '',
-                            data: [numTrue, numFalse],
+                            data: [numSuccess, numFail],
                             backgroundColor: ["rgb(0, 255, 115)", "rgb(255, 15, 40)"]
                         }
                     ]
@@ -50,7 +66,7 @@ export default function DataChart(props) {
                 options={{ 
                         // If there are two values, then have a border radius
                         // Otherwise, complete the entire pie chart
-                        borderWidth : data.includes("TRUE") && data.includes("FALSE") ? 2 : 0,
+                        borderWidth : positiveDataSet.length > 0 && negativeDataSet.length > 0 ? 2 : 0,
                         maintainAspectRatio: false, 
                         plugins: {
                             title: {
@@ -60,29 +76,42 @@ export default function DataChart(props) {
                         }
                     }}
                     />
-        } else if (!isNaN(data[0]) ){
+        } 
+        case(types.number): {
         
-        let yOption = {};
+            let yOption = {};
 
-        if(data.includes("0")){
-            yOption = {
-                ticks: {
-                    stepSize: 1
-                }  
-                }
+            console.log(positiveDataSet)
 
-            
-        } else {
-            yOption = {
-                min: 0,
-                ticks: {
-                    stepSize: 1
+            if(!positiveDataSet?.includes("0") && !negativeDataSet?.includes("0")){
+                yOption = {
+                    min: 0,
                 }
             }
-            
-        }
 
-        const trendLineColor = "blue";
+            let positiveConfig = {}
+            let negativeConfig = {}
+
+            if(positiveDataSet.length !== 0) {
+                positiveConfig = {
+                    trendlineLinear: {
+                        lineStyle: "dotted",
+                        width: 3,
+                        colorMin: "blue", 
+                        colorMax: "blue"
+                    }
+                }
+            } else {
+                negativeConfig = {
+                    trendlineLinear: {
+                        lineStyle: "dotted",
+                        width: 3,
+                        colorMin: "red", 
+                        colorMax: "red"
+                    }
+                }
+            }
+
 
             return <Line
                 className='dataChart'
@@ -94,16 +123,20 @@ export default function DataChart(props) {
                         {
                             id: 1,
                             label: selectedQuality,
-                            data: data,
+                            data: positiveDataSet,
                             backgroundColor: "rgb(15, 230, 255)",
                             borderColor: "rgb(205, 205, 205)",
                             borderWidth: 2,
-                            trendlineLinear: {
-                                lineStyle: "dotted",
-                                width: 3,
-                                colorMin: trendLineColor, 
-                                colorMax: trendLineColor
-                            }
+                            ...positiveConfig
+                        }, 
+                        {
+                            id: 2,
+                            label: selectedQuality,
+                            data: negativeDataSet,
+                            backgroundColor: "rgb(15, 230, 255)",
+                            borderColor: "rgb(205, 205, 205)",
+                            borderWidth: 2,
+                            ...negativeConfig
 
                         }
                     ]
@@ -111,7 +144,11 @@ export default function DataChart(props) {
                 options={{ 
                         maintainAspectRatio: false, 
                         scales: {
-                            y:  yOption,
+                            y:  {
+                                ticks: {
+                                    stepSize: 1
+                                },  
+                                ...yOption},
                             x: {
                                 title : {
                                     display: true,
@@ -134,10 +171,93 @@ export default function DataChart(props) {
                     }}
 
             />
-        } else {
-            return data.map((dataPoint) => <p>{dataPoint}</p>)
         }
+        case(types.string) : {
+            return positiveDataSet.map((dataPoint) => <p>{dataPoint}</p>)
+        }
+        case(types.levels) : {
+            // Assumes that there's only one positive or negative level data set
+            const data = []
+            if(positiveDataSet.length > 0) {
+                data.push(...positiveDataSet)
+            } else if(negativeDataSet.length > 0 ){
+                data.push(...negativeDataSet)
+            } else {
+                console.log("NO DATA GIVEN!!")
+            }
 
+            const typesOfLevels = Object.keys(Headings2022[selectedQuality].levelsConfig)
+
+            const levelFrequency = new Map();
+            // Initializing the frequency of each level
+            for(const level of typesOfLevels) {
+                levelFrequency.set(level, 0)
+            }
+
+            // Getting frequency of each level
+            data.forEach(dataPoint =>  levelFrequency.set(dataPoint, levelFrequency.get(dataPoint) + 1))
+          
+            const orderedFrequencies = typesOfLevels.map(level => levelFrequency.get(level));
+
+            return <Bar
+                 className='dataChart'
+                datasetIdKey='defaultBarChart'
+                data={{
+                
+                    labels: typesOfLevels,
+                    datasets: [
+                        {
+                            id: 1,
+                            label: selectedQuality,
+                            data: orderedFrequencies,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
+                                'rgba(255, 205, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(201, 203, 207, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(255, 159, 64)',
+                                'rgb(255, 205, 86)',
+                                'rgb(75, 192, 192)',
+                                'rgb(54, 162, 235)',
+                                'rgb(153, 102, 255)',
+                                'rgb(201, 203, 207)'
+                            ],
+                            borderWidth: 2,
+                        }, 
+                    ]
+                }}
+                options={{ 
+                        maintainAspectRatio: false, 
+                        scales: {
+                            y:  {
+                                ticks: {
+                                    stepSize: 1
+                                },  
+                            },
+                            x: {
+                                title : {
+                                    display: true,
+                                    text: "Match Number"
+                                },
+                            },
+                            
+                        },
+                        plugins: {
+                            title: {
+                                display: false,
+                                text : selectedQuality
+                            }
+                        }
+                    }}
+            />
+        }
+    }
     }
 
     
@@ -145,7 +265,7 @@ export default function DataChart(props) {
     return (
 
         <div className='chart'>
-            {createChart(props.matches, props.teamData, props.selectedQuality)}
+            {createChart(props.matches, props.positiveDataSet, props.negativeDataSet, props.selectedQuality, props.sortingType)}
         </div>
     )
 

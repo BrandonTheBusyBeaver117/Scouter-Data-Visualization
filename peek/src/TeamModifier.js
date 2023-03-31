@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Headings2022, calculateHeaderFrequencyAverage, calculateHeaderConsistency, types} from "./Headers"
 import { Team } from './Team_Component/Team'
 import Searchbar from './Searchbar';
 import SideMenu from "./SideMenu";
@@ -66,9 +67,8 @@ export class TeamModifier extends Component {
         // Perhaps this could be better if we actually kept track of google sheet headers
         if(prevState.selectedQuality === "" && this.state.sortedTeamInformation.size > 0){
             // Finding the first quality (the first google sheet header)
-            const defaultAttribute = this.state.googleSheetHeaders[0]
-            this.setSelectedQuality(defaultAttribute)
-            console.log(defaultAttribute)
+            this.setSelectedQuality((Object.keys(Headings2022))[0])
+            console.log((Object.keys(Headings2022))[0])
         }
 
         // If the input source has changed, then recreate the teams 
@@ -195,10 +195,23 @@ export class TeamModifier extends Component {
         const initialTeamMap = new Map()
         // Initializing Map with the keys, but empty values to be filled in later
         // Allows for this initial map to be reused
+        // Uses google sheet headers to do this
         for (const header of this.state.googleSheetHeaders){
             initialTeamMap.set(header, [])
         }
 
+        // // Uses predefined headers 
+        // for (const [key, value] of Object.entries(Headings2022)){
+        //         // Finding the true name, whether the values are linked in some way
+        //          const trueName = value.combinedName === "" ? key : value.combinedName
+        //         if(!initialTeamMap[key]){
+        //             initialTeamMap.set(key, [])
+        //         }
+
+        // }
+
+        console.log(initialTeamMap)
+        
         // Represents the global map that will contain all the sorted info of the teams
         const localSortedTeamInformationMap = new Map();
 
@@ -247,11 +260,15 @@ export class TeamModifier extends Component {
                     // Getting the old value for this particular key in the map
                     const oldValue = newTeamMap.get(key)
 
-                    // Then, we use the spread operator (...) to flatten the array of old values
-                    // And then we push the new data for the given quality
-                    // Honestly, we could just push the data normally to the old value, and then set it here
-                    // But this one-liner looks so nice
-                    newTeamMap.set(key, [...(oldValue), match[i]])
+                    // console.log(oldValue)
+
+                    if(oldValue){
+                        // Then, we use the spread operator (...) to flatten the array of old values
+                        // And then we push the new data for the given quality
+                        // Honestly, we could just push the data normally to the old value, and then set it here
+                        // But this one-liner looks so nice
+                        newTeamMap.set(key, [...(oldValue), match[i]])
+                    }
                     
                 } 
             }
@@ -260,6 +277,8 @@ export class TeamModifier extends Component {
             // We then push the team map to the bigger map with all the team maps
             localSortedTeamInformationMap.set(team[0], newTeamMap)// Setting teamnum to be key of newTeamMap
         }
+
+        console.log(localSortedTeamInformationMap)
             
         // Setting the local sorted map to state
         this.setState({sortedTeamInformation : new Map(localSortedTeamInformationMap)})
@@ -356,12 +375,12 @@ export class TeamModifier extends Component {
 
         // Getting Team info
         const allTeamData = this.getSortedTeamInformation()
-        console.log(allTeamData)
+        //console.log(allTeamData)
 
         //So like...get the teams currently displayed, find their qualities, and sort them 
         // We need to pass in the teams and compare somehow...
 
-        console.log(quality)
+        //console.log(quality)
 
         // Chosen teams
         const arrayOfChosenTeams = this.state.chosenTeams;
@@ -371,55 +390,36 @@ export class TeamModifier extends Component {
 
         // Going through each team
         for (const teamKey of arrayOfChosenTeams) {
-            //console.log(teamKey)
+            console.log(teamKey)
 
             // Getting the map of each team from the sorted team map
             const mapOfTeam = allTeamData.get(Number(teamKey))
 
             //console.log(mapOfTeam)
 
-            // Getting the data for each quality
-            const arrayOfQuality = mapOfTeam.get(quality)
-
-            // Getting the data, and making sure the data types are correct
-            let castedArray = [];
-
-            // If there are booleans in string form, cast them to actual js booleans
-            if(arrayOfQuality.includes("TRUE") || arrayOfQuality.includes("FALSE")) {
-
-                // Converting the strings to booleans
-                // If the data is TRUE, then the comparison returns true
-                // Otherwise, it returns false, which is the FALSE data
-                // Then, you can add them later (true is 1, false is 0)
-                castedArray = arrayOfQuality.map((data) => data === "TRUE");
-
-
-            } else {
-            
-                // Making sure the data is actually numbers, not string
-                castedArray = arrayOfQuality.map((data) => Number(data));
-
-            }
-
-            // Cool one-liner to add all the elements of the array together
-            const total = (castedArray.reduce((previous, current) => previous + current)) 
-
-            // Taking the average
-            const average = total / arrayOfQuality.length;
-
             // IDK if this is good code, but basically the "teams" that we're pushing to be have two pieces of data
             // We basically combine teamKey and the average into 1 array element
             // It's compared later in the sorting
+
+            let average = 0;
+            console.log(Headings2022[quality])
+            if(Headings2022[quality] === types.boolean) {
+                average = calculateHeaderConsistency(Headings2022[quality], quality, mapOfTeam)
+            } else {
+                average = calculateHeaderFrequencyAverage(Headings2022[quality], quality, mapOfTeam)
+            }
+
+            console.log(average)
+
             arrayOfTeamQualities.push([teamKey, average])
 
-            console.log([teamKey, average])
-
-           
         }
 
         // We then sort the teams and their qualities
         const sortedTeamQualities = this.mergeSortTeams(arrayOfTeamQualities)
         
+        console.log(arrayOfTeamQualities)
+
         // Array of the sorted teams, just getting the team numbers from the sort
         const arrayOfSortedTeams = sortedTeamQualities.map(team => team[0])
 
@@ -443,7 +443,7 @@ export class TeamModifier extends Component {
         for(let i = 1; i <= chosenTeams.length; i++){
 
             // Getting the chosen team of each iteration
-            const chosenTeam = chosenTeams [i - 1];
+            const chosenTeam = chosenTeams[i - 1];
 
             // Pushing each team
             teamComponents.push(

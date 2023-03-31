@@ -1,115 +1,50 @@
-const types = {
+export const types = {
     number: "NUMBER",
     boolean: "BOOLEAN",
     levels: "LEVELS",
     string: "STRING"
 }
 
+/**
+ * Function to return correctly ordered teams
+ * @param {Header} header1 
+ * @param {Header} header2 
+ * @returns {Array} Ordered teams, where positive data is first
+ */
+export const orderedTeams = (header1, header2) => {
+    const potentialOrder = [header1, header2]
 
-export const Headings2022 = {
-    // Auto pickup
-    "auto-pickup": new Header(types.number, {
-        points: 0
-    }),
-    // Auto Taxi
-    "auto-taxi": new Header(types.boolean, {
-        points: 2
-    }),
+    if(potentialOrder[0].isNegativeAttribute) {
+       potentialOrder.reverse()
+    }
 
-    // Auto upper
-    "auto-upperSucc": new Header(types.number, {
-        points: 4,
-        isNegativeAttribute: false,
-        twinValue: "auto-upperFail",
-    }),
-    "auto-upperFail": new Header(types.number, {
-        points: 0,
-        isNegativeAttribute: true,
-        twinValue: "auto-upperSucc",
-    }),
-    // Auto lower
-    "auto-lowerSucc": new Header(types.number, {
-        points: 2,
-        isNegativeAttribute: false,
-        twinValue: "auto-lowerFail",
-    }),
-    "auto-lowerFail": new Header(types.number, {
-        points: 0,
-        isNegativeAttribute: true,
-        twinValue: "auto-lowerSucc",
-    }),
-    // Teleop upper
-    "teleop-upperSucc": new Header(types.number, {
-        points: 2,
-        isNegativeAttribute: false,
-        twinValue: "teleop-upperFail",
-    }),
-    "teleop-upperFail": new Header(types.number, {
-        points: 0,
-        isNegativeAttribute: true,
-        twinValue: "teleop-upperSucc",
-    }),
-
-    // Teleop lower
-    "teleop-lowerSucc": new Header(types.number, {
-        points: 1,
-        isNegativeAttribute: false,
-        twinValue: "teleop-lowerFail",
-    }),
-    "teleop-lowerFail": new Header(types.number, {
-        points: 0,
-        isNegativeAttribute: true,
-        twinValue: "teleop-lowerSucc",
-    }),
-
-    // Did they climb or not?
-    "endgame-climb": new Header(types.boolean),
-    "endgame-fail": new Header(types.boolean, {
-        isNegativeAttribute: true,
-        twinValue: "endgame-climb",
-    }),
-
-    // How far did they climb?
-    "endgame-level": new Header(null, types.levels, {
-        levelsConfig:  {
-            "1 Low": 4,
-            "2 Mid Rung" : 6,
-            "3 High Rung" : 10,
-            "4 Traversal Rung" : 15
-        }
-    }),
-    // Various stuff that we might be interested in
-    "wrongCargo": new Header(types.boolean),
-    "defense": new Header(types.boolean),
-    "scoutProblems": new Header(types.boolean),
-    "robotProblems": new Header(types.boolean),
-    "comments": new Header(types.string)
-
+    return potentialOrder
 }
 
-// Defaults for the configuration object
-const defaultConfig = {
-    points: 0,
-    isNegativeAttribute: false,
-    levelsConfig: {},
-    twinValue: "",
+/**
+ * 
+ * @param {Header} header the object form of the type of data
+ * @param {String} stringName string form of the header name
+ * @param {Map} teamMap map of the team
+ * @returns Average
+ */
+export const calculateHeaderFrequencyAverage = (header, stringName, teamMap) => {
+    return header.calculateFrequencyAverage(teamMap.get(stringName))
 }
 
-export const calculateHeaderAverage = (header, stringName, teamMap) => {
-    return header.calculateAverage(teamMap.get(stringName))
-}
 
+
+// bugs with this
+// not everything will have a twin value, but you can still calculate consistency with one dataset
+// also, the reducing of the success and fail doesn't work with booleans
 export const calculateHeaderConsistency = (header, stringName, teamMap) => {
     
     if(header.twinValue !== defaultConfig.twinValue) {
 
-        const potentialOrder = [teamMap.get(stringName), teamMap.get(header.twinValue)]
+        // const [positiveData, negativeData] = potentialOrder;
+        const [positiveData, negativeData] = orderedTeams(teamMap.get(stringName), teamMap.get(header.twinValue))
 
-        if(potentialOrder[0].isNegativeAttribute) {
-           potentialOrder.reverse()
-        }
-
-        const [positiveData, negativeData] = potentialOrder;
+        
 
         const totalSuccess = positiveData.reduce((previous, current) => previous + current)
         const totalFail = negativeData.reduce((previous, current) => previous + current)
@@ -128,6 +63,15 @@ export const calculateHeaderTotalPoints = (header, stringName, teamMap) => {
 }
 
 
+// Defaults for the configuration object
+const defaultConfig = {
+    points: 0,
+    isNegativeAttribute: false,
+    levelsConfig: {},
+    twinValue: "",
+    combinedName: "",
+}
+
 /**A class to keep track of how to calculate the worth of a given data set */
 class Header {
 
@@ -141,14 +85,13 @@ class Header {
         this.sortingType = sortingType;
         this.data = [];
 
-
         // Going through the configuration and seeing if any values have been ommitted
         // If ommitted, then set the value to be the default
-        for (const key of defaultConfig) {
+        for (const [key, defaultValue] of Object.entries(defaultConfig)) {
             if (config[key]) {
                 this[key] = config[key];
             } else {
-                this[key] = defaultConfig[key]
+                this[key] = defaultValue
             }
         }
 
@@ -160,7 +103,7 @@ class Header {
      * Calculates average based on the data
      * @param {Array} data datapoints of this quality
      */
-    calculateAverage(data) {
+    calculateFrequencyAverage(data) {
 
         if (data.length > 0) {
             // Creating a local copy of data
@@ -170,13 +113,16 @@ class Header {
 
             switch (this.sortingType) {
                 case types.number:
-                    if (typeOf(parsedData[0]) === "string") {
+                    if ((typeof parsedData[0]) === "string") {
                         parsedData = data.map((number) => Number(number));
                     }
-
+                    console.log(parsedData)
                     // Cool one-liner to add all the elements of the array together
-                    const numTotal = (parsedData.reduce((previous, current) => previous + current)) * this.points;
+                    
+                    const numTotal = (parsedData.reduce((previous, current) => previous + current))
 
+                    console.log(numTotal)
+                    console.log(numTotal / data.length)
                     // Taking the average
                     return numTotal / data.length;
                 case types.boolean:
@@ -185,12 +131,12 @@ class Header {
                     // Otherwise, it returns false, which is the FALSE data
                     // Then, you can add them later (true is 1, false is 0)
 
-                    if (typeOf(parsedData[0]) === "string") {
+                    if ((typeof parsedData[0]) === "string") {
                         parsedData = data.map((stringBoolean) => stringBoolean.toUpperCase() === "TRUE");
                     }
 
                     // Cool one-liner to add all the elements of the array together
-                    const boolTotal = (parsedData.reduce((previous, current) => previous + current)) * this.points;
+                    const boolTotal = (parsedData.reduce((previous, current) => previous + current));
 
                     // Taking the average
                     return boolTotal / data.length;
@@ -219,11 +165,104 @@ class Header {
 
     calculateTotalPoints(data = []) {
         if (data.length > 0) {
-            const average = this.calculateAverage(data);
-            return average * data.length;
+            return this.calculateAverage(data) * data.length * this.points;
         } else {
             console.log("Give some actual data!!!")
             return -1
         }
     }
+
+    calculateMatchAverage(data = [0]) {
+        return this.calculateTotalPoints(data) / data.length
+    }
+}
+
+
+export const Headings2022 = {
+    // Auto pickup
+    "auto-pickup": new Header(types.number, {
+        points: 0
+    }),
+    // Auto Taxi
+    "auto-taxi": new Header(types.boolean, {
+        points: 2
+    }),
+
+    // Auto upper
+    "auto-upperSucc": new Header(types.number, {
+        points: 4,
+        isNegativeAttribute: false,
+        twinValue: "auto-upperFail",
+        combinedName: "auto-upper"
+    }),
+    "auto-upperFail": new Header(types.number, {
+        points: 0,
+        isNegativeAttribute: true,
+        twinValue: "auto-upperSucc",
+        combinedName: "auto-upper"
+    }),
+    // Auto lower
+    "auto-lowerSucc": new Header(types.number, {
+        points: 2,
+        isNegativeAttribute: false,
+        twinValue: "auto-lowerFail",
+        combinedName: "auto-lower"
+    }),
+    "auto-lowerFail": new Header(types.number, {
+        points: 0,
+        isNegativeAttribute: true,
+        twinValue: "auto-lowerSucc",
+        combinedName: "auto-lower"
+    }),
+    // Teleop upper
+    "teleop-upperSucc": new Header(types.number, {
+        points: 2,
+        isNegativeAttribute: false,
+        twinValue: "teleop-upperFail",
+        combinedName: "teleop-upper"
+    }),
+    "teleop-upperFail": new Header(types.number, {
+        points: 0,
+        isNegativeAttribute: true,
+        twinValue: "teleop-upperSucc",
+        combinedName: "teleop-upper"
+    }),
+
+    // Teleop lower
+    "teleop-lowerSucc": new Header(types.number, {
+        points: 1,
+        isNegativeAttribute: false,
+        twinValue: "teleop-lowerFail",
+        combinedName: "teleop-lower"
+    }),
+    "teleop-lowerFail": new Header(types.number, {
+        points: 0,
+        isNegativeAttribute: true,
+        twinValue: "teleop-lowerSucc",
+        combinedName: "teleop-lower"
+    }),
+
+    // Did they climb or not?
+    "endgame-climb": new Header(types.boolean),
+    "endgame-fail": new Header(types.boolean, {
+        isNegativeAttribute: true,
+        twinValue: "endgame-climb",
+    }),
+
+    // How far did they climb?
+    "endgame-level": new Header(null, types.levels, {
+        levelsConfig:  {
+            "1 Low": 4,
+            "2 Mid Rung" : 6,
+            "3 High Rung" : 10,
+            "4 Traversal Rung" : 15
+        }
+    }),
+    // Various stuff that we might be interested in
+    "wrongCargo": new Header(types.boolean),
+    "defense": new Header(types.boolean),
+    "scoutProblems": new Header(types.boolean),
+    "robotProblems": new Header(types.boolean),
+    "comments": new Header(types.string)
+
 }

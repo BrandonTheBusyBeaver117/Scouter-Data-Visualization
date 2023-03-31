@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./SideMenu.scss"
+import {Headings2022, calculateHeaderAverage, calculateHeaderConsistency} from "./Headers"
 
 export default function SideMenu (props) {
 
     const[optionState, setOptionState] = useState("")
+
+    const currentHeaders = useRef([])
+    const currentKeysAndHeaders = useRef([])
     
     const createTeamButtons = (teamList) => {
 
@@ -27,30 +31,23 @@ export default function SideMenu (props) {
         return newTeamButtons
     } 
 
-    const optionSelector = (teamMap, sortImmediately) => {
+    const optionSelector = () => {
 
-        // Finding the first team in the map
-        // Starting an iterator, getting the first element, then getting its value (the team)
-        const firstTeam = teamMap.values().next().value;
-
-        // Array of all the options
-        const options = [];
-
-        // Makes sure that the team isn't undefined (duh)
-        if(firstTeam !== undefined){
-            // Iterates through all the attributes and data of the team
-            for(const [attribute, data] of firstTeam) {
-                // Checks if the data is actually iterable (for the data chart)
-                if(typeof data[Symbol.iterator] === 'function'){
-                    options.push(<option key = {attribute} value = {attribute}>{attribute}</option>)
-                }
+        // Uses predefined headers 
+        for (const [key, value] of Object.entries(Headings2022)){
+            // Finding the true name, whether the values are linked in some way
+             const displayName = value.combinedName === "" ? key : value.combinedName
+            if(!(value.isNegativeAttribute) && !(currentHeaders.current.includes(displayName))){
+                currentHeaders.current.push(displayName)
+                console.log([key, displayName])
+                currentKeysAndHeaders.current.push([key, displayName])
             }
         }
 
         return (
                 <div>
                     <select value = {optionState} onChange={event => setOptionState(event.target.value)}>
-                    {options}
+                    {currentKeysAndHeaders.current.map(([positiveAttribute, displayName]) => <option key = {positiveAttribute} value = {positiveAttribute}>{displayName}</option>)}
                     </select>
                 </div>
                 )
@@ -91,7 +88,7 @@ export default function SideMenu (props) {
         
         props.setSelectedQuality(optionState)
 
-        if(props.sortImmediately) sortTeams (optionState)
+        if(props.sortImmediately) props.sortTeamsQualities(optionState)
 
     }, [optionState, props.sortImmediately])
     
@@ -104,10 +101,10 @@ export default function SideMenu (props) {
                 <h2>Teams Selected</h2>
                 <div>{createTeamButtons(props.chosenTeams)}</div>
                 <h2>Sort Teams by:</h2>
-                <button onClick = {() => sortTeams(optionState)} style={{display: props.sortImmediately ? "none" : ""}}>
+                <button onClick = {() => props.sortTeamsQualities(optionState)} style={{display: props.sortImmediately ? "none" : ""}}>
                     {optionState}
                 </button>
-                {optionSelector(props.teamInformation, props.sortImmediately)}
+                {optionSelector()}
            </div>
             <h2>Clear Teams:</h2>
                 <button id = "clear" onClick = {() => props.setChosenTeams([])}>CLEAR</button>

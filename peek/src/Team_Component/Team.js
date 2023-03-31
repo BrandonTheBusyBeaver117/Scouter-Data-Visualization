@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Headings2022, orderedTeams } from '../Headers';
 import "./Team.scss"
 import DataChart from '../DataChart.js';
 import axios from "axios";
@@ -57,24 +58,71 @@ export class Team extends Component{
 
     }
    
+    
 
     render() {
+
+        const dataMap = this.props.sortedTeamInformationMap
+        const selectedQuality = this.props.selectedQuality
+
+        let positiveData = []
+        let negativeData = []
+
+        let currentSortingType = Headings2022[selectedQuality].sortingType;
+
+        if(Headings2022[selectedQuality].isNegativeValue){
+            negativeData = dataMap.get(selectedQuality);
+        } else {
+            positiveData = dataMap.get(selectedQuality);
+        }
+
+        if(Headings2022[selectedQuality].combinedName){
+            for(const [key, value] of Object.entries(Headings2022)) {
+
+                console.log(value.combinedName)
+                console.log(Headings2022[selectedQuality].combinedName)
+                
+                if(value.combinedName == Headings2022[selectedQuality].combinedName) {
+
+                    const orderedData = orderedTeams(dataMap.get(key), dataMap.get(value.twinValue))
+
+                    positiveData = orderedData[0]
+                    negativeData = orderedData[1]
+                    console.log("testing")
+                    console.log(positiveData)
+                    console.log(negativeData)
+                    currentSortingType = value.sortingType;
+                    break;
+                }
+            }
+        }
+
+        // if(positiveData.length === negativeData.length && negativeData.length === 0 ) {
+        //     if(Headings2022[selectedQuality].isNegativeValue) {
+        //         positiveData = dataMap.get(selectedQuality)
+        //     } else {
+        //         negativeData = dataMap.get(selectedQuality)
+        //     }
+        // }
         //this is where the team blocky thing should be rendered
         
-        console.log(this.props.sortedTeamInformationMap)
-        console.log(this.props.sortedTeamInformationMap.get(this.props.selectedQuality))
-        console.log(navigator.onLine)
+
+        console.log(dataMap)
+        console.log(dataMap.get(this.props.selectedQuality))
+
         return(
         <div className='teamComponent' 
-            id = {"team" + this.props.sortedTeamInformationMap.get("teamNumber")}>
-            <h1>{this.props.sortedTeamInformationMap.get("teamNumber")}</h1>
-            <h1>{this.props.sortedTeamInformationMap.get("teamName")}</h1>
-            <h2>TBA Ranking: {this.props.sortedTeamInformationMap.get("teamRank")}</h2>
+            id = {"team" + dataMap.get("teamNumber")}>
+            <h1>{dataMap.get("teamNumber")}</h1>
+            <h1>{dataMap.get("teamName")}</h1>
+            <h2>TBA Ranking: {dataMap.get("teamRank")}</h2>
             
             <DataChart 
-                matches = {this.props.sortedTeamInformationMap.get("matchNum")}
-                teamData = {this.props.sortedTeamInformationMap.get(this.props.selectedQuality)}
-                selectedQuality = {this.props.selectedQuality}
+                matches = {dataMap.get("matchNum")}
+                positiveDataSet = {positiveData}
+                negativeDataSet = {negativeData}
+                selectedQuality = {selectedQuality}
+                sortingType = {currentSortingType}
             />
             {this.state.links !== "" &&
                 <Carousel 
@@ -87,9 +135,9 @@ export class Team extends Component{
                 </Carousel>
             }
             
-            <Online>
-                <CloudinaryUploadWidget teamNumber = {this.props.sortedTeamInformationMap.get("teamNumber")}/>
-            </Online>
+            {/* <Online>
+                <CloudinaryUploadWidget teamNumber = {dataMap.get("teamNumber")}/>
+            </Online> */}
 
         </div>
         );
