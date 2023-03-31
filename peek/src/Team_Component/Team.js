@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Headings2022, orderedTeams } from '../Headers';
+import { Headings2022, orderedDataWithKeys } from '../Headers';
 import "./Team.scss"
 import DataChart from '../DataChart.js';
 import axios from "axios";
@@ -65,8 +65,13 @@ export class Team extends Component{
         const dataMap = this.props.sortedTeamInformationMap
         const selectedQuality = this.props.selectedQuality
 
+        console.log(selectedQuality)
+
         let positiveData = []
         let negativeData = []
+
+        let positiveKey = selectedQuality + "Succ";
+        let negativeKey = selectedQuality + "Fail";
 
         let currentSortingType = Headings2022[selectedQuality].sortingType;
 
@@ -80,17 +85,22 @@ export class Team extends Component{
             for(const [key, value] of Object.entries(Headings2022)) {
 
                 console.log(value.combinedName)
+                console.log(Headings2022[selectedQuality])
                 console.log(Headings2022[selectedQuality].combinedName)
                 
                 if(value.combinedName == Headings2022[selectedQuality].combinedName) {
 
-                    const orderedData = orderedTeams(dataMap.get(key), dataMap.get(value.twinValue))
+                    const data = orderedDataWithKeys(Headings2022[selectedQuality], key, dataMap)
 
-                    positiveData = orderedData[0]
-                    negativeData = orderedData[1]
-                    console.log("testing")
-                    console.log(positiveData)
-                    console.log(negativeData)
+                    positiveData = data[0]
+                    negativeData = data[1]
+
+                    positiveKey = data[2]
+                    negativeKey = data[3]
+
+                    console.log(positiveKey)
+                    console.log(negativeKey)
+
                     currentSortingType = value.sortingType;
                     break;
                 }
@@ -121,6 +131,8 @@ export class Team extends Component{
                 matches = {dataMap.get("matchNum")}
                 positiveDataSet = {positiveData}
                 negativeDataSet = {negativeData}
+                positiveKey = {positiveKey}
+                negativeKey = {negativeKey}
                 selectedQuality = {selectedQuality}
                 sortingType = {currentSortingType}
             />

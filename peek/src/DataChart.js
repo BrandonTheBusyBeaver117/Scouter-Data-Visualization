@@ -13,7 +13,7 @@ ChartJS.register(CategoryScale, LineController, LineElement, ArcElement, PointEl
 export default function DataChart(props) {
 
 
-    const createChart = (matches, positiveDataSet, negativeDataSet, selectedQuality, sortingType) => {
+    const createChart = (matches, positiveDataSet, negativeDataSet, positiveKey, negativeKey, selectedQuality, sortingType) => {
         
         switch(sortingType){
 
@@ -27,26 +27,22 @@ export default function DataChart(props) {
             let numSuccess = 0;
 
             
-            for(const dataPoint of negativeDataSet) {
-                if(dataPoint.toUpperCase() === "TRUE") numFail++;
-            }
-            for(const dataPoint of positiveDataSet) {
-                if(dataPoint.toUpperCase() === "TRUE") numSuccess++;
-            }
-
-            // if(positiveDataSet.length > 0) {
-
-            //     for (let i = 0; i < positiveDataSet.length; i++) {
-            //         if(positiveDataSet !== 0 && negativeDataSet !== 0){
-            //             if(positiveDataSet[i].toUpperCase() === "TRUE") numSuccess++;
-            //             if(negativeDataSet[i].toUpperCase() === "TRUE") numFail++;
-            //         } else if(positiveDataSet.length > 0 && negativeDataSet.length === 0) {
-            //             positiveDataSet[i].toUpperCase() === "TRUE" ? numSuccess++ : numFail++;
-            //         } 
-            //     }
-            // } else if (negativeDataSet.length > 0) {
-            //     negativeDataSet.forEach(matchResult => matchResult.toUpperCase() === "TRUE" ? numFail++ : numSuccess++);
+            // for(const dataPoint of negativeDataSet) {
+            //     if(dataPoint.toUpperCase() === "TRUE") numFail++;
             // }
+            // for(const dataPoint of positiveDataSet) {
+            //     if(dataPoint.toUpperCase() === "TRUE") numSuccess++;
+            // }
+
+            if(positiveDataSet.length > 0 && negativeDataSet.length > 0) {
+               
+                positiveDataSet.forEach(matchResult => numSuccess += matchResult.toUpperCase() === "TRUE" ? 1 : 0);
+                negativeDataSet.forEach(matchResult => numFail += matchResult.toUpperCase() === "TRUE" ? 1 : 0);
+            } else if(positiveDataSet.length > 0 && negativeDataSet.length === 0) {
+                positiveDataSet.forEach(matchResult => matchResult.toUpperCase() === "TRUE" ? numSuccess++ : numFail++);
+            } else if (negativeDataSet.length > 0) {
+                negativeDataSet.forEach(matchResult => matchResult.toUpperCase() === "TRUE" ? numFail++ : numSuccess++);
+            }
             
             return <Pie 
                 className='dataChart'
@@ -112,6 +108,8 @@ export default function DataChart(props) {
                 }
             }
 
+            console.log(positiveKey)
+            console.log(negativeKey)
 
             return <Line
                 className='dataChart'
@@ -122,7 +120,7 @@ export default function DataChart(props) {
                     datasets: [
                         {
                             id: 1,
-                            label: selectedQuality,
+                            label: positiveKey,
                             data: positiveDataSet,
                             backgroundColor: "rgb(15, 230, 255)",
                             borderColor: "rgb(205, 205, 205)",
@@ -131,9 +129,9 @@ export default function DataChart(props) {
                         }, 
                         {
                             id: 2,
-                            label: selectedQuality,
+                            label: negativeKey,
                             data: negativeDataSet,
-                            backgroundColor: "rgb(15, 230, 255)",
+                            backgroundColor: "rgb(255, 15, 40)",
                             borderColor: "rgb(205, 205, 205)",
                             borderWidth: 2,
                             ...negativeConfig
@@ -265,7 +263,7 @@ export default function DataChart(props) {
     return (
 
         <div className='chart'>
-            {createChart(props.matches, props.positiveDataSet, props.negativeDataSet, props.selectedQuality, props.sortingType)}
+            {createChart(props.matches, props.positiveDataSet, props.negativeDataSet, props.positiveKey, props.negativeKey, props.selectedQuality, props.sortingType)}
         </div>
     )
 

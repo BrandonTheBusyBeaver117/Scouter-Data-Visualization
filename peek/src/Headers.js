@@ -9,16 +9,36 @@ export const types = {
  * Function to return correctly ordered teams
  * @param {Header} header1 
  * @param {Header} header2 
- * @returns {Array} Ordered teams, where positive data is first
+ * @returns {Array} Ordered headers, where positive data is first
  */
-export const orderedTeams = (header1, header2) => {
-    const potentialOrder = [header1, header2]
+export const orderedData = (possiblePositiveHeader, key, dataMap) => {
+  
+    const potentialOrderData = [dataMap.get(key), dataMap.get(possiblePositiveHeader.twinValue)]
 
-    if(potentialOrder[0].isNegativeAttribute) {
-       potentialOrder.reverse()
+    if(possiblePositiveHeader.isNegativeAttribute) {
+        potentialOrderData.reverse()
     }
 
-    return potentialOrder
+    return potentialOrderData
+}
+
+/**
+ * Function to return correctly ordered teams
+ * @param {Header} header1 
+ * @param {Header} header2 
+ * @returns {Array} Ordered headers, where positive data is first
+ */
+ export const orderedDataWithKeys = (possiblePositiveHeader, key, dataMap) => {
+  
+    const potentialOrderKeys = [key, possiblePositiveHeader.twinValue]
+    const potentialOrderData = [dataMap.get(key), dataMap.get(possiblePositiveHeader.twinValue)]
+
+    if(possiblePositiveHeader.isNegativeAttribute) {
+        potentialOrderData.reverse()
+        potentialOrderKeys.reverse()
+    }
+
+    return [...potentialOrderData, ...potentialOrderKeys]
 }
 
 /**
@@ -42,7 +62,7 @@ export const calculateHeaderConsistency = (header, stringName, teamMap) => {
     if(header.twinValue !== defaultConfig.twinValue) {
 
         // const [positiveData, negativeData] = potentialOrder;
-        const [positiveData, negativeData] = orderedTeams(teamMap.get(stringName), teamMap.get(header.twinValue))
+        const [positiveData, negativeData] = orderedData(header, stringName, teamMap)
 
         
 
