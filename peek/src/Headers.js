@@ -13,7 +13,7 @@ export const types = {
  */
 export const orderedData = (possiblePositiveHeader, key, dataMap) => {
   
-    const potentialOrderData = [dataMap.get(key), dataMap.get(possiblePositiveHeader.twinValue)]
+    const potentialOrderData = [dataMap.get(key) ?? [], dataMap.get(possiblePositiveHeader.twinValue) ?? []]
 
     if(possiblePositiveHeader.isNegativeAttribute) {
         potentialOrderData.reverse()
@@ -31,7 +31,7 @@ export const orderedData = (possiblePositiveHeader, key, dataMap) => {
  export const orderedDataWithKeys = (possiblePositiveHeader, key, dataMap) => {
   
     const potentialOrderKeys = [key, possiblePositiveHeader.twinValue]
-    const potentialOrderData = [dataMap.get(key), dataMap.get(possiblePositiveHeader.twinValue)]
+    const potentialOrderData = [dataMap.get(key) ?? [], dataMap.get(possiblePositiveHeader.twinValue) ?? []]
 
     if(possiblePositiveHeader.isNegativeAttribute) {
         potentialOrderData.reverse()
@@ -58,24 +58,22 @@ export const calculateHeaderFrequencyAverage = (header, stringName, teamMap) => 
 // not everything will have a twin value, but you can still calculate consistency with one dataset
 // also, the reducing of the success and fail doesn't work with booleans
 export const calculateHeaderConsistency = (header, stringName, teamMap) => {
-    
-    if(header.twinValue !== defaultConfig.twinValue) {
 
-        // const [positiveData, negativeData] = potentialOrder;
-        const [positiveData, negativeData] = orderedData(header, stringName, teamMap)
+    const [positiveData, negativeData] = orderedData(header, stringName, teamMap)
 
+        const totalSuccess = header.calculateFrequency(positiveData);
+
+        const totalFail = header.calculateFrequency(negativeData);
+
+        console.log(totalSuccess)
+        console.log(totalFail)
         
-
-        const totalSuccess = positiveData.reduce((previous, current) => previous + current)
-        const totalFail = negativeData.reduce((previous, current) => previous + current)
+        if(totalFail === 0) return 1
 
         const totalAttempts = totalSuccess + totalFail;
 
         return totalSuccess / totalAttempts;
 
-        }
-
-    return 1
 }
 
 export const calculateHeaderTotalPoints = (header, stringName, teamMap) => {
@@ -158,6 +156,11 @@ class Header {
                     // Cool one-liner to add all the elements of the array together
                     const boolTotal = (parsedData.reduce((previous, current) => previous + current));
 
+                    console.log(data)
+                    console.log(parsedData)
+                    console.log(boolTotal)
+                    console.log(boolTotal/data.length)
+
                     // Taking the average
                     return boolTotal / data.length;
 
@@ -182,6 +185,9 @@ class Header {
 
     }
 
+    calculateFrequency (data) {
+        return this.calculateFrequencyAverage(data) * data.length
+    }
 
     calculateTotalPoints(data = []) {
         if (data.length > 0) {
@@ -263,14 +269,19 @@ export const Headings2022 = {
     }),
 
     // Did they climb or not?
-    "endgame-climb": new Header(types.boolean),
+    "endgame-climb": new Header(types.boolean, {
+        isNegativeAttribute: false,
+        twinValue: "endgame-fail",
+        combinedName: "endgame-climb"
+    }),
     "endgame-fail": new Header(types.boolean, {
         isNegativeAttribute: true,
         twinValue: "endgame-climb",
+        combinedName: "endgame-climb"
     }),
 
     // How far did they climb?
-    "endgame-level": new Header(null, types.levels, {
+    "endgame-level": new Header(types.levels, {
         levelsConfig:  {
             "1 Low": 4,
             "2 Mid Rung" : 6,
@@ -279,10 +290,10 @@ export const Headings2022 = {
         }
     }),
     // Various stuff that we might be interested in
-    "wrongCargo": new Header(types.boolean),
+    "wrongCargo": new Header(types.boolean, {isNegativeAttribute: true}),
     "defense": new Header(types.boolean),
-    "scoutProblems": new Header(types.boolean),
-    "robotProblems": new Header(types.boolean),
+    "scoutProblems": new Header(types.boolean, {isNegativeAttribute: true}),
+    "robotProblems": new Header(types.boolean, {isNegativeAttribute: true}),
     "comments": new Header(types.string)
 
 }

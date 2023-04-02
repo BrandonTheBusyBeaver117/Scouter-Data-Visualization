@@ -15,13 +15,11 @@ export default function DataChart(props) {
 
     const createChart = (matches, positiveDataSet, negativeDataSet, positiveKey, negativeKey, selectedQuality, sortingType) => {
         
+
+
         switch(sortingType){
 
         case(types.boolean) : {
-
-            console.log(positiveDataSet)
-            console.log(negativeDataSet)
-
 
             let numFail = 0;
             let numSuccess = 0;
@@ -41,9 +39,15 @@ export default function DataChart(props) {
             } else if(positiveDataSet.length > 0 && negativeDataSet.length === 0) {
                 positiveDataSet.forEach(matchResult => matchResult.toUpperCase() === "TRUE" ? numSuccess++ : numFail++);
             } else if (negativeDataSet.length > 0) {
-                negativeDataSet.forEach(matchResult => matchResult.toUpperCase() === "TRUE" ? numFail++ : numSuccess++);
+                negativeDataSet.forEach(matchResult => matchResult.toUpperCase() === "FALSE" ? numSuccess++ : numFail++);
             }
-            
+            console.log("pos")
+            console.log(positiveDataSet)
+            console.log(numSuccess)
+            console.log("neg")
+            console.log(negativeDataSet)
+            console.log(numFail)
+
             return <Pie 
                 className='dataChart'
                 datasetIdKey='booleanPieChart'

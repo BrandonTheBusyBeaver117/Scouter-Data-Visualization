@@ -75,13 +75,15 @@ export class Team extends Component{
 
         let currentSortingType = Headings2022[selectedQuality].sortingType;
 
-        if(Headings2022[selectedQuality].isNegativeValue){
+        console.log(Headings2022[selectedQuality])
+
+        if(Headings2022[selectedQuality].isNegativeAttribute){
             negativeData = dataMap.get(selectedQuality);
         } else {
             positiveData = dataMap.get(selectedQuality);
         }
 
-        if(Headings2022[selectedQuality].combinedName){
+        if(Headings2022[selectedQuality].combinedName !== ""){
             for(const [key, value] of Object.entries(Headings2022)) {
 
                 console.log(value.combinedName)

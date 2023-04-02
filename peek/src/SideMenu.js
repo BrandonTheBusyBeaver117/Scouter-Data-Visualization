@@ -37,7 +37,10 @@ export default function SideMenu (props) {
         for (const [key, value] of Object.entries(Headings2022)){
             // Finding the true name, whether the values are linked in some way
              const displayName = value.combinedName === "" ? key : value.combinedName
-            if(!(value.isNegativeAttribute) && !(currentHeaders.current.includes(displayName))){
+
+             const isNegativeTwin = value.combinedName !== "" && value.isNegativeAttribute
+
+            if(!(isNegativeTwin) && !(currentHeaders.current.includes(displayName))){
                 currentHeaders.current.push(displayName)
                 console.log([key, displayName])
                 currentKeysAndHeaders.current.push([key, displayName])

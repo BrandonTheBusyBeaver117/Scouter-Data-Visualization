@@ -403,9 +403,12 @@ export class TeamModifier extends Component {
 
             let average = 0;
             console.log(Headings2022[quality])
-            if(Headings2022[quality] === types.boolean) {
+            if(Headings2022[quality].sortingType === types.boolean) {
+                
                 average = calculateHeaderConsistency(Headings2022[quality], quality, mapOfTeam)
+                console.log(calculateHeaderConsistency(Headings2022[quality], quality, mapOfTeam))
             } else {
+                
                 average = calculateHeaderFrequencyAverage(Headings2022[quality], quality, mapOfTeam)
             }
 
