@@ -66,7 +66,7 @@ export default function DataChart(props) {
                 options={{ 
                         // If there are two values, then have a border radius
                         // Otherwise, complete the entire pie chart
-                        borderWidth : positiveDataSet.length > 0 && negativeDataSet.length > 0 ? 2 : 0,
+                        borderWidth : numSuccess > 0 && numFail > 0 ? 2 : 0,
                         maintainAspectRatio: false, 
                         plugins: {
                             title: {
