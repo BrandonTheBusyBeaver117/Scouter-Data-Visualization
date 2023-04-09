@@ -13,10 +13,7 @@ export const types = {
  * @returns {Array} Ordered headers, where positive data is first
  */
 export const orderedData = (possiblePositiveHeader, key, dataMap) => {
-	const potentialOrderData = [
-		dataMap.get(key) ?? [],
-		dataMap.get(possiblePositiveHeader.twinValue) ?? [],
-	];
+	const potentialOrderData = [dataMap.get(key) ?? [], dataMap.get(possiblePositiveHeader.twinValue) ?? []];
 
 	if (possiblePositiveHeader.isNegativeAttribute) {
 		potentialOrderData.reverse();
@@ -33,10 +30,7 @@ export const orderedData = (possiblePositiveHeader, key, dataMap) => {
  */
 export const orderedDataWithKeys = (possiblePositiveHeader, key, dataMap) => {
 	const potentialOrderKeys = [key, possiblePositiveHeader.twinValue];
-	const potentialOrderData = [
-		dataMap.get(key) ?? [],
-		dataMap.get(possiblePositiveHeader.twinValue) ?? [],
-	];
+	const potentialOrderData = [dataMap.get(key) ?? [], dataMap.get(possiblePositiveHeader.twinValue) ?? []];
 
 	if (possiblePositiveHeader.isNegativeAttribute) {
 		potentialOrderData.reverse();
@@ -57,19 +51,15 @@ export const calculateHeaderFrequencyAverage = (header, stringName, teamMap) => 
 	return header.calculateFrequencyAverage(teamMap.get(stringName));
 };
 
-// bugs with this
-// not everything will have a twin value, but you can still calculate consistency with one dataset
-// also, the reducing of the success and fail doesn't work with booleans
 /**
  *
  * @param {Header} header the object form of the type of data
  * */
 export const calculateHeaderConsistency = (header, stringName, teamMap) => {
-	//if (header.twinValue !== "") {
-
 	const [positiveData, negativeData] = orderedData(header, stringName, teamMap);
 
 	if (positiveData.length === 0 && negativeData.length > 0) {
+		// Getting the positive frequency average
 		return 1 - header.calculateFrequencyAverage(negativeData);
 	} else if (positiveData.length > 0 && negativeData.length === 0) {
 		return header.calculateFrequencyAverage(positiveData);
@@ -86,10 +76,6 @@ export const calculateHeaderConsistency = (header, stringName, teamMap) => {
 
 		return totalSuccess / totalAttempts;
 	}
-	//}
-	// } else {
-	// 	return calculateHeaderFrequencyAverage(header, stringName, teamMap);
-	// }
 };
 
 export const calculateHeaderTotalPoints = (header, stringName, teamMap) => {
