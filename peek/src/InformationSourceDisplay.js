@@ -24,7 +24,6 @@ export default function InformationSourceDisplay(props) {
 
     }
 
-
     return <div id = "InformationSourceDisplay">
        
         <button onClick = {() => setIsInputShown(true)}>Change Data Source</button>
