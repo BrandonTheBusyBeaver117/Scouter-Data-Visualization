@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 // import InformationSource from "./InformationSource";
 
-import { defaultConfig } from "./Headers";
+import { defaultConfig } from "../Headers";
 
 export default function HeaderVisualizer(props) {
 	const [isInputShown, setIsInputShown] = useState(false);

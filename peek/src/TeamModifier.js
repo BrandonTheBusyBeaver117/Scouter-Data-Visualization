@@ -1,13 +1,18 @@
 import React, { Component } from "react";
-import { Headings2022, calculateHeaderFrequencyAverage, calculateHeaderConsistency, types } from "./Headers";
+import {
+	Headings2022,
+	calculateHeaderFrequencyAverage,
+	calculateHeaderConsistency,
+	types,
+} from "./DataSources/Headers";
 import { Team } from "./Team_Component/Team";
 import Searchbar from "./Searchbar";
 import SideMenu from "./SideMenu";
 import "./TeamModifier.scss";
-import InformationSourceDisplay from "./InformationSourceDisplay";
+import InformationSourceDisplay from "./DataSources/InformationSourceDisplay";
 
-import DataCollector from "./DataCollector";
-import UserSettingsButton from "./UserSettingsButton";
+import DataCollector from "./DataSources/DataCollector";
+import UserSettingsButton from "./DataSources/UserSettingsButton";
 export class TeamModifier extends Component {
 	constructor() {
 		super();

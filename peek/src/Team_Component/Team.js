@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Headings2022, orderedDataWithKeys } from "../Headers";
+import { Headings2022, orderedDataWithKeys } from "../DataSources/Headers";
 import "./Team.scss";
-import DataChart from "../DataChart.js";
+import DataChart from "./DataChart.js";
 import axios from "axios";
 import CloudinaryUploadWidget from "./CloudinaryUploadWidget";
 import { Offline, Online } from "react-detect-offline";

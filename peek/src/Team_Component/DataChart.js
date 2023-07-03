@@ -1,5 +1,5 @@
 import "./DataChart.scss";
-import { Headings2022, types } from "./Headers";
+import { Headings2022, types } from "../DataSources/Headers";
 
 import {
 	Chart as ChartJS,
@@ -49,12 +49,9 @@ export default function DataChart(props) {
 
 				if (positiveDataSet.length > 0 && negativeDataSet.length > 0) {
 					positiveDataSet.forEach(
-						(matchResult) =>
-							(numSuccess += matchResult.toUpperCase() === "TRUE" ? 1 : 0)
+						(matchResult) => (numSuccess += matchResult.toUpperCase() === "TRUE" ? 1 : 0)
 					);
-					negativeDataSet.forEach(
-						(matchResult) => (numFail += matchResult.toUpperCase() === "TRUE" ? 1 : 0)
-					);
+					negativeDataSet.forEach((matchResult) => (numFail += matchResult.toUpperCase() === "TRUE" ? 1 : 0));
 				} else if (positiveDataSet.length > 0 && negativeDataSet.length === 0) {
 					positiveDataSet.forEach((matchResult) =>
 						matchResult.toUpperCase() === "TRUE" ? numSuccess++ : numFail++
@@ -221,9 +218,7 @@ export default function DataChart(props) {
 				}
 
 				// Getting frequency of each level
-				data.forEach((dataPoint) =>
-					levelFrequency.set(dataPoint, levelFrequency.get(dataPoint) + 1)
-				);
+				data.forEach((dataPoint) => levelFrequency.set(dataPoint, levelFrequency.get(dataPoint) + 1));
 
 				const orderedFrequencies = typesOfLevels.map((level) => levelFrequency.get(level));
 
