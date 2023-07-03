@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import {
-	Headings2022,
-	calculateHeaderFrequencyAverage,
-	calculateHeaderConsistency,
-	types,
-} from "./Headers";
+import { Headings2022, calculateHeaderFrequencyAverage, calculateHeaderConsistency, types } from "./Headers";
 import { Team } from "./Team_Component/Team";
 import Searchbar from "./Searchbar";
 import SideMenu from "./SideMenu";
@@ -21,6 +16,7 @@ export class TeamModifier extends Component {
 			inputSource:
 				"https://docs.google.com/spreadsheets/d/1CKLOwi0YJVL01nasfPA0QrBuVvlBR75ypgbgoyoGRgk/edit#gid=851727545",
 			eventKey: "2022cave",
+			headerConfig: "",
 			teamData: [],
 
 			googleSheetHeaders: "n/a",
@@ -43,6 +39,7 @@ export class TeamModifier extends Component {
 		this.setInputSource = this.setInputSource.bind(this);
 		this.setEventKey = this.setEventKey.bind(this);
 		this.setUserSettings = this.setUserSettings.bind(this);
+		this.setHeaderConfig = this.setHeaderConfig.bind(this);
 	}
 
 	/**
@@ -73,10 +70,7 @@ export class TeamModifier extends Component {
 
 		// If the input source has changed, then recreate the teams
 		// well, more like recreate the info that makes the teams, but it causes the teams to be rebuilt regardless
-		if (
-			prevState.inputSource !== this.state.inputSource ||
-			prevState.eventKey !== this.state.eventKey
-		) {
+		if (prevState.inputSource !== this.state.inputSource || prevState.eventKey !== this.state.eventKey) {
 			console.log("change in input source!");
 			this.createTeams();
 		}
@@ -123,6 +117,10 @@ export class TeamModifier extends Component {
 
 	setEventKey(newKey) {
 		this.setState({ eventKey: newKey });
+	}
+
+	setHeaderConfig(newHeaderConfig) {
+		this.setState({ headerConfig: newHeaderConfig });
 	}
 
 	setInputSource(newInputSource) {
@@ -346,10 +344,7 @@ export class TeamModifier extends Component {
 		// We keep splitting until we reach base case
 		// Then we mergeSortStep to sort the left and right split teams
 		// Works our way back up to sort the final sorted left and right teams
-		return this.mergeSortStep(
-			this.mergeSortTeams(leftHalfOfArray),
-			this.mergeSortTeams(rightHalfOfArray)
-		);
+		return this.mergeSortStep(this.mergeSortTeams(leftHalfOfArray), this.mergeSortTeams(rightHalfOfArray));
 	}
 
 	/**
@@ -394,11 +389,7 @@ export class TeamModifier extends Component {
 				average = calculateHeaderConsistency(Headings2022[quality], quality, mapOfTeam);
 				console.log(calculateHeaderConsistency(Headings2022[quality], quality, mapOfTeam));
 			} else {
-				average = calculateHeaderFrequencyAverage(
-					Headings2022[quality],
-					quality,
-					mapOfTeam
-				);
+				average = calculateHeaderFrequencyAverage(Headings2022[quality], quality, mapOfTeam);
 			}
 
 			console.log(average);
@@ -424,12 +415,7 @@ export class TeamModifier extends Component {
 	}
 
 	// Name is self-explanatory
-	renderTeamComponents(
-		chosenTeams,
-		googleSheetHeaders,
-		sortedTeamInformationMap,
-		selectedQuality
-	) {
+	renderTeamComponents(chosenTeams, googleSheetHeaders, sortedTeamInformationMap, selectedQuality) {
 		// Array of all the team components
 		let teamComponents = [];
 
@@ -489,6 +475,8 @@ export class TeamModifier extends Component {
 						setInputSource={this.setInputSource}
 						currentEventKey={this.state.eventKey}
 						setEventKey={this.setEventKey}
+						currentHeaderConfig={this.state.headerConfig}
+						setHeaderConfig={this.setHeaderConfig}
 					/>
 
 					<UserSettingsButton

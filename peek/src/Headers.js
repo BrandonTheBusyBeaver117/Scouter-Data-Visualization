@@ -83,7 +83,7 @@ export const calculateHeaderTotalPoints = (header, stringName, teamMap) => {
 };
 
 // Defaults for the configuration object
-const defaultConfig = {
+export const defaultConfig = {
 	points: 0,
 	isNegativeAttribute: false,
 	levelsConfig: {},

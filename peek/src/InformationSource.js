@@ -36,6 +36,8 @@ export default function InformationSource(props) {
 
 	const [eventKey, setEventKey] = useState(props.currentEventKey);
 
+	const [currentHeaderConfig, setCurrentHeaderConfig] = useState(props.currentHeaderConfig);
+
 	const fileInput = useRef();
 
 	const handleUpdate = (
@@ -129,6 +131,14 @@ export default function InformationSource(props) {
 		}
 	};
 
+	const findAllHeaders = () => {
+		// Try and make an api request
+		const localHeaders = JSON.parse(localStorage.getItem("HeaderConfigs"));
+		return localHeaders ? Object.keys(localHeaders) : ["No Headers Defined"];
+	};
+
+	const handleHeaderUpdate = (newHeaderConfig) => {};
+
 	useEffect(() => {
 		function handleClickOutside(event) {
 			if (event.target.id === "InfoSourceInput") {
@@ -146,6 +156,13 @@ export default function InformationSource(props) {
 		};
 	}, []);
 
+	useEffect(() => {
+		if (props.currentHeaderConfig === "") {
+			// Api request
+			//if fail, read from local storage
+		}
+	}, [props.currentHeaderConfig]);
+
 	const buttonHighlighting = (currentSourceType, buttonSourceType) => {
 		return {
 			backgroundColor: currentSourceType === buttonSourceType ? "rgb(255, 255, 0)" : "rgb(225, 225, 225)",
@@ -155,49 +172,75 @@ export default function InformationSource(props) {
 
 	return (
 		<div id="InformationSource">
-			<p>Input an event key</p>
-			<input
-				type="text"
-				placeholder="Input your event key"
-				value={eventKey}
-				onChange={(event) => setEventKey(event.target.value)}
-			/>
+			<div id="DataSource">
+				<p>Input an event key</p>
+				<input
+					type="text"
+					placeholder="Input your event key"
+					value={eventKey}
+					onChange={(event) => setEventKey(event.target.value)}
+				/>
 
-			<p>Choose your data source:</p>
+				<p>Choose your data source:</p>
 
-			<p>Select either a csv file, OR a link to a google sheet</p>
+				<p>Select either a csv file, OR a link to a google sheet</p>
 
-			<div id="typeChooser">
-				<button
-					onClick={() => setSourceTypeSelected("link")}
-					style={buttonHighlighting(sourceTypeSelected, "link")}
-				>
-					Google Sheets Link
-				</button>
-				<button
-					onClick={() => setSourceTypeSelected("csv")}
-					style={buttonHighlighting(sourceTypeSelected, "csv")}
-				>
-					Csv File
-				</button>
+				<div id="typeChooser">
+					<button
+						onClick={() => setSourceTypeSelected("link")}
+						style={buttonHighlighting(sourceTypeSelected, "link")}
+					>
+						Google Sheets Link
+					</button>
+					<button
+						onClick={() => setSourceTypeSelected("csv")}
+						style={buttonHighlighting(sourceTypeSelected, "csv")}
+					>
+						Csv File
+					</button>
+				</div>
+
+				{createForm(sourceTypeSelected)}
+
+				<div className="submissionOptions">
+					<button
+						onClick={() =>
+							handleUpdate(
+								eventKey,
+								sheetLink,
+								fileInput?.current?.files[0],
+								props.currentEventKey,
+								props.currentInputSource
+							)
+						}
+					>
+						Update Data sources
+					</button>
+					<button onClick={() => props.setIsInputShown(false)}>Discard changes</button>
+				</div>
 			</div>
-
-			{createForm(sourceTypeSelected)}
-
-			<div className="submissionOptions">
-				<button
-					onClick={() =>
-						handleUpdate(
-							eventKey,
-							sheetLink,
-							fileInput?.current?.files[0],
-							props.currentEventKey,
-							props.currentInputSource
-						)
-					}
+			<div id="HeadersConfig">
+				<p>Create a new header configuration based on currently updated information source?</p>
+				<input
+					type="text"
+					placeholder="Enter the name of a new header configuration"
+				/>
+				<p>Select a header configuration</p>
+				<select
+					value={currentHeaderConfig}
+					onChange={(event) => setCurrentHeaderConfig(event.target.value)}
 				>
-					Update Data sources
-				</button>
+					{findAllHeaders().map((key) => (
+						<option
+							key={key}
+							value={key}
+						>
+							{key}
+						</option>
+					))}
+				</select>
+				<p>Edit headers</p>
+				<button onClick={handleHeaderUpdate(currentHeaderConfig)}>Update header configuration</button>
 				<button onClick={() => props.setIsInputShown(false)}>Discard changes</button>
 			</div>
 		</div>
